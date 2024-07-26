@@ -13,9 +13,10 @@ Recognizing this inefficiency and the absence of an appropriate solution, Modele
 These features address the need for a more efficient and user-friendly drawer in scenarios where frequent updates to the drawer content are necessary.
 
 ## Screenshot
+https://github.com/user-attachments/assets/3f89059a-1979-49dd-8df9-521b0be4c9dc
+
 
 ## Usage
-
 Here are small examples that show you how to use the API.
 
 ### Install
@@ -235,4 +236,4 @@ to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
 ## License
-This project is licensed under the [MIT]() License.
+This project is licensed under the [MIT](https://github.com/xaatw0/flutter_salon_packages/blob/modeless_drawer/modeless_drawer/LICENSE) License.

@@ -1,10 +1,10 @@
 name: modeless_drawer
-description: "A new Flutter package project."
+description: "A modeless dialog for updating displayed values without closing the drawer"
 version: 0.0.1
-homepage:
+homepage: "https://github.com/xaatw0/flutter_salon_packages/modeless_drawer"
 
 environment:
-  sdk: '>=3.4.4 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:

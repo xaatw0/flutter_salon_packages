@@ -13,7 +13,7 @@ Recognizing this inefficiency and the absence of an appropriate solution, Modele
 These features address the need for a more efficient and user-friendly drawer in scenarios where frequent updates to the drawer content are necessary.
 
 ## Screenshot
-![img](modeless_dialog.gif)  
+![img](https://raw.githubusercontent.com/xaatw0/flutter_salon_packages/main/modeless_drawer/modeless_dialog.gif)  
 
 ## Usage
 Here are small examples that show you how to use the API.

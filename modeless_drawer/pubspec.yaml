@@ -1,6 +1,6 @@
 name: modeless_drawer
 description: "A modeless dialog for updating displayed values without closing the drawer"
-version: 0.0.1
+version: 0.0.2
 homepage: "https://github.com/xaatw0/flutter_salon_packages/modeless_drawer"
 
 environment:

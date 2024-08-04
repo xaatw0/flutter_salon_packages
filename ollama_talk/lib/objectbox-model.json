@@ -1,0 +1,214 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "4:756238960383561970",
+      "lastPropertyId": "4:1983525437731518122",
+      "name": "DocumentEntity",
+      "properties": [
+        {
+          "id": "1:8470443340790969331",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3454299536220864848",
+          "name": "fileName",
+          "type": 9
+        },
+        {
+          "id": "3:4646484621504927020",
+          "name": "memo",
+          "type": 9
+        },
+        {
+          "id": "4:1983525437731518122",
+          "name": "createDate",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:8573389626783928925",
+      "lastPropertyId": "2:2438575038719596838",
+      "name": "UserEntity",
+      "properties": [
+        {
+          "id": "1:4898261496071113536",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2438575038719596838",
+          "name": "name",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:3542045548388569185",
+      "lastPropertyId": "4:7300014258733146516",
+      "name": "ChatEntity",
+      "properties": [
+        {
+          "id": "1:5726546794568973659",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:263270961094089733",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "3:4852869231206223779",
+          "name": "llmModel",
+          "type": 9
+        },
+        {
+          "id": "4:7300014258733146516",
+          "name": "system",
+          "type": 9
+        }
+      ],
+      "relations": [
+        {
+          "id": "2:6060609663017484767",
+          "name": "messages",
+          "targetId": "8:2108614105185141711"
+        }
+      ]
+    },
+    {
+      "id": "8:2108614105185141711",
+      "lastPropertyId": "6:1484754402871017000",
+      "name": "ChatMessageEntity",
+      "properties": [
+        {
+          "id": "1:2884956372932281468",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1613461269748898134",
+          "name": "dateTime",
+          "type": 10
+        },
+        {
+          "id": "3:6911559427173772440",
+          "name": "message",
+          "type": 9
+        },
+        {
+          "id": "4:6253197874504530905",
+          "name": "response",
+          "type": 9
+        },
+        {
+          "id": "5:8373020457847926020",
+          "name": "chatId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "3:7584292316552093798",
+          "relationTarget": "ChatEntity"
+        },
+        {
+          "id": "6:1484754402871017000",
+          "name": "isDone",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "9:7176687888171189050",
+      "lastPropertyId": "4:5454720243210374592",
+      "name": "DocumentEmbeddingEntity",
+      "properties": [
+        {
+          "id": "1:3305657036670570764",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:323506821125660271",
+          "name": "vector",
+          "type": 28,
+          "flags": 8,
+          "indexId": "4:1088744676325661511"
+        },
+        {
+          "id": "3:7360538213258176386",
+          "name": "message",
+          "type": 9
+        },
+        {
+          "id": "4:5454720243210374592",
+          "name": "documentId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "5:6869363106893805121",
+          "relationTarget": "DocumentEntity"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "11:1214942515155282762",
+      "lastPropertyId": "1:333288466857584788",
+      "name": "CannotBuildEntity",
+      "properties": [
+        {
+          "id": "1:333288466857584788",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "11:1214942515155282762",
+  "lastIndexId": "5:6869363106893805121",
+  "lastRelationId": "2:6060609663017484767",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [
+    3645737644786137217,
+    6983407953064436150,
+    1798757256693953528,
+    6501976849548028775,
+    3319692876972567326
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    7859854414747142187,
+    4460209085064873896,
+    3788238974724451048,
+    8000760023789378286,
+    6667395353644909132,
+    3724559685564504055,
+    2668207185035783804,
+    550172828562547927,
+    6779913799736866271,
+    4407275032302885209,
+    448679997341109025,
+    5463369085347518963,
+    800086150245921824,
+    1696047768134547053
+  ],
+  "retiredRelationUids": [
+    2855742397080960431
+  ],
+  "version": 1
+}

@@ -5,9 +5,6 @@ import 'package:ollama_talk/src/ollama/entities/chat_request.dart';
 
 import '../objectbox.g.dart';
 import '../ollama_talk.dart';
-import 'object_box/document_embedding_entity.dart';
-import 'ollama/entities/chat_response.dart';
-import 'ollama/entities/generate_response.dart';
 
 ///
 ///
@@ -91,10 +88,10 @@ class OllamaTalkClient {
     }
 
     final referenceData =
-        '{"data":[{"${(await futureRagResult).map((e) => e.message).join('"},\n{"')}"}]';
+        '{"data":[\n  {"${(await futureRagResult).map((e) => e.message).join('"},\n  {"')}"}\n]}';
 
     final newMessage = Message(
-        role: Role.user, content: '$prompt\nUse these data:[$referenceData]');
+        role: Role.user, content: '$prompt\n\nUse these data:$referenceData');
     messages.add(newMessage);
 
     final chatRequest = chat.request(messages);
@@ -140,7 +137,8 @@ class OllamaTalkClient {
   Future<List<double>> _getEmbeddingVector(String message) async {
     var url = Uri.parse('$baseUrl/embeddings');
     var headers = {'Content-Type': 'application/json'};
-    String body = jsonEncode({"model": "mxbai-embed-large", "prompt": message});
+    String body = jsonEncode(
+        {'model': EmbeddingModel.kMxbaiEmbedLarge.value, 'prompt': message});
 
     final response = await client.post(url, body: body, headers: headers);
     final vectorList = jsonDecode(response.body)['embedding'] as List<dynamic>;
@@ -222,7 +220,7 @@ class OllamaTalkClient {
   }
 
   ChatEntity openChat(LlmModel model, String system) {
-    final chatEntity = ChatEntity(llmModel: model.value, system: system);
+    final chatEntity = ChatEntity(llmModel: model.name, system: system);
     return chatEntity;
   }
 
@@ -237,5 +235,14 @@ class OllamaTalkClient {
         DocumentEmbeddingEntity_.vector
             .nearestNeighborsF32(await vector, limit));
     return query.build().find();
+  }
+
+  Future<List<LlmModel>> loadLocalModels() async {
+    var url = Uri.parse('$baseUrl/tags');
+    var headers = {'Content-Type': 'application/json'};
+
+    final response = await client.get(url, headers: headers);
+    final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
+    return modelList.map((e) => LlmModel.fromJson(e)).toList();
   }
 }

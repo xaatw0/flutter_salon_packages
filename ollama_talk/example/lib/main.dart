@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ollama_talk/objectbox.g.dart';
 import 'package:ollama_talk/ollama_talk.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -76,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _loadCompleted.complete();
 
       store.box<DocumentEmbeddingEntity>().removeAll();
-      final fileNames = ['坂本龍馬.txt'];
+      final fileNames = ['坂本龍馬_original.txt', '武市瑞山.txt'];
       for (final fileName in fileNames) {
         final fileData = rootBundle.loadString('assets/$fileName');
 
@@ -92,6 +91,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            FilledButton(
+                onPressed: () async {
+                  final models = await _ollamaClient.loadLocalModels();
+                  for (var model in models) {
+                    print(model.name +
+                        'isEmbedding: ${model.isEmbeddingModel()}');
+                  }
+                },
+                child: Text('モデル')),
             TextField(
               controller: _messageController,
             ),
@@ -145,36 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     setState(() {
       _waitingResponse = false;
-    });
-  }
-
-  void test() {
-    getApplicationDocumentsDirectory().then((dir) async {
-      final directory = Directory('${dir.path}/object_box_test');
-      if (directory.existsSync()) {
-        directory.delete(recursive: true);
-      }
-
-      final store = await openStore(directory: directory.path);
-      final chat = store.box<ChatEntity>();
-
-      final chat1 = ChatEntity(title: 'title1', llmModel: 'model1');
-      final chat2 = ChatEntity(title: 'title2', llmModel: 'model1');
-      chat.putMany([chat1, chat2]);
-
-      store.box<ChatMessageEntity>().putMany([
-        ChatMessageEntity(dateTime: DateTime.now(), message: 'message1-1')
-          ..chat.target = chat1,
-        ChatMessageEntity(dateTime: DateTime.now(), message: 'message1-2')
-          ..chat.target = chat1,
-        ChatMessageEntity(dateTime: DateTime.now(), message: 'message2-1')
-          ..chat.target = chat2,
-      ]);
-      final orderQuery2 = store.box<ChatMessageEntity>().query()
-        ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat1.id));
-      print('result:' + orderQuery2.build().find().length.toString());
-
-      directory.delete();
     });
   }
 }

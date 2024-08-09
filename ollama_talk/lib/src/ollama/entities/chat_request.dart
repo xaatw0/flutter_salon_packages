@@ -15,7 +15,7 @@ class ChatRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'model': model.value,
+        'model': model.name,
         'messages': messages.map((message) => message.toJson()).toList(),
         //  'stream': stream,
         //  if (tools != null) 'tools': tools!.toJson(),

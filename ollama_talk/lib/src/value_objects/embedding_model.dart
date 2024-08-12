@@ -10,5 +10,5 @@ class EmbeddingModel extends AbstractValueObject<String> {
   /// Embedding model by Mixedbread AI
   static const kMxbaiEmbedLarge = EmbeddingModel('mxbai-embed-large');
 
-  const EmbeddingModel(super.value);
+  const EmbeddingModel(super._value);
 }

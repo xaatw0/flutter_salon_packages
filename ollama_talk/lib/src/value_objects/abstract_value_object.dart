@@ -1,4 +1,6 @@
 class AbstractValueObject<T> {
-  final T value;
-  const AbstractValueObject(this.value);
+  final T _value;
+  const AbstractValueObject(this._value);
+
+  T call() => _value;
 }

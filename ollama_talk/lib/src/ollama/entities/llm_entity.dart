@@ -1,11 +1,13 @@
-class LlmModel {
+import '../../../ollama_talk.dart';
+
+class LlmEntity implements LlmModel {
   final String name;
   final DateTime? modifiedAt;
   final int? size;
   final String? digest;
-  final ModelDetails? details;
+  final LlmDetailsEntity? details;
 
-  const LlmModel(
+  const LlmEntity(
     this.name, {
     this.modifiedAt,
     this.size,
@@ -13,29 +15,32 @@ class LlmModel {
     this.details,
   });
 
-  factory LlmModel.fromJson(Map<String, dynamic> json) {
-    return LlmModel(
+  factory LlmEntity.fromJson(Map<String, dynamic> json) {
+    return LlmEntity(
       json['name'],
       modifiedAt: DateTime.parse(json['modified_at']),
       size: json['size'] ?? 0,
       digest: json['digest'],
-      details: ModelDetails.fromJson(json['details']),
+      details: LlmDetailsEntity.fromJson(json['details']),
     );
   }
 
   bool isEmbeddingModel() {
     return name.contains('embed');
   }
+
+  @override
+  String call() => name;
 }
 
-class ModelDetails {
+class LlmDetailsEntity {
   final String format;
   final String family;
   final List<String> families;
   final String parameterSize;
   final String quantizationLevel;
 
-  ModelDetails({
+  LlmDetailsEntity({
     required this.format,
     required this.family,
     required this.families,
@@ -43,8 +48,8 @@ class ModelDetails {
     required this.quantizationLevel,
   });
 
-  factory ModelDetails.fromJson(Map<String, dynamic> json) {
-    return ModelDetails(
+  factory LlmDetailsEntity.fromJson(Map<String, dynamic> json) {
+    return LlmDetailsEntity(
       format: json['format'],
       family: json['family'],
       families:

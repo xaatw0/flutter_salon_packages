@@ -1,11 +1,10 @@
-import 'package:ollama_talk/ollama_talk.dart';
+import 'chat_request_entity.dart';
+import 'llm_entity.dart';
 
-import 'chat_request.dart';
-
-class ChatResponse {
-  final LlmModel model;
+class ChatResponseEntity {
+  final LlmEntity model;
   final DateTime createdAt;
-  final Message message;
+  final MessageEntity message;
   final bool done;
   final int totalDuration;
   final int loadDuration;
@@ -14,7 +13,7 @@ class ChatResponse {
   final int evalCount;
   final int evalDuration;
 
-  ChatResponse({
+  ChatResponseEntity({
     required this.model,
     required this.createdAt,
     required this.message,
@@ -27,11 +26,11 @@ class ChatResponse {
     required this.evalDuration,
   });
 
-  factory ChatResponse.fromJson(Map<String, dynamic> json) {
-    return ChatResponse(
-      model: LlmModel(json['model']),
+  factory ChatResponseEntity.fromJson(Map<String, dynamic> json) {
+    return ChatResponseEntity(
+      model: LlmEntity(json['model']),
       createdAt: DateTime.parse(json['created_at']),
-      message: Message.fromJson(json['message']),
+      message: MessageEntity.fromJson(json['message']),
       done: json['done'],
       totalDuration: json['total_duration'] ?? -1,
       loadDuration: json['load_duration'] ?? -1,

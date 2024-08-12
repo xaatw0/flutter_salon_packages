@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:objectbox/objectbox.dart'; // needed for build_runner
-import 'package:ollama_talk/src/ollama/entities/chat_request.dart';
 
-import '../objectbox.g.dart';
+import 'package:http/http.dart' as http;
+import 'package:ollama_talk/src/ollama/entities/chat_request_entity.dart';
+
 import '../ollama_talk.dart';
+import 'ollama/entities/llm_entity.dart';
 
 ///
 ///
@@ -61,7 +61,8 @@ class OllamaTalkClient {
       await for (final String dataLine in response.stream
           .transform(const Utf8Decoder())
           .transform(const LineSplitter())) {
-        final responseData = OllamaResponse.fromJson(jsonDecode(dataLine));
+        final responseData =
+            GenerateResponseEntity.fromJson(jsonDecode(dataLine));
         yield responseData.response;
 
         messageEntity.receiveResponse(
@@ -78,7 +79,7 @@ class OllamaTalkClient {
     final futureMessages = chat.getHistories(store);
 
     final messages = (await futureMessages)
-        .map(Message.fromChatMessageEntity)
+        .map(MessageEntity.fromChatMessageEntity)
         .expand((e) => e)
         .toList();
 
@@ -90,7 +91,7 @@ class OllamaTalkClient {
     final referenceData =
         '{"data":[\n  {"${(await futureRagResult).map((e) => e.message).join('"},\n  {"')}"}\n]}';
 
-    final newMessage = Message(
+    final newMessage = MessageEntity(
         role: Role.user, content: '$prompt\n\nUse these data:$referenceData');
     messages.add(newMessage);
 
@@ -113,7 +114,7 @@ class OllamaTalkClient {
       await for (final String dataLine in response.stream
           .transform(const Utf8Decoder())
           .transform(const LineSplitter())) {
-        final responseData = ChatResponse.fromJson(jsonDecode(dataLine));
+        final responseData = ChatResponseEntity.fromJson(jsonDecode(dataLine));
         yield responseData.message.content;
 
         messageEntity.receiveResponse(
@@ -138,7 +139,7 @@ class OllamaTalkClient {
     var url = Uri.parse('$baseUrl/embeddings');
     var headers = {'Content-Type': 'application/json'};
     String body = jsonEncode(
-        {'model': EmbeddingModel.kMxbaiEmbedLarge.value, 'prompt': message});
+        {'model': EmbeddingModel.kMxbaiEmbedLarge(), 'prompt': message});
 
     final response = await client.post(url, body: body, headers: headers);
     final vectorList = jsonDecode(response.body)['embedding'] as List<dynamic>;
@@ -220,7 +221,7 @@ class OllamaTalkClient {
   }
 
   ChatEntity openChat(LlmModel model, String system) {
-    final chatEntity = ChatEntity(llmModel: model.name, system: system);
+    final chatEntity = ChatEntity(llmModel: model(), system: system);
     return chatEntity;
   }
 
@@ -237,12 +238,12 @@ class OllamaTalkClient {
     return query.build().find();
   }
 
-  Future<List<LlmModel>> loadLocalModels() async {
+  Future<List<LlmEntity>> loadLocalModels() async {
     var url = Uri.parse('$baseUrl/tags');
     var headers = {'Content-Type': 'application/json'};
 
     final response = await client.get(url, headers: headers);
     final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
-    return modelList.map((e) => LlmModel.fromJson(e)).toList();
+    return modelList.map((e) => LlmEntity.fromJson(e)).toList();
   }
 }

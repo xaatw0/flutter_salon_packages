@@ -1,12 +1,14 @@
 import 'package:ollama_talk/ollama_talk.dart';
 
+import 'llm_entity.dart';
+
 enum Role { user, assistant, system }
 
-class ChatRequest {
-  final LlmModel model;
-  final List<Message> messages;
+class ChatRequestEntity {
+  final LlmEntity model;
+  final List<MessageEntity> messages;
 
-  ChatRequest({
+  ChatRequestEntity({
     required this.model,
     required this.messages,
     //this.stream = true,
@@ -23,23 +25,23 @@ class ChatRequest {
       };
 }
 
-class Message {
+class MessageEntity {
   final Role role;
   final String content;
   // final List<String>? images;
   // final List<String>? toolCalls;
 
-  Message({
+  MessageEntity({
     required this.role,
     required this.content,
     //this.images,
     //this.toolCalls,
   });
 
-  static List<Message> fromChatMessageEntity(ChatMessageEntity entity) {
+  static List<MessageEntity> fromChatMessageEntity(ChatMessageEntity entity) {
     return [
-      Message(role: Role.user, content: entity.message),
-      Message(role: Role.assistant, content: entity.response),
+      MessageEntity(role: Role.user, content: entity.message),
+      MessageEntity(role: Role.assistant, content: entity.response),
     ];
   }
 
@@ -50,8 +52,8 @@ class Message {
         //   if (toolCalls != null) 'tool_calls': toolCalls,
       };
 
-  factory Message.fromJson(Map<String, dynamic> json) {
-    return Message(
+  factory MessageEntity.fromJson(Map<String, dynamic> json) {
+    return MessageEntity(
       role: Role.values
           .firstWhere((e) => e.toString().split('.').last == json['role']),
       content: json['content'],
@@ -63,11 +65,11 @@ class Message {
   }
 }
 
-class Tools {
+class ToolsEntity {
   final String toolName;
   final Map<String, dynamic> parameters;
 
-  Tools({
+  ToolsEntity({
     required this.toolName,
     required this.parameters,
   });
@@ -78,12 +80,12 @@ class Tools {
       };
 }
 
-class AdvancedParameters {
+class AdvancedParametersEntity {
   final String? format;
   final int? temperature;
   final int? keepAlive;
 
-  AdvancedParameters({
+  AdvancedParametersEntity({
     this.format,
     this.temperature,
     this.keepAlive,

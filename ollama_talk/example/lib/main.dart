@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:ollama_talk/ollama_talk.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _ollamaClient = OllamaTalkClient(
         http.Client(),
-        'http://192.168.1.33:5050/api',
+        'http://192.168.10.109:11434/api',
         store,
       );
 
@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _loadCompleted.complete();
 
       store.box<DocumentEmbeddingEntity>().removeAll();
-      final fileNames = ['坂本龍馬_original.txt', '武市瑞山.txt'];
+      final fileNames = []; //['坂本龍馬.txt', '武市瑞山.txt'];
       for (final fileName in fileNames) {
         final fileData = rootBundle.loadString('assets/$fileName');
 

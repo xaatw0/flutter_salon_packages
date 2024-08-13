@@ -1,4 +1,8 @@
-import 'package:ollama_talk/ollama_talk.dart';
+import 'package:ollama_talk_common/value_objects.dart';
+
+import '../../objectbox.g.dart'; // auto generate file
+import '../ollama/entities/chat_request_entity.dart';
+import 'chat_message_entity.dart';
 
 @Entity()
 class ChatEntity {
@@ -53,6 +57,6 @@ class ChatEntity {
   }
 
   ChatRequestEntity request(List<MessageEntity> messages) {
-    return ChatRequestEntity(model: LlmEntity(llmModel), messages: messages);
+    return ChatRequestEntity(model: LlmModel(llmModel), messages: messages);
   }
 }

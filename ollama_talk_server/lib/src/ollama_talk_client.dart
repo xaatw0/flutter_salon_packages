@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:ollama_talk_common/value_objects.dart';
 
-import '../ollama_talk.dart';
+import '../ollama_talk_server.dart';
 
 ///
 ///
@@ -226,8 +227,7 @@ class OllamaTalkClient {
   // memory
 
   // find RagData
-  Future<List<DocumentEmbeddingEntity>> getRelatedEmbedding(
-      Store store, String prompt,
+  Future<List<DocumentEmbeddingEntity>> getRelatedEmbedding(String prompt,
       {int limit = 5}) async {
     final vector = _getEmbeddingVector(prompt);
     final query = store.box<DocumentEmbeddingEntity>().query(

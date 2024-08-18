@@ -184,15 +184,32 @@ class OllamaTalkClient {
     }
 
     // remove embedding data
+    _deleteDocumentAndEmbedding(existDocument.id);
+  }
+
+  bool deleteDocument(int documentId) {
+    if (store.box<DocumentEntity>().get(documentId) == null) {
+      return false;
+    }
+
+    _deleteDocumentAndEmbedding(documentId);
+
+    return true;
+  }
+
+  void _deleteDocumentAndEmbedding(int documentId) {
     final embeddingIds = store
         .box<DocumentEmbeddingEntity>()
-        .query(DocumentEmbeddingEntity_.document.equals(existDocument.id));
-    store
-        .box<DocumentEmbeddingEntity>()
-        .removeMany(embeddingIds.build().findIds());
+        .query(DocumentEmbeddingEntity_.document.equals(documentId));
 
-    // remove document data
-    store.box<DocumentEntity>().remove(existDocument.id);
+    store.runInTransaction(TxMode.write, () {
+      store
+          .box<DocumentEmbeddingEntity>()
+          .removeMany(embeddingIds.build().findIds());
+
+      // remove document data
+      store.box<DocumentEntity>().remove(documentId);
+    });
   }
 
   Stream<Query<DocumentEntity>> watchDocuments() {
@@ -201,6 +218,14 @@ class OllamaTalkClient {
             .query()
             .order(DocumentEntity_.createDate))
         .watch(triggerImmediately: true);
+  }
+
+  Future<List<DocumentEntity>> getDocuments() {
+    return store.box<DocumentEntity>().getAllAsync();
+  }
+
+  Future<DocumentEntity?> getDocument(int id) {
+    return store.box<DocumentEntity>().getAsync(id);
   }
 
   Stream<Query<ChatMessageEntity>> watchMessages(ChatEntity chat) {
@@ -243,5 +268,22 @@ class OllamaTalkClient {
     final response = await client.get(url, headers: headers);
     final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
     return modelList.map((e) => LlmEntity.fromJson(e)).toList();
+  }
+
+  Future<bool> pullModel(String modelName) async {
+    var url = Uri.parse('$baseUrl/pull');
+    String body = jsonEncode({'name': modelName});
+    final response = await client.post(url, body: jsonEncode(body));
+    print(response.body);
+    return jsonDecode(response.body)['status'] == 'pulling manifest';
+  }
+
+  // User
+  int insertUser(String name) {
+    return store.box<UserEntity>().put(UserEntity(name: name));
+  }
+
+  List<UserEntity> getUsers() {
+    return store.box<UserEntity>().getAll();
   }
 }

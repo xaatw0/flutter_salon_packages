@@ -43,7 +43,7 @@ void main() {
             )
           ]);
 
-      final source = '{\"models\": [\"model1\", \"model2\"]}';
+      final source = '{\"models\":[\"model1\",\"model2\"]}';
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(

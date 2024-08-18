@@ -16,4 +16,21 @@ class DocumentEntity {
     required this.memo,
     required this.createDate,
   });
+
+  factory DocumentEntity.fromJson(Map<String, dynamic> json) {
+    return DocumentEntity(
+      fileName: json['fileName'],
+      memo: json['memo'],
+      createDate: DateTime.parse(json['createDate']),
+    )..id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'fileName': fileName,
+      'memo': memo,
+      'createDate': createDate.toIso8601String(),
+    };
+  }
 }

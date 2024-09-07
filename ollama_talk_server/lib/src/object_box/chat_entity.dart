@@ -1,8 +1,10 @@
-import 'package:ollama_talk_common/value_objects.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 
+import 'package:objectbox/objectbox.dart'; // needed for generate
 import '../../objectbox.g.dart'; // auto generate file
 import '../ollama/entities/chat_request_entity.dart';
 import 'chat_message_entity.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 
 @Entity()
 class ChatEntity {
@@ -58,5 +60,23 @@ class ChatEntity {
 
   ChatRequestEntity request(List<MessageEntity> messages) {
     return ChatRequestEntity(model: LlmModel(llmModel), messages: messages);
+  }
+
+  ChatModel toChatModel() {
+    final chatMessage = messages.map(
+      (e) => ChatMessageModel(
+        dateTime: e.dateTime,
+        message: e.message,
+        response: e.response,
+      ),
+    );
+
+    return ChatModel(
+      id: id,
+      title: title,
+      llmModel: llmModel,
+      system: system,
+      messages: chatMessage.toList(),
+    );
   }
 }

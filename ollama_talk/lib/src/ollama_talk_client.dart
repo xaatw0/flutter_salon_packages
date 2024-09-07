@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:objectbox/objectbox.dart';
 
 import '../ollama_talk.dart';
 

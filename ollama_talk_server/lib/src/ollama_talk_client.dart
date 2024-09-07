@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:ollama_talk_common/value_objects.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 
 import '../ollama_talk_server.dart';
 
@@ -30,16 +30,13 @@ class OllamaTalkClient {
     final futureRagResult = _getEmbeddingVector(prompt);
     final futureMessages = chat.getHistories(store);
 
-    final ragResult = <String>[];
-    final messages = [];
-
     var url = Uri.parse('$baseUrl/generate');
     var headers = {'Content-Type': 'application/json'};
     var body = jsonEncode({
       'model': chat.llmModel,
       'prompt': '''
-          Using this data: ${ragResult.join(',')}
-          History: ${messages.join(',')} 
+          Using this data: ${(await futureRagResult).join(',')}
+          History: ${(await futureMessages).join(',')} 
           characterization:  ${chat.system}
           Question：$prompt''',
     });
@@ -122,6 +119,18 @@ class OllamaTalkClient {
     } finally {
       print('finished');
     }
+  }
+
+  Future<ChatEntity?> loadChat(int chatId) async {
+    final chat = store.box<ChatEntity>().get(chatId);
+    if (chat == null) {
+      return null;
+    }
+
+    final histories = await chat.getHistories(store);
+    chat.messages.addAll(histories);
+
+    return chat;
   }
 
   // Document
@@ -244,9 +253,9 @@ class OllamaTalkClient {
         .findFirst();
   }
 
-  ChatEntity openChat(LlmModel model, String system) {
+  Future<int> openChat(LlmModel model, String system) {
     final chatEntity = ChatEntity(llmModel: model(), system: system);
-    return chatEntity;
+    return store.box<ChatEntity>().putAsync(chatEntity);
   }
 
   // memory
@@ -265,6 +274,7 @@ class OllamaTalkClient {
     var url = Uri.parse('$baseUrl/tags');
     var headers = {'Content-Type': 'application/json'};
 
+    print('access to $url');
     final response = await client.get(url, headers: headers);
     final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
     return modelList.map((e) => LlmEntity.fromJson(e)).toList();

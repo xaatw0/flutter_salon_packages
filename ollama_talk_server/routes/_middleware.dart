@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:ollama_talk_server/objectbox.g.dart';
 import 'package:ollama_talk_server/src/ollama_talk_client.dart';
 
-const kBaseUrl = 'http://localhost:11434/api';
+const kBaseUrl = 'http://192.168.1.33:5050/api';
 
 final _client = OllamaTalkClient(
   http.Client(),

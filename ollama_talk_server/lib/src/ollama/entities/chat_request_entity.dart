@@ -1,4 +1,4 @@
-import 'package:ollama_talk_common/value_objects.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 
 import '../../object_box/chat_message_entity.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ollama_talk_common/value_objects.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:test/test.dart';
 

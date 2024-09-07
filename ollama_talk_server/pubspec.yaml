@@ -4,10 +4,11 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
-  dart_frog: ^1.0.0
+  dart_frog: ^1.1.0
+  dart_frog_web_socket: ^1.0.0
   objectbox: ^4.0.1
   ollama_talk_common:
     path: ../ollama_talk_common
@@ -16,5 +17,5 @@ dev_dependencies:
   mocktail: ^1.0.0
   test: ^1.19.2
   very_good_analysis: ^5.1.0
-  build_runner: ^2.4.12
+  build_runner: ^2.4.11
   objectbox_generator: any

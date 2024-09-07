@@ -1,3 +1,4 @@
+import 'package:objectbox/objectbox.dart';
 import 'package:ollama_talk/ollama_talk.dart';
 
 @Entity()

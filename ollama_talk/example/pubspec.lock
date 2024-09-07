@@ -283,14 +283,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
-  objectbox_flutter_libs:
-    dependency: transitive
-    description:
-      name: objectbox_flutter_libs
-      sha256: "97adc5f95d16f33c7114d56e5dec617db4300cd11ae5022134cf76fa5f30084d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   objectbox_generator:
     dependency: "direct dev"
     description:

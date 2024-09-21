@@ -12,7 +12,6 @@ Future<Response> onRequest(RequestContext context) async {
   final completer = Completer<SendChatMessageEntity>();
 
   final handler = webSocketHandler((clientChannel, protocol) async {
-    // Revive prompt from client
     clientChannel.stream.listen((data) {
       if (completer.isCompleted) {
         throw Exception('Data must set only once.');
@@ -21,6 +20,7 @@ Future<Response> onRequest(RequestContext context) async {
       completer.complete(SendChatMessageEntity.fromJson(jsonDecode(data)));
     });
 
+    // wait for message from client
     final sendChatMessage = await completer.future;
 
     final chat = await client.loadChat(sendChatMessage.chatId);
@@ -32,10 +32,19 @@ Future<Response> onRequest(RequestContext context) async {
         client.sendMessageAndWaitResponse(chat, sendChatMessage.prompt);
 
     // send message from Ollama server to client
+    var responseMessage = '';
     streamToLLM.listen(
-      (data) => clientChannel.sink.add(data),
+      (data) {
+        clientChannel.sink.add(data);
+        responseMessage += data;
+      },
       onDone: () => clientChannel.sink.close(),
     );
+
+    final message = ChatMessageEntity(
+        dateTime: DateTime.now(),
+        message: sendChatMessage.prompt,
+        response: responseMessage);
   });
 
   return handler(context);

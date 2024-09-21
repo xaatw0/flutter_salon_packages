@@ -64,4 +64,9 @@ class ChatMessageModel {
       'response': response,
     };
   }
+
+  ChatMessageModel withResponse(String newResponse) {
+    return ChatMessageModel(
+        dateTime: dateTime, message: message, response: newResponse);
+  }
 }

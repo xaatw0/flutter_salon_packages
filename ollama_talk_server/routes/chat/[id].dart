@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 
+/// curl http://localhost:8080/models
 Future<Response> onRequest(RequestContext context, String id) async {
   return switch (context.request.method) {
     HttpMethod.get => _onGet(context, int.parse(id)),

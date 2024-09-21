@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_common/ollama_talk_common.dart';
+import 'package:ollama_talk_server/src/ollama/entities/show_model_information_entity.dart';
 
 import '../ollama_talk_server.dart';
 
@@ -49,7 +50,8 @@ class OllamaTalkClient {
 
       // send message
       final messageEntity =
-          ChatMessageEntity(dateTime: DateTime.now(), message: prompt);
+          ChatMessageEntity(dateTime: DateTime.now(), message: prompt)
+            ..chat.target = chat;
 
       final response = await client.send(request);
 
@@ -64,6 +66,8 @@ class OllamaTalkClient {
         messageEntity.receiveResponse(
             store, responseData.response, responseData.done);
       }
+
+      // save message in database
     } finally {
       print('finished');
     }
@@ -119,6 +123,10 @@ class OllamaTalkClient {
     } finally {
       print('finished');
     }
+  }
+
+  Future<List<ChatEntity>> loadChatList() {
+    return store.box<ChatEntity>().getAllAsync();
   }
 
   Future<ChatEntity?> loadChat(int chatId) async {
@@ -274,10 +282,19 @@ class OllamaTalkClient {
     var url = Uri.parse('$baseUrl/tags');
     var headers = {'Content-Type': 'application/json'};
 
-    print('access to $url');
     final response = await client.get(url, headers: headers);
+    print(response.body);
     final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
     return modelList.map((e) => LlmEntity.fromJson(e)).toList();
+  }
+
+  Future<ShowModelInformationEntity> showModelInformation(
+      LlmModel model) async {
+    final url = Uri.parse('$baseUrl/show');
+    final body = {'name': model()};
+    final response = await client.post(url, body: body);
+
+    return ShowModelInformationEntity.fromJson(jsonDecode(response.body));
   }
 
   Future<bool> pullModel(String modelName) async {

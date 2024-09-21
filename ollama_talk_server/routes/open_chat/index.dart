@@ -28,7 +28,9 @@ Future<Response> _onGet(RequestContext context) async {
 
   if (errorMessage.isNotEmpty) {
     return Response.json(
-        body: {'message': errorMessage.substring(0, errorMessage.length - 1)});
+      body: {'message': errorMessage.substring(0, errorMessage.length - 1)},
+      statusCode: 400,
+    );
   }
 
   final client = context.read<OllamaTalkClient>();

@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
-import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 
-/// curl http://localhost:11434/api/tags
-/// curl http://localhost:8080/models
+// curl http://localhost:8080/chat
 Future<Response> onRequest(RequestContext context) async {
   try {
     return switch (context.request.method) {
@@ -23,15 +21,11 @@ Future<Response> onRequest(RequestContext context) async {
 
 Future<Response> _onGet(RequestContext context) async {
   final client = context.read<OllamaTalkClient>();
-  final entities = await client.loadLocalModels();
-  final llmModels = entities.where((e) => !e.isEmbeddingModel());
-  final embeddedModels = entities.where((e) => e.isEmbeddingModel());
+  final list = await client.loadChatList();
+
+  final data = list.map((e) => e.toSummary()).map((e) => e.toJson()).toList();
 
   return Response.json(
-    body: {
-      'llmModels': json.encode(llmModels.map((e) => LlmModel(e.name)).toList()),
-      'embeddedModels': json
-          .encode(embeddedModels.map((e) => EmbeddingModel(e.name)).toList())
-    },
+    body: {'chat_list': jsonEncode(data)},
   );
 }

@@ -12,6 +12,7 @@ dependencies:
   objectbox: ^4.0.1
   ollama_talk_common:
     path: ../ollama_talk_common
+  web_socket_channel: ^2.4.5
 
 dev_dependencies:
   mocktail: ^1.0.0

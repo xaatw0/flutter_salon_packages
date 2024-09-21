@@ -79,4 +79,22 @@ class ChatEntity {
       messages: chatMessage.toList(),
     );
   }
+
+  ChatModel toSummary() {
+    final chatMessage = messages.map(
+      (e) => ChatMessageModel(
+        dateTime: e.dateTime,
+        message: e.message,
+        response: e.response,
+      ),
+    );
+
+    return ChatModel(
+      id: id,
+      title: title,
+      llmModel: llmModel,
+      system: '',
+      messages: [],
+    );
+  }
 }

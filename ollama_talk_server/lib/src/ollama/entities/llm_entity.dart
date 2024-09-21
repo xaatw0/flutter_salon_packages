@@ -36,6 +36,9 @@ class LlmEntity implements LlmModel {
   String toJson() {
     return name;
   }
+
+  @override
+  int? get id => null;
 }
 
 class LlmDetailsEntity {

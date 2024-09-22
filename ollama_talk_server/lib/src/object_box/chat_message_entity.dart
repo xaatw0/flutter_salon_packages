@@ -20,12 +20,26 @@ class ChatMessageEntity {
   });
 
   void receiveResponse(
-    Store store,
     String newPartForResponse,
     bool done,
   ) {
     response = response + newPartForResponse;
     isDone = done;
+  }
+
+  void save(Store store) {
+    print(chat);
     store.box<ChatMessageEntity>().put(this);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'dateTime': dateTime.toIso8601String(),
+      'message': message,
+      'response': response,
+      'isDone': isDone,
+      'chatId': chat.targetId,
+    };
   }
 }

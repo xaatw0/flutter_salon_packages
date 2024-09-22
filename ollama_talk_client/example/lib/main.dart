@@ -36,11 +36,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late final infraInfo = InfraInfo(http.Client(), '192.168.1.33:8080');
-  static const systemMessage = '日本語で答えて';
+  static const serverUrl = String.fromEnvironment(
+    'OLLAMA_TALK_SERVER_URL',
+    defaultValue: 'http://localhost',
+  );
 
-  late final _chatList = Completer<List<ChatModel>>();
+  static const systemMessage = String.fromEnvironment(
+    'SYSTEM_MESSAGE',
+    defaultValue: '日本語で答えて',
+  );
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late final infraInfo = InfraInfo(http.Client(), serverUrl);
+
+  late Completer<List<ChatModel>> _chatList;
   late final _llmModels = Completer<List<LlmModel>>();
 
   LlmModel? _selectedModel;
@@ -62,11 +71,16 @@ class _MyHomePageState extends State<MyHomePage> {
     ModelApi(infraInfo).loadLlmModelList().then((data) {
       _llmModels.complete(data);
     });
+    _loadChatList().then(
+      (_) => _scaffoldKey.currentState?.openDrawer(),
+    );
+  }
 
-    _chatApi.loadChatList().then((data) {
-      _chatList.complete(data);
-      _scaffoldKey.currentState?.openDrawer();
+  Future<void> _loadChatList() async {
+    setState(() {
+      _chatList = Completer();
     });
+    _chatList.complete(await _chatApi.loadChatList());
   }
 
   Future<void> _loadChatMessage(int chatId) async {
@@ -112,7 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   for (final chat in chatList)
                     ListTile(
-                      title: Text(chat.title),
+                      title: Text(
+                        chat.title.isNotEmpty ? chat.title : 'No title',
+                      ),
                       onTap: () {
                         _selectChat(chat);
                         Navigator.pop(context);
@@ -241,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final chatId = await _chatApi.openChat(_selectedModel!, systemMessage);
     _currentChat = ChatModel(
         id: chatId,
-        title: 'No title',
+        title: '',
         llmModel: _selectedModel!(),
         system: systemMessage,
         messages: []);

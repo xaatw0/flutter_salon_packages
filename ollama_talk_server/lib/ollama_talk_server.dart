@@ -10,4 +10,4 @@ export 'src/ollama/entities/chat_request_entity.dart';
 export 'src/ollama/entities/chat_response_entity.dart';
 export 'src/ollama/entities/generate_response_entity.dart';
 export 'src/ollama/entities/llm_entity.dart';
-export 'src/ollama_talk_client.dart';
+export 'src/server.dart';

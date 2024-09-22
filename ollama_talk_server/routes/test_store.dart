@@ -3,7 +3,7 @@ import 'package:ollama_talk_server/ollama_talk_server.dart';
 
 /// curl  http://localhost:8080/test_store
 Future<Response> onRequest(RequestContext context) async {
-  final ollamaTalkClient = await context.read<OllamaTalkClient>();
+  final ollamaTalkClient = await context.read<OllamaTalkServer>();
 
   final users = ollamaTalkClient.getUsers();
 

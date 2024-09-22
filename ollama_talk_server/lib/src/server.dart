@@ -9,8 +9,8 @@ import '../ollama_talk_server.dart';
 ///
 ///
 // 　OllamaTalkの開発者への接点
-class OllamaTalkClient {
-  const OllamaTalkClient(
+class OllamaTalkServer {
+  const OllamaTalkServer(
     this.client,
     this.baseUrl,
     this.store,
@@ -26,7 +26,7 @@ class OllamaTalkClient {
   }
 
   /// Generate a completion
-  Stream<String> sendMessageAndWaitResponse(
+  Stream<String> sendMessageToOllamaAndWaitResponse(
       ChatEntity chat, String prompt) async* {
     final futureRagResult = _getEmbeddingVector(prompt);
     final futureMessages = chat.getHistories(store);
@@ -63,11 +63,11 @@ class OllamaTalkClient {
             GenerateResponseEntity.fromJson(jsonDecode(dataLine));
         yield responseData.response;
 
-        messageEntity.receiveResponse(
-            store, responseData.response, responseData.done);
+        messageEntity.receiveResponse(responseData.response, responseData.done);
       }
 
-      // save message in database
+      // response wad finished normally
+      messageEntity.save(store);
     } finally {
       print('finished');
     }
@@ -118,8 +118,11 @@ class OllamaTalkClient {
         yield responseData.message.content;
 
         messageEntity.receiveResponse(
-            store, responseData.message.content, responseData.done);
+            responseData.message.content, responseData.done);
       }
+
+      // response wad finished normally
+      messageEntity.save(store);
     } finally {
       print('finished');
     }
@@ -312,5 +315,10 @@ class OllamaTalkClient {
 
   List<UserEntity> getUsers() {
     return store.box<UserEntity>().getAll();
+  }
+
+  // Message
+  List<ChatMessageEntity> loadMessagesInChat() {
+    return store.box<ChatMessageEntity>().getAll();
   }
 }

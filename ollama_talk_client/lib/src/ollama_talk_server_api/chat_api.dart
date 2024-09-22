@@ -23,7 +23,7 @@ class ChatApi {
       onDone: () => controller.sink.close(),
     );
 
-    final data = SendChatMessageEntity(chatId: 1, prompt: prompt);
+    final data = SendChatMessageEntity(chatId: chatId, prompt: prompt);
 
     channel.sink.add(jsonEncode(data.toJson()));
     return controller.stream;

@@ -22,7 +22,7 @@ Future<Response> onRequest(RequestContext context) async {
 }
 
 Future<Response> _onGet(RequestContext context) async {
-  final client = context.read<OllamaTalkClient>();
+  final client = context.read<OllamaTalkServer>();
   final entities = await client.loadLocalModels();
   final llmModels = entities.where((e) => !e.isEmbeddingModel());
   final embeddedModels = entities.where((e) => e.isEmbeddingModel());

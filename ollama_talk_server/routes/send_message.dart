@@ -7,7 +7,7 @@ import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 
 Future<Response> onRequest(RequestContext context) async {
-  final client = context.read<OllamaTalkClient>();
+  final client = context.read<OllamaTalkServer>();
 
   final completer = Completer<SendChatMessageEntity>();
 
@@ -26,10 +26,12 @@ Future<Response> onRequest(RequestContext context) async {
     final chat = await client.loadChat(sendChatMessage.chatId);
     if (chat == null) {
       throw Exception('No specified chat: chatId=${sendChatMessage.chatId}');
+    } else if (chat.title.isEmpty) {
+      chat.title = sendChatMessage.prompt;
     }
 
     final streamToLLM =
-        client.sendMessageAndWaitResponse(chat, sendChatMessage.prompt);
+        client.sendMessageToOllamaAndWaitResponse(chat, sendChatMessage.prompt);
 
     // send message from Ollama server to client
     var responseMessage = '';
@@ -38,13 +40,10 @@ Future<Response> onRequest(RequestContext context) async {
         clientChannel.sink.add(data);
         responseMessage += data;
       },
-      onDone: () => clientChannel.sink.close(),
+      onDone: () {
+        clientChannel.sink.close();
+      },
     );
-
-    final message = ChatMessageEntity(
-        dateTime: DateTime.now(),
-        message: sendChatMessage.prompt,
-        response: responseMessage);
   });
 
   return handler(context);

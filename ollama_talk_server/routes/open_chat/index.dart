@@ -33,7 +33,7 @@ Future<Response> _onGet(RequestContext context) async {
     );
   }
 
-  final client = context.read<OllamaTalkClient>();
+  final client = context.read<OllamaTalkServer>();
   final chatId = client.openChat(LlmModel(modelName!), systemMessage!);
 
   return Response.json(

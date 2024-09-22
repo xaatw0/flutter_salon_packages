@@ -12,7 +12,7 @@ Future<Response> onRequest(RequestContext context, String id) async {
 }
 
 Future<Response> _onGet(RequestContext context, int chatId) async {
-  final client = context.read<OllamaTalkClient>();
+  final client = context.read<OllamaTalkServer>();
 
   final chat = await client.loadChat(chatId);
   if (chat == null) {

@@ -97,4 +97,9 @@ class ChatEntity {
       messages: [],
     );
   }
+
+  void pushMessage(Store store, ChatMessageEntity messageEntity) {
+    messageEntity.chat.target = this;
+    store.box<ChatMessageEntity>().put(messageEntity);
+  }
 }

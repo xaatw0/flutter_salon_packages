@@ -14,14 +14,16 @@ class ChatModel {
   final List<ChatMessageModel> messages;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
+    final messages = List<ChatMessageModel>.from(
+        json['messages'].map((message) => ChatMessageModel.fromJson(message)))
+      ..sort((e1, e2) => e1.dateTime.compareTo(e2.dateTime));
+
     return ChatModel(
       id: json['id'],
       title: json['title'],
       llmModel: json['llm_model'],
       system: json['system'],
-      messages: List<ChatMessageModel>.from(
-        json['messages'].map((message) => ChatMessageModel.fromJson(message)),
-      ),
+      messages: messages,
     );
   }
 

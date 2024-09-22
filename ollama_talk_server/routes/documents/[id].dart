@@ -13,7 +13,7 @@ Future<Response> onRequest(RequestContext context, String id) async {
 }
 
 Future<Response> _onGet(RequestContext context, int documentId) async {
-  final entity = await context.read<OllamaTalkClient>().getDocument(documentId);
+  final entity = await context.read<OllamaTalkServer>().getDocument(documentId);
   if (entity == null) {
     return Response(statusCode: HttpStatus.notFound);
   }
@@ -22,7 +22,7 @@ Future<Response> _onGet(RequestContext context, int documentId) async {
 }
 
 Future<Response> _onDelete(RequestContext context, int id) async {
-  final isDeleted = await context.read<OllamaTalkClient>().deleteDocument(id);
+  final isDeleted = await context.read<OllamaTalkServer>().deleteDocument(id);
 
   return Response(
       statusCode: isDeleted ? HttpStatus.noContent : HttpStatus.notFound);

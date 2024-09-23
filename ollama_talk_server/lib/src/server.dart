@@ -128,6 +128,18 @@ class OllamaTalkServer {
     }
   }
 
+  Future<String> sendMessageToOllamaAndGetResult(String prompt) async {
+    var url = Uri.parse('$baseUrl/generate');
+    var headers = {'Content-Type': 'application/json'};
+    final message = MessageEntity(role: Role.user, content: prompt);
+    var body = jsonEncode(message.toJson());
+
+    // send message
+    final response = await client.post(url, headers: headers, body: body);
+    final responseData = ChatResponseEntity.fromJson(jsonDecode(response.body));
+    return responseData.message.content;
+  }
+
   Future<List<ChatEntity>> loadChatList() {
     return store.box<ChatEntity>().getAllAsync();
   }

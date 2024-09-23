@@ -29,6 +29,16 @@ class ChatApi {
     return controller.stream;
   }
 
+  Future<String> sendMessageAsFuture(String prompt) async {
+    final apiPath = '/send_message_as_future';
+
+    final url = Uri.parse('http://${infraInfo.apiUrlBase}$apiPath');
+
+    final response = await infraInfo.httpClient.get(url);
+    final json = jsonDecode(response.body);
+    return json['message'];
+  }
+
   Future<List<ChatModel>> loadChatList() async {
     final apiPath = '/chat';
     final url = Uri.parse('http://${infraInfo.apiUrlBase}$apiPath');

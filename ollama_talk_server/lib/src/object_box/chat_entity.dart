@@ -102,4 +102,8 @@ class ChatEntity {
     messageEntity.chat.target = this;
     store.box<ChatMessageEntity>().put(messageEntity);
   }
+
+  Future<int> save(Store store) {
+    return store.box<ChatEntity>().putAsync(this);
+  }
 }

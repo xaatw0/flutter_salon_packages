@@ -225,6 +225,12 @@ class _MyHomePageState extends State<MyHomePage> {
         message: _messageController.text,
         response: '');
     _chatId ??= await _openNewChat();
+    _currentChat ??= ChatModel(
+        id: _chatId!,
+        title: '',
+        llmModel: _selectedModel!(),
+        system: systemMessage,
+        messages: []);
     setState(() {
       _responseMessage = '';
       _waitingResponse = true;
@@ -255,12 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<int> _openNewChat() async {
     final chatId = await _chatApi.openChat(_selectedModel!, systemMessage);
-    _currentChat = ChatModel(
-        id: chatId,
-        title: '',
-        llmModel: _selectedModel!(),
-        system: systemMessage,
-        messages: []);
+
     return chatId;
   }
 

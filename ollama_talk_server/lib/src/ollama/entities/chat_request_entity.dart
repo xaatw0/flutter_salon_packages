@@ -7,11 +7,12 @@ enum Role { user, assistant, system }
 class ChatRequestEntity {
   final LlmModel model;
   final List<MessageEntity> messages;
+  final bool isStream;
 
   ChatRequestEntity({
     required this.model,
     required this.messages,
-    //this.stream = true,
+    this.isStream = true,
     //this.tools,
     //this.advancedParameters,
   });
@@ -19,7 +20,7 @@ class ChatRequestEntity {
   Map<String, dynamic> toJson() => {
         'model': model(),
         'messages': messages.map((message) => message.toJson()).toList(),
-        //  'stream': stream,
+        'stream': isStream,
         //  if (tools != null) 'tools': tools!.toJson(),
         //   if (advancedParameters != null) 'options': advancedParameters!.toJson(),
       };

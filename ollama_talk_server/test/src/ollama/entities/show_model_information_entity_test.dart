@@ -1,4 +1,4 @@
-import 'package:ollama_talk_server/src/ollama/entities/show_model_information_entity.dart';
+import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:test/test.dart';
 
 void main() {

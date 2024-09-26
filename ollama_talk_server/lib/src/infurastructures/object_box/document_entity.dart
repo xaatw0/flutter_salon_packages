@@ -17,6 +17,10 @@ class DocumentEntity {
     required this.createDate,
   });
 
+  Future<int> save(Store store) {
+    return store.box<DocumentEntity>().putAsync(this);
+  }
+
   factory DocumentEntity.fromJson(Map<String, dynamic> json) {
     return DocumentEntity(
       fileName: json['fileName'],

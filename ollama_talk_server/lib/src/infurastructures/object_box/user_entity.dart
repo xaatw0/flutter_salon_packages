@@ -10,4 +10,8 @@ class UserEntity {
   UserEntity({
     required this.name,
   });
+
+  Future<int> save(Store store) {
+    return store.box<UserEntity>().putAsync(this);
+  }
 }

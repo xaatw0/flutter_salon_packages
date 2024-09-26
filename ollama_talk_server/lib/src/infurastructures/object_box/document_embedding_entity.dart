@@ -1,6 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
-import '../../objectbox.g.dart'; // auto generate file
+import '../../../objectbox.g.dart'; // auto generate file
 import 'document_entity.dart';
 
 @Entity()
@@ -19,6 +19,10 @@ class DocumentEmbeddingEntity {
     required this.vector,
     required this.message,
   });
+
+  Future<int> save(Store store) {
+    return store.box<DocumentEmbeddingEntity>().putAsync(this);
+  }
 
   static Future<List<DocumentEmbeddingEntity>> findRelatedInformation(
     Store store,

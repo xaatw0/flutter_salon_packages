@@ -1,4 +1,5 @@
 import 'package:objectbox/objectbox.dart';
+import 'package:ollama_talk_server/src/domain/service_locator.dart';
 import 'chat_entity.dart';
 
 @Entity()
@@ -27,9 +28,10 @@ class ChatMessageEntity {
     isDone = done;
   }
 
-  void save(Store store) {
-    print(chat);
-    store.box<ChatMessageEntity>().put(this);
+  Future<int> save() {
+    return ServiceLocator.instance.store
+        .box<ChatMessageEntity>()
+        .putAsync(this);
   }
 
   Map<String, dynamic> toJson() {

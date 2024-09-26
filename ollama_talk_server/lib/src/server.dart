@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_common/ollama_talk_common.dart';
-import 'package:ollama_talk_server/src/ollama/entities/show_model_information_entity.dart';
 
 import '../ollama_talk_server.dart';
 
@@ -67,7 +66,7 @@ class OllamaTalkServer {
       }
 
       // response wad finished normally
-      messageEntity.save(store);
+      messageEntity.save();
     } finally {
       print('finished');
     }
@@ -122,7 +121,7 @@ class OllamaTalkServer {
       }
 
       // response wad finished normally
-      messageEntity.save(store);
+      messageEntity.save();
     } finally {
       print('finished');
     }

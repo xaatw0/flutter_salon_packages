@@ -1,10 +1,10 @@
 import 'package:ollama_talk_common/ollama_talk_common.dart';
+import 'package:objectbox/objectbox.dart';
+import '../../../objectbox.g.dart'; // auto generate file
+import 'package:ollama_talk_server/src/domain/service_locator.dart';
 
-import 'package:objectbox/objectbox.dart'; // needed for generate
-import '../../objectbox.g.dart'; // auto generate file
-import '../ollama/entities/chat_request_entity.dart';
+import '../ollama/chat/chat_request_entity.dart';
 import 'chat_message_entity.dart';
-import 'package:ollama_talk_common/ollama_talk_common.dart';
 
 @Entity()
 class ChatEntity {
@@ -25,7 +25,7 @@ class ChatEntity {
   final MessageEntity systemMessage;
 
   ChatEntity({
-    this.title = kNoTitle,
+    this.title = '',
     required this.llmModel,
     this.system = '',
   }) : systemMessage = MessageEntity(role: Role.system, content: system);
@@ -81,14 +81,6 @@ class ChatEntity {
   }
 
   ChatModel toSummary() {
-    final chatMessage = messages.map(
-      (e) => ChatMessageModel(
-        dateTime: e.dateTime,
-        message: e.message,
-        response: e.response,
-      ),
-    );
-
     return ChatModel(
       id: id,
       title: title,
@@ -98,12 +90,12 @@ class ChatEntity {
     );
   }
 
-  void pushMessage(Store store, ChatMessageEntity messageEntity) {
+  Future<int> pushMessage(Store store, ChatMessageEntity messageEntity) {
     messageEntity.chat.target = this;
-    store.box<ChatMessageEntity>().put(messageEntity);
+    return store.box<ChatMessageEntity>().putAsync(messageEntity);
   }
 
-  Future<int> save(Store store) {
-    return store.box<ChatEntity>().putAsync(this);
+  Future<int> save() {
+    return ServiceLocator.instance.store.box<ChatEntity>().putAsync(this);
   }
 }

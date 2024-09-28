@@ -1,0 +1,12 @@
+{"@@locale":"fi",
+"swapTheme":"Vaihda näytön valotila ja tumma tila",
+"searchInGithub":"Hae Githubista!",
+"search":"Hae",
+"sortOptions":"Lajittele vaihtoehdot",
+"sortOk":"Aseta",
+"sortCancel":"Peruuttaa",
+"searchExplain":"Voit etsiä GitHubista. Kirjoita avainsanat ja paina hakupainiketta",
+"changeSort":"Asettaa lajittelumenetelmän hakutuloksiin",
+"searchResult":"Tulos",
+"notFound":"Mitään ei löytynyt",
+"goGithub":"Paina mennäksesi GitHub -arkistoon"}

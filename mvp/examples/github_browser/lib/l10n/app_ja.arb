@@ -1,0 +1,12 @@
+{"@@locale":"ja",
+"swapTheme":"画面のライトモードとダークモードを入れ替えます",
+"searchInGithub":"Githubで検索！",
+"search":"検索",
+"sortOptions":"ソート方法を選択",
+"sortOk":"設定",
+"sortCancel":"キャンセル",
+"searchExplain":"Githubで検索できます。キーワードを入力して、検索ボタンを押してください",
+"changeSort":"検索結果のソートメソッドを設定します",
+"searchResult":"結果",
+"notFound":"何も見つかりません",
+"goGithub":"押すとgithubリポジトリに移動します"}

@@ -1,0 +1,12 @@
+{"@@locale":"my",
+"swapTheme":"မျက်နှာပြင်၏အလင်း mode ကိုလဲလှယ်ပြီးမှောင်မိုက် mode ကိုလဲလှယ်ပါ",
+"searchInGithub":"github တွင်ရှာဖွေပါ။",
+"search":"ရှာဖေွခြင်း",
+"sortOptions":"ရွေးချယ်စရာများစီ",
+"sortOk":"အစုံ",
+"sortCancel":"ပျက်စေ",
+"searchExplain":"သငျသညျ github အပေါ်ရှာဖွေနိုင်ပါတယ်။ ကျေးဇူးပြု. သော့ချက်စာလုံးများကိုရိုက်ထည့်ပြီး Search ခလုတ်ကိုနှိပ်ပါ",
+"changeSort":"ရှာဖွေမှုရလဒ်များအတွက် sorting နည်းလမ်းကိုသတ်မှတ်သည်",
+"searchResult":"ရလဒ်",
+"notFound":"အဘယ်အရာကိုမျှရှာမတွေ့ပါ",
+"goGithub":"GitHub Repository ကိုသွားရန်နှိပ်ပါ"}

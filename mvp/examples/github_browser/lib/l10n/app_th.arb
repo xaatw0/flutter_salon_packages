@@ -1,0 +1,12 @@
+{"@@locale":"th",
+"swapTheme":"เปลี่ยนโหมดแสงและโหมดมืดของหน้าจอ",
+"searchInGithub":"ค้นหาใน GitHub!",
+"search":"ค้นหา",
+"sortOptions":"ตัวเลือกเรียงลำดับ",
+"sortOk":"ชุด",
+"sortCancel":"ยกเลิก",
+"searchExplain":"คุณสามารถค้นหาบน GitHub โปรดป้อนคำหลักและกดปุ่มค้นหา",
+"changeSort":"ตั้งค่าวิธีการเรียงลำดับสำหรับผลการค้นหา",
+"searchResult":"ผลลัพธ์",
+"notFound":"ไม่พบอะไร",
+"goGithub":"กดเพื่อไปที่ที่เก็บ GitHub"}

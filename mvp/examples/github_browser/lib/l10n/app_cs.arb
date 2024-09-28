@@ -1,0 +1,12 @@
+{"@@locale":"cs",
+"swapTheme":"Vyměňte světelný režim a tmavý režim obrazovky",
+"searchInGithub":"Hledejte v GitHubu!",
+"search":"Vyhledávání",
+"sortOptions":"Možnosti třídění",
+"sortOk":"Soubor",
+"sortCancel":"zrušení",
+"searchExplain":"Můžete hledat na GitHubu. Zadejte klíčová slova a stiskněte tlačítko Search",
+"changeSort":"Nastaví metodu třídění výsledků vyhledávání",
+"searchResult":"Výsledek",
+"notFound":"Nic nalezeno",
+"goGithub":"Stisknutím přejdete do úložiště GitHub"}

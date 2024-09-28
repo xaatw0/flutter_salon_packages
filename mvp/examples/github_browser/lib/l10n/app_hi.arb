@@ -1,0 +1,12 @@
+{"@@locale":"hi",
+"swapTheme":"स्क्रीन के लाइट मोड और डार्क मोड को स्वैप करें",
+"searchInGithub":"GitHub में खोज!",
+"search":"तलाशी",
+"sortOptions":"विकल्प क्रमबद्ध करें",
+"sortOk":"समूह",
+"sortCancel":"रद्द करना",
+"searchExplain":"आप GitHub पर खोज कर सकते हैं। कृपया कीवर्ड दर्ज करें और खोज बटन दबाएं",
+"changeSort":"खोज परिणामों के लिए सॉर्टिंग विधि सेट करता है",
+"searchResult":"परिणाम",
+"notFound":"कुछ नहीं मिला",
+"goGithub":"GitHub रिपॉजिटरी में जाने के लिए दबाएं"}

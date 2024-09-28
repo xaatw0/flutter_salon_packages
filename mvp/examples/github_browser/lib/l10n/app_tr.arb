@@ -1,0 +1,12 @@
+{"@@locale":"tr",
+"swapTheme":"Ekranın ışık modunu ve karanlık modunu değiştirin",
+"searchInGithub":"Github'da arama!",
+"search":"arama",
+"sortOptions":"Sıralama Seçenekleri",
+"sortOk":"Ayarlamak",
+"sortCancel":"İptal",
+"searchExplain":"GitHub'da arama yapabilirsiniz. Lütfen anahtar kelimeleri girin ve arama düğmesine basın",
+"changeSort":"Arama sonuçları için sıralama yöntemini ayarlar",
+"searchResult":"Sonuç",
+"notFound":"Hiçbirşey Bulunamadı",
+"goGithub":"GitHub deposuna gitmek için basın"}

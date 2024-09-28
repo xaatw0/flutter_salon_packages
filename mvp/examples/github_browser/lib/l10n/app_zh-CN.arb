@@ -1,0 +1,12 @@
+{"@@locale":"zh_CN",
+"swapTheme":"交换屏幕的光模式和黑暗模式",
+"searchInGithub":"在github中搜索！",
+"search":"搜索",
+"sortOptions":"排序选项",
+"sortOk":"放",
+"sortCancel":"取消",
+"searchExplain":"您可以在Github上搜索。请输入关键字，然后按搜索按钮",
+"changeSort":"为搜索结果设置排序方法",
+"searchResult":"结果",
+"notFound":"什么都没找到",
+"goGithub":"按下到GitHub存储库"}

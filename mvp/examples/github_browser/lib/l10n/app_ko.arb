@@ -1,0 +1,12 @@
+{"@@locale":"ko",
+"swapTheme":"화면의 드라이어 모드와 어두운 모드를 교체합니다.",
+"searchInGithub":"Github에서 검색하십시오!",
+"search":"검색",
+"sortOptions":"정렬 옵션",
+"sortOk":"세트",
+"sortCancel":"취소",
+"searchExplain":"Github에서 검색 할 수 있습니다. 키워드를 입력하고 검색 버튼을 누릅니다",
+"changeSort":"검색 결과에 대한 정렬 방법을 설정합니다",
+"searchResult":"결과",
+"notFound":"아무것도 찾을 수 없음",
+"goGithub":"Github 저장소로 이동하려면 누릅니다"}

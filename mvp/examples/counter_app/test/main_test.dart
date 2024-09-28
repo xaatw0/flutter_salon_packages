@@ -43,21 +43,21 @@ void main() {
     test('increase', () {
       final target = CounterPresenter(mockView);
 
-      expect(target.model.counter, 0);
+      expect(target.counter, 0);
       target.incrementCounter();
-      expect(target.model.counter, 1);
+      expect(target.counter, 1);
       target.incrementCounter();
-      expect(target.model.counter, 2);
+      expect(target.counter, 2);
     });
 
     test('decrease', () {
       final target = CounterPresenter(mockView);
 
-      expect(target.model.counter, 0);
+      expect(target.counter, 0);
       target.decrementCounter();
-      expect(target.model.counter, -1);
+      expect(target.counter, -1);
       target.decrementCounter();
-      expect(target.model.counter, -2);
+      expect(target.counter, -2);
     });
   });
 
@@ -69,9 +69,9 @@ void main() {
 
       final target = CounterPresenter(mockView);
       target.incrementCounter();
-      expect(target.model.counter, 1);
+      expect(target.counter, 1);
       await target.resetCounter();
-      expect(target.model.counter, 0);
+      expect(target.counter, 0);
     });
 
     test('no', () async {
@@ -79,26 +79,26 @@ void main() {
 
       final target = CounterPresenter(mockView);
       target.incrementCounter();
-      expect(target.model.counter, 1);
+      expect(target.counter, 1);
       await target.resetCounter();
-      expect(target.model.counter, 1);
+      expect(target.counter, 1);
     });
     test('null', () async {
       when(mockView.askReset()).thenAnswer((_) => Future.value(null));
 
       final target = CounterPresenter(mockView);
       target.incrementCounter();
-      expect(target.model.counter, 1);
+      expect(target.counter, 1);
       await target.resetCounter();
-      expect(target.model.counter, 1);
+      expect(target.counter, 1);
     });
   });
 
   group('widget', () {
     test('test mock', () {
       final target = MockCounterPresenter();
-      when(target.model).thenReturn(const CounterModel((255)));
-      expect(target.model.counter, 255);
+      when(target.counter).thenReturn(255);
+      expect(target.counter, 255);
     });
 
     testWidgets('real presenter', (WidgetTester tester) async {
@@ -122,7 +122,7 @@ void main() {
 
     testWidgets('mock presenter', (WidgetTester tester) async {
       final target = MockCounterPresenter();
-      when(target.model).thenReturn(const CounterModel((255)));
+      when(target.counter).thenReturn(255);
 
       await tester.pumpWidget(
         MaterialApp(

@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> implements CounterView {
             const Padding(
               padding: EdgeInsets.only(bottom: 32.0),
               child: Text(
-                "Click buttons to add and subtract.",
+                'Click buttons to add and subtract.',
               ),
             ),
             Row(
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> implements CounterView {
                   child: const Icon(Icons.remove),
                 ),
                 Text(
-                  "${presenter.model.counter}",
+                  '${presenter.counter}',
                 ),
                 FilledButton(
                   onPressed: () {
@@ -132,19 +132,21 @@ class CounterModel {
   }
 }
 
-class CounterPresenter extends BasePresenter<CounterModel> {
-  final CounterView view;
+class CounterPresenter {
+  CounterPresenter(this._view);
+  CounterModel get _model => _delegate.model;
 
-  CounterPresenter(this.view) : super(const CounterModel(0));
+  final CounterView _view;
+  final _delegate = PresenterDelegate<CounterModel>(const CounterModel(0));
 
-  void incrementCounter() => refresh(view, model.increase());
-
-  void decrementCounter() => refresh(view, model.decrease());
+  int get counter => _model.counter;
+  void incrementCounter() => _delegate.refresh(_view, _model.increase());
+  void decrementCounter() => _delegate.refresh(_view, _model.decrease());
 
   Future<void> resetCounter() async {
-    final willReset = await view.askReset();
+    final willReset = await _view.askReset();
     if (willReset == true) {
-      refresh(view, model.reset());
+      _delegate.refresh(_view, _model.reset());
     }
   }
 }

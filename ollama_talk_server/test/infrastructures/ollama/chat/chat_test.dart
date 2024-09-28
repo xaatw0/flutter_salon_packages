@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:ollama_talk_server/src/domain/service_locator.dart';
-import 'package:ollama_talk_server/src/infurastructures/ollama/chat/chat.dart';
+import 'package:ollama_talk_server/src/infrastructures/ollama/chat/chat.dart';
 import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 

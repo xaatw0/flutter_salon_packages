@@ -26,4 +26,8 @@ class ServiceLocator {
 
   final String _apiRoot = Platform.environment['API_URL'] ?? 'localhost:8080';
   String get apiRoot => _apiRoot;
+
+  late final OllamaTalkServer _ollamaTalkServer =
+      OllamaTalkServer(_httpClient, _apiRoot, _store);
+  OllamaTalkServer get ollamaTalkServer => _ollamaTalkServer;
 }

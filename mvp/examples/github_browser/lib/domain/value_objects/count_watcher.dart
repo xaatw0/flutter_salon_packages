@@ -1,2 +1,2 @@
 /// 該当リポジトリのWatcher 数
-extension type CountWatcher(int value) {}
+extension type const CountWatcher(int value) {}

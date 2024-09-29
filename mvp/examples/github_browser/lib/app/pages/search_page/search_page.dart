@@ -13,7 +13,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, this.presenter});
 
-  static const path = '/';
   final SearchPresenter? presenter;
 
   @override
@@ -71,7 +70,7 @@ class _SearchPageState extends State<SearchPage> implements SearchView {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: _searchButton(
-                      context, presenter.model.isSearchingForRepository),
+                      context, presenter.isSearchingForRepository),
                 ),
               ),
             ),

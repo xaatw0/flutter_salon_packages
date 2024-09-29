@@ -1,2 +1,2 @@
 /// レポジトリのURLを表すValueObject
-extension type RepositoryHtmlUrl(String value) {}
+extension type const RepositoryHtmlUrl(String value) {}

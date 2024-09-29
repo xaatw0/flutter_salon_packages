@@ -1,2 +1,2 @@
 /// 該当リポジトリのリポジトリ名
-extension type RepositoryName(String value) {}
+extension type const RepositoryName(String value) {}

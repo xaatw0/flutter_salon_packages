@@ -1,4 +1,2 @@
-
-
 /// 該当リポジトリのIssue 数
- extension type CountIssue(int value) {}
+extension type const CountIssue(int value) {}

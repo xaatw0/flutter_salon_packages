@@ -21,11 +21,8 @@ class RepositoryDataCard extends StatelessWidget {
       child: Card(
         child: ListTile(
           // 画像
-          leading: Hero(
-            tag: OwnerImage.kHeroKey + data.repositoryId.toString(),
-            child: ExcludeSemantics(
-              child: OwnerImage(url: data.ownerIconUrl.value!),
-            ),
+          leading: ExcludeSemantics(
+            child: OwnerImage(url: data.ownerIconUrl.value!),
           ),
           // レポジトリ名
           title: Padding(

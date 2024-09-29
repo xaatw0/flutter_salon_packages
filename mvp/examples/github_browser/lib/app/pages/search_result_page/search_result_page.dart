@@ -34,12 +34,12 @@ class _SearchResultPageState extends State<SearchResultPage>
 
   @override
   Widget build(BuildContext context) {
-    final data = presenter.model.repositoryData;
+    final data = presenter.repositoryData;
 
     return Scaffold(
       appBar: AppBar(
           title: Text(
-              '${AppLocalizations.of(context).searchResult} [${widget.searchResultModel.searchModel.searchWord}]')),
+              '${AppLocalizations.of(context).searchResult} [${presenter.searchWord}]')),
       body: Stack(
         children: [
           NotificationListener<ScrollEndNotification>(
@@ -51,15 +51,14 @@ class _SearchResultPageState extends State<SearchResultPage>
                     data: data,
                     onTapped: (context, repository) =>
                         presenter.onRepositoryTapped(repository),
-                    isLoading: presenter.model.isLoadingForRepository,
+                    isLoading: presenter.isLoadingForRepository,
                   ),
           ),
           ModelessDrawer<GitRepositoryData>(
             key: _kerDrawer,
             builder: (BuildContext context, GitRepositoryData? selectedValue) =>
                 GitRepositoryDataDrawer(
-              presenter.model.selectedRepository ??
-                  presenter.model.repositoryData.first,
+              presenter.selectedRepository ?? GitRepositoryData.empty,
             ),
           ),
         ],
@@ -74,8 +73,6 @@ class _SearchResultPageState extends State<SearchResultPage>
       return Future.value();
     }
 
-    return presenter.model.selectedRepository == null
-        ? state.close()
-        : state.open();
+    return presenter.selectedRepository == null ? state.close() : state.open();
   }
 }

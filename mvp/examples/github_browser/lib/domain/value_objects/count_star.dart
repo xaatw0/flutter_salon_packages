@@ -1,3 +1,2 @@
-
 /// 該当リポジトリのStar 数
-extension type CountStar(int value) {}
+extension type const CountStar(int value) {}

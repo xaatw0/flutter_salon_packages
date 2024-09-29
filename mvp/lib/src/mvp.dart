@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-abstract interface class BaseView<T> {
+abstract interface class BaseView {
   void setState(VoidCallback fn);
 }
 

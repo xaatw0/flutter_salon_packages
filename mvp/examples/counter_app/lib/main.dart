@@ -37,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> implements CounterView {
-  late final CounterPresenter presenter =
+  late final CounterPresenter _presenter =
       widget.presenter ?? CounterPresenter(this);
 
   @override
@@ -61,16 +61,16 @@ class _MyHomePageState extends State<MyHomePage> implements CounterView {
               children: <Widget>[
                 FilledButton(
                   onPressed: () {
-                    presenter.decrementCounter();
+                    _presenter.decrementCounter();
                   },
                   child: const Icon(Icons.remove),
                 ),
                 Text(
-                  '${presenter.counter}',
+                  '${_presenter.counter}',
                 ),
                 FilledButton(
                   onPressed: () {
-                    presenter.incrementCounter();
+                    _presenter.incrementCounter();
                   },
                   child: const Icon(Icons.add),
                 ),
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> implements CounterView {
             const SizedBox(height: 32),
             FilledButton.tonal(
               onPressed: () {
-                presenter.resetCounter();
+                _presenter.resetCounter();
               },
               child: const Icon(Icons.refresh),
             ),

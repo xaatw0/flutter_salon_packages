@@ -27,38 +27,38 @@ class SearchResultPage extends StatefulWidget {
 
 class _SearchResultPageState extends State<SearchResultPage>
     implements SearchResultView {
-  late final presenter =
+  late final _presenter =
       widget.presenter ?? SearchResultPresenter(this, widget.searchResultModel);
 
   final _kerDrawer = GlobalKey<ModelessDrawerState<GitRepositoryData>>();
 
   @override
   Widget build(BuildContext context) {
-    final data = presenter.repositoryData;
+    final data = _presenter.repositoryData;
 
     return Scaffold(
       appBar: AppBar(
           title: Text(
-              '${AppLocalizations.of(context).searchResult} [${presenter.searchWord}]')),
+              '${AppLocalizations.of(context).searchResult} [${_presenter.searchWord}]')),
       body: Stack(
         children: [
           NotificationListener<ScrollEndNotification>(
             onNotification: (ScrollEndNotification notification) =>
-                presenter.onGitListScrolled(notification.metrics.extentAfter),
+                _presenter.onGitListScrolled(notification.metrics.extentAfter),
             child: data.isEmpty
                 ? const NotFoundResult()
                 : SearchResultListView(
                     data: data,
                     onTapped: (context, repository) =>
-                        presenter.onRepositoryTapped(repository),
-                    isLoading: presenter.isLoadingForRepository,
+                        _presenter.onRepositoryTapped(repository),
+                    isLoading: _presenter.isLoadingForRepository,
                   ),
           ),
           ModelessDrawer<GitRepositoryData>(
             key: _kerDrawer,
             builder: (BuildContext context, GitRepositoryData? selectedValue) =>
                 GitRepositoryDataDrawer(
-              presenter.selectedRepository ?? GitRepositoryData.empty,
+              _presenter.selectedRepository ?? GitRepositoryData.empty,
             ),
           ),
         ],
@@ -73,6 +73,6 @@ class _SearchResultPageState extends State<SearchResultPage>
       return Future.value();
     }
 
-    return presenter.selectedRepository == null ? state.close() : state.open();
+    return _presenter.selectedRepository == null ? state.close() : state.open();
   }
 }

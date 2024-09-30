@@ -1,5 +1,7 @@
 library ollama_talk_common;
 
+export 'src/data/message_data.dart';
+
 export 'src/entities/add_document_request_entity.dart';
 export 'src/entities/send_chat_message_entity.dart';
 export 'src/entities/chat_model.dart';

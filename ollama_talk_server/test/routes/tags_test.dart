@@ -9,14 +9,14 @@ import '../../routes/tags.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
-class _MockOllamaTalkClient extends Mock implements OllamaTalkServer {}
+class _MockOllamaTalkClient extends Mock implements TalkServer {}
 
 void main() {
   group('GET /tags', () {
     test('responds with a 200', () async {
       final context = _MockRequestContext();
       final ollama = _MockOllamaTalkClient();
-      when(() => context.read<Future<OllamaTalkServer>>())
+      when(() => context.read<Future<TalkServer>>())
           .thenAnswer((_) => Future.value(ollama));
 
       final llmDetailsEntity = LlmDetailsEntity(

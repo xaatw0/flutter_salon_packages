@@ -86,7 +86,7 @@ void main() {
   });
 
   group('chat', () {
-    test('no strea', () {
+    test('Streaming', () {
       // StreamedResponse を使用して、バイナリを発信しないといけないの、テスト不可と判断
     });
 

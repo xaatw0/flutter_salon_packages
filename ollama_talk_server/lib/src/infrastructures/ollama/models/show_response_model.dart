@@ -1,4 +1,4 @@
-class ModelDetails {
+class _Details {
   final String parentModel;
   final String format;
   final String family;
@@ -6,7 +6,7 @@ class ModelDetails {
   final String parameterSize;
   final String quantizationLevel;
 
-  ModelDetails({
+  _Details({
     required this.parentModel,
     required this.format,
     required this.family,
@@ -15,8 +15,8 @@ class ModelDetails {
     required this.quantizationLevel,
   });
 
-  factory ModelDetails.fromJson(Map<String, dynamic> json) {
-    return ModelDetails(
+  factory _Details.fromJson(Map<String, dynamic> json) {
+    return _Details(
       parentModel: json['parent_model'] ?? '',
       format: json['format'],
       family: json['family'],
@@ -27,7 +27,7 @@ class ModelDetails {
   }
 }
 
-class ModelInfo {
+class _ModelInfo {
   final String architecture;
   final int fileType;
   final int parameterCount;
@@ -47,7 +47,7 @@ class ModelInfo {
   final String model;
   final String pre;
 
-  ModelInfo({
+  _ModelInfo({
     required this.architecture,
     required this.fileType,
     required this.parameterCount,
@@ -68,8 +68,8 @@ class ModelInfo {
     required this.pre,
   });
 
-  factory ModelInfo.fromJson(Map<String, dynamic> json) {
-    return ModelInfo(
+  factory _ModelInfo.fromJson(Map<String, dynamic> json) {
+    return _ModelInfo(
       architecture: json['general.architecture'],
       fileType: json['general.file_type'],
       parameterCount: json['general.parameter_count'],
@@ -92,14 +92,14 @@ class ModelInfo {
   }
 }
 
-class ShowModelInformationEntity {
+class ShowResponseModel {
   final String modelfile;
   final String parameters;
   final String template;
-  final ModelDetails details;
-  final ModelInfo modelInfo;
+  final _Details details;
+  final _ModelInfo modelInfo;
 
-  ShowModelInformationEntity({
+  ShowResponseModel({
     required this.modelfile,
     required this.parameters,
     required this.template,
@@ -107,13 +107,13 @@ class ShowModelInformationEntity {
     required this.modelInfo,
   });
 
-  factory ShowModelInformationEntity.fromJson(Map<String, dynamic> json) {
-    return ShowModelInformationEntity(
+  factory ShowResponseModel.fromJson(Map<String, dynamic> json) {
+    return ShowResponseModel(
       modelfile: json['modelfile'],
       parameters: json['parameters'],
       template: json['template'],
-      details: ModelDetails.fromJson(json['details']),
-      modelInfo: ModelInfo.fromJson(json['model_info']),
+      details: _Details.fromJson(json['details']),
+      modelInfo: _ModelInfo.fromJson(json['model_info']),
     );
   }
 }

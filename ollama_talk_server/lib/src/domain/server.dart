@@ -2,28 +2,78 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_common/ollama_talk_common.dart';
+import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
-import '../ollama_talk_server.dart';
+import '../../ollama_talk_server.dart';
+import 'package:ollama_talk_common/src/value_objects/chat_id.dart';
 
 ///
 ///
 // 　OllamaTalkの開発者への接点
-class OllamaTalkServer {
-  const OllamaTalkServer(
+class TalkServer {
+  const TalkServer(
     this.client,
     this.baseUrl,
     this.store,
+    this.ollamaServer,
   );
 
   final http.Client client;
   final String baseUrl;
   final Store store;
+  final OllamaServer ollamaServer;
 
   void dispose() {
     client.close();
     store.close();
   }
 
+  Future<int> openChat(String model, String system) {
+    final chatEntity = ChatEntity(llmModel: model, system: system);
+    return store.box<ChatEntity>().putAsync(chatEntity);
+  }
+
+  /// chat without streaming
+  Future<int> sendMessageWithoutStream(
+    ChatEntity chat,
+    String prompt, {
+    DateTime? dateTime,
+  }) async {
+    // get message from DB
+    final queryMessage = store.box<ChatMessageEntity>().query()
+      ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat.id));
+    final listMessage = queryMessage.build().find();
+
+    // make messages
+    final message =
+        ChatMessageEntity(dateTime: dateTime ?? DateTime.now(), message: prompt)
+          ..chat.target = chat;
+
+    final messages = <ChatMessageEntity>[...listMessage, message]
+        .map((data) => [
+              MessageData(Role.user, data.message),
+              if (data.response.isNotEmpty)
+                MessageData(Role.assistant, data.response)
+            ])
+        .expand((e) => e)
+        .map(ChatRequestMessage.fromData)
+        .toList()
+      ..insert(0,
+          ChatRequestMessage.fromData(MessageData(Role.system, chat.system)));
+
+    // send message to ollama server
+    final chatRequest =
+        ChatRequestModel(model: chat.llmModel, messages: messages);
+
+    final responseModel = await ollamaServer.chatWithoutStream(chatRequest);
+    message.receiveResponse(responseModel.message!.content, responseModel.done);
+    chat.messages.add(message);
+
+    // save received message to DB
+    return message.save();
+  }
+
+/*
   /// Generate a completion
   Stream<String> sendMessageToOllamaAndWaitResponse(
       ChatEntity chat, String prompt) async* {
@@ -275,10 +325,7 @@ class OllamaTalkServer {
         .findFirst();
   }
 
-  Future<int> openChat(LlmModel model, String system) {
-    final chatEntity = ChatEntity(llmModel: model(), system: system);
-    return store.box<ChatEntity>().putAsync(chatEntity);
-  }
+
 
   // memory
 
@@ -292,23 +339,12 @@ class OllamaTalkServer {
     return query.build().find();
   }
 
-  Future<List<LlmEntity>> loadLocalModels() async {
-    var url = Uri.parse('$baseUrl/tags');
-    var headers = {'Content-Type': 'application/json'};
-
-    final response = await client.get(url, headers: headers);
-    print(response.body);
-    final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
-    return modelList.map((e) => LlmEntity.fromJson(e)).toList();
-  }
-
-  Future<ShowModelInformationEntity> showModelInformation(
-      LlmModel model) async {
+  Future<ShowResponseModel> showModelInformation(LlmModel model) async {
     final url = Uri.parse('$baseUrl/show');
     final body = {'name': model()};
     final response = await client.post(url, body: body);
 
-    return ShowModelInformationEntity.fromJson(jsonDecode(response.body));
+    return ShowResponseModel.fromJson(jsonDecode(response.body));
   }
 
   Future<bool> pullModel(String modelName) async {
@@ -332,4 +368,6 @@ class OllamaTalkServer {
   List<ChatMessageEntity> loadMessagesInChat() {
     return store.box<ChatMessageEntity>().getAll();
   }
+
+*/
 }

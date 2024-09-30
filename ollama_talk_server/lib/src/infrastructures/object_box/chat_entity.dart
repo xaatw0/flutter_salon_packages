@@ -3,8 +3,8 @@ import 'package:objectbox/objectbox.dart';
 import '../../../objectbox.g.dart'; // auto generate file
 import 'package:ollama_talk_server/src/domain/service_locator.dart';
 
-import '../ollama/chat/chat_request_entity.dart';
 import 'chat_message_entity.dart';
+import 'package:ollama_talk_common/src/data/message_data.dart';
 
 @Entity()
 class ChatEntity {
@@ -22,13 +22,13 @@ class ChatEntity {
   final messages = ToMany<ChatMessageEntity>();
 
   @Transient()
-  final MessageEntity systemMessage;
+  final MessageData systemMessage;
 
   ChatEntity({
     this.title = '',
     required this.llmModel,
     this.system = '',
-  }) : systemMessage = MessageEntity(role: Role.system, content: system);
+  }) : systemMessage = MessageData(Role.system, system);
 
   Future<List<ChatMessageEntity>> getHistories(
     Store store, {
@@ -54,12 +54,8 @@ class ChatEntity {
     return messageEntity;
   }
 
-  MessageEntity? getSystemMessage() {
+  MessageData? getSystemMessage() {
     return system.isEmpty ? null : systemMessage;
-  }
-
-  ChatRequestEntity request(List<MessageEntity> messages) {
-    return ChatRequestEntity(model: LlmModel(llmModel), messages: messages);
   }
 
   ChatModel toChatModel() {

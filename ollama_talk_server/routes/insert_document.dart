@@ -24,7 +24,7 @@ Future<Response> _onPost(RequestContext context) async {
   }
 
   final memo = formData.fields['memo'] ?? 'No information';
-  final ollamaTalkClient = await context.read<OllamaTalkServer>();
+  final ollamaTalkClient = await context.read<TalkServer>();
 
   final fileData = utf8.decode(await file.readAsBytes());
 

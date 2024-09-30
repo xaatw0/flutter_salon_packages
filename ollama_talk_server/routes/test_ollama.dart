@@ -18,7 +18,7 @@ Future<Response> onRequest(RequestContext context) {
 }
 
 Future<Response> _onGet(RequestContext context) async {
-  final ollama = context.read<OllamaTalkServer>();
+  final ollama = context.read<TalkServer>();
   final models = await ollama.loadLocalModels();
   final modelNames = models.map((e) => e.name).toList();
   return Response.json(

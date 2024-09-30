@@ -27,7 +27,7 @@ Future<Response> _onPost(RequestContext context) async {
         statusCode: HttpStatus.badRequest,
         body: {'message': 'No "name" field'});
   }
-  final result = context.read<OllamaTalkServer>().pullModel(modelName);
+  final result = context.read<TalkServer>().pullModel(modelName);
 
   return Response.json(
     body: {'message': await result ? 'Success' : 'Failure'},

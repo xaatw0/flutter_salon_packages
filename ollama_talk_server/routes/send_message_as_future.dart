@@ -26,7 +26,7 @@ Future<Response> _onPost(RequestContext context) async {
         body: {'message': 'prompt not found'});
   }
 
-  final server = context.read<OllamaTalkServer>();
+  final server = context.read<TalkServer>();
   final result = server.sendMessageToOllamaAndGetResult(prompt);
 
   return Response.json(

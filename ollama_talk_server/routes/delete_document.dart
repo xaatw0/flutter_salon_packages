@@ -26,7 +26,7 @@ Future<Response> _onPost(RequestContext context) async {
     return Response(
         statusCode: HttpStatus.badRequest, body: 'file_name is not exist');
   }
-  context.read<OllamaTalkServer>().removeDocument(fileName);
+  context.read<TalkServer>().removeDocument(fileName);
   return Response.json(
     body: {'message': 'Success'},
   );

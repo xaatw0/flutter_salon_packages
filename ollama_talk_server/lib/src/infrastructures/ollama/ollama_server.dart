@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:ollama_talk_server/src/infrastructures/ollama/models/generate_response_model.dart';
 import '../../../ollama_talk_server.dart';
+import 'models/tags_response_model.dart';
 
+/// Contact to OllamaServer
 class OllamaServer {
   const OllamaServer(this.client, this.endpoint);
 
   final String endpoint;
   final http.Client client;
 
-  Stream<GenerateResponseEntity> generate(String model, String prompt) async* {
+  Stream<GenerateResponseModel> generate(String model, String prompt) async* {
     var url = Uri.parse('https://$endpoint/generate');
     var headers = {'Content-Type': 'application/json'};
 
@@ -26,8 +29,7 @@ class OllamaServer {
     await for (final String dataLine in response.stream
         .transform(const Utf8Decoder())
         .transform(const LineSplitter())) {
-      final responseData =
-          GenerateResponseEntity.fromJson(jsonDecode(dataLine));
+      final responseData = GenerateResponseModel.fromJson(jsonDecode(dataLine));
       yield responseData;
     }
   }
@@ -41,21 +43,23 @@ class OllamaServer {
     return EmbedResponseModel.fromJson(jsonDecode(response.body));
   }
 
-  Future<List<LlmEntity>> tags() async {
+  /// List Local Models
+  Future<List<TagsResponseModel>> tags() async {
     var url = Uri.parse('http://$endpoint/tags');
     var headers = {'Content-Type': 'application/json'};
 
     final response = await client.get(url, headers: headers);
     final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
-    return modelList.map((e) => LlmEntity.fromJson(e)).toList();
+    return modelList.map((e) => TagsResponseModel.fromJson(e)).toList();
   }
 
-  Future<ShowModelInformationEntity> show(String name) async {
+  /// Show Model Information
+  Future<ShowResponseModel> show(String name) async {
     final url = Uri.parse('$endpoint/show');
     final body = {'name': name};
     final response = await client.post(url, body: body);
 
-    return ShowModelInformationEntity.fromJson(jsonDecode(response.body));
+    return ShowResponseModel.fromJson(jsonDecode(response.body));
   }
 
   /// Pull a Model

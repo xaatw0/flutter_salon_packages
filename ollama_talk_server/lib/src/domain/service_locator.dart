@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
+
 import '../../ollama_talk_server.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,7 +29,10 @@ class ServiceLocator {
   final String _apiRoot = Platform.environment['API_URL'] ?? 'localhost:8080';
   String get apiRoot => _apiRoot;
 
-  late final OllamaTalkServer _ollamaTalkServer =
-      OllamaTalkServer(_httpClient, _apiRoot, _store);
-  OllamaTalkServer get ollamaTalkServer => _ollamaTalkServer;
+  late final OllamaServer _ollamaServer = OllamaServer(httpClient, apiRoot);
+  OllamaServer get ollamaServer => _ollamaServer;
+
+  late final TalkServer _ollamaTalkServer =
+      TalkServer(_httpClient, _apiRoot, _store, _ollamaServer);
+  TalkServer get ollamaTalkServer => _ollamaTalkServer;
 }

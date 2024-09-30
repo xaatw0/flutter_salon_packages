@@ -7,7 +7,7 @@ import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 
 Future<Response> onRequest(RequestContext context) async {
-  final client = context.read<OllamaTalkServer>();
+  final client = context.read<TalkServer>();
 
   final completer = Completer<SendChatMessageEntity>();
 

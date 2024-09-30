@@ -1,3 +1,4 @@
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:test/test.dart';
 
@@ -182,6 +183,15 @@ void main() {
       expect(convertedJson4['messages'][0]['content'], 'Hello!');
       expect(convertedJson4['options']['seed'], 101);
       expect(convertedJson4['options']['temperature'], 0.0);
+    });
+  });
+
+  group('ChatRequestMessage', () {
+    test('MessageData', () {
+      final messageData = MessageData(Role.system, 'content');
+      final result = ChatRequestMessage.fromData(messageData);
+      expect(result.role, 'system');
+      expect(result.content, 'content');
     });
   });
 }

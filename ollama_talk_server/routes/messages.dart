@@ -19,7 +19,7 @@ Future<Response> onRequest(RequestContext context) async {
 }
 
 Response _onGet(RequestContext context) {
-  final server = context.read<OllamaTalkServer>();
+  final server = context.read<TalkServer>();
   final list = server.loadMessagesInChat();
   final json = list.map((e) => e.chat.target?.id ?? 0).toList();
   return Response.json(

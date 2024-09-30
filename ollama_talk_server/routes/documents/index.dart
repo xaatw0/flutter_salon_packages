@@ -13,7 +13,7 @@ Future<Response> onRequest(RequestContext context) async {
 }
 
 Future<Response> _onGet(RequestContext context) async {
-  final client = context.read<OllamaTalkServer>();
+  final client = context.read<TalkServer>();
   final documents = client.getDocuments();
   return Response.json(
     body: (await documents),

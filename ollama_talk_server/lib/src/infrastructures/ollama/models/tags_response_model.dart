@@ -1,13 +1,11 @@
-import 'package:ollama_talk_common/ollama_talk_common.dart';
-
-class LlmEntity implements LlmModel {
+class TagsResponseModel {
   final String name;
   final DateTime modifiedAt;
   final int size;
   final String digest;
-  final LlmDetailsEntity details;
+  final _Details details;
 
-  const LlmEntity({
+  const TagsResponseModel({
     required this.name,
     required this.modifiedAt,
     required this.size,
@@ -15,40 +13,29 @@ class LlmEntity implements LlmModel {
     required this.details,
   });
 
-  factory LlmEntity.fromJson(Map<String, dynamic> json) {
-    return LlmEntity(
+  factory TagsResponseModel.fromJson(Map<String, dynamic> json) {
+    return TagsResponseModel(
       name: json['name'],
       modifiedAt: DateTime.parse(json['modified_at']),
       size: json['size'] ?? 0,
       digest: json['digest'],
-      details: LlmDetailsEntity.fromJson(json['details']),
+      details: _Details.fromJson(json['details']),
     );
   }
 
   bool isEmbeddingModel() {
     return name.contains('embed');
   }
-
-  @override
-  String call() => name;
-
-  @override
-  String toJson() {
-    return name;
-  }
-
-  @override
-  int? get id => null;
 }
 
-class LlmDetailsEntity {
+class _Details {
   final String format;
   final String family;
   final List<String> families;
   final String parameterSize;
   final String quantizationLevel;
 
-  LlmDetailsEntity({
+  _Details({
     required this.format,
     required this.family,
     required this.families,
@@ -56,8 +43,8 @@ class LlmDetailsEntity {
     required this.quantizationLevel,
   });
 
-  factory LlmDetailsEntity.fromJson(Map<String, dynamic> json) {
-    return LlmDetailsEntity(
+  factory _Details.fromJson(Map<String, dynamic> json) {
+    return _Details(
       format: json['format'],
       family: json['family'],
       families:

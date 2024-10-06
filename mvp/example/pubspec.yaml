@@ -1,4 +1,4 @@
-name: count_up
+name: example
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -36,7 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   mvp:
-    path: ../../
+    path: ../
 dev_dependencies:
   flutter_test:
     sdk: flutter

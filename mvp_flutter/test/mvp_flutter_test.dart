@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:mvp/mvp_flutter.dart';
-import 'mvp_test.mocks.dart';
+import 'package:mvp_flutter/mvp_flutter.dart';
+import 'mvp_flutter_test.mocks.dart';
 
 class CounterPage extends StatefulWidget {
   const CounterPage({super.key, required this.title});

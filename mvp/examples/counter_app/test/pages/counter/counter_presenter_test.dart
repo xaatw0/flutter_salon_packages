@@ -4,7 +4,7 @@ import 'package:counter_app/page/counter/counter_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'counter_presennter_test.mocks.dart';
+import 'counter_presenter_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<CounterView>(),

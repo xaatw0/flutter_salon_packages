@@ -33,50 +33,48 @@ class _SearchPageState extends State<SearchPage> implements SearchView {
       isKeyboardShown: presenter.isKeyboardShown(context),
       isTextInputted: presenter.isKeywordAvailable,
     );
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // 検索のキーワード入力
-          Semantics(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // 検索のキーワード入力
+        Semantics(
+          container: true,
+          label: AppLocalizations.of(context).searchExplain,
+          child: CancelTabKey(
+            child: SearchTextField(
+              controller: kIsWeb ? KanjiTextEditingController() : null,
+              onChangeKeyword: presenter.changeSearchWord,
+              onSubmitted: (_) => presenter.onSubmitted(context),
+              onSelectSortMethod: () => presenter.onSelectSortMethod(context),
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+
+        // 検索ボタン
+        // アプリでは、キーボードが非表示でキーワードが入力済みの時のみ表示される
+
+        Visibility(
+          visible: visibleWidgetLogic.isButtonVisible,
+          child: Semantics(
             container: true,
-            label: AppLocalizations.of(context).searchExplain,
-            child: CancelTabKey(
-              child: SearchTextField(
-                controller: kIsWeb ? KanjiTextEditingController() : null,
-                onChangeKeyword: presenter.changeSearchWord,
-                onSubmitted: (_) => presenter.onSubmitted(context),
-                onSelectSortMethod: () => presenter.onSelectSortMethod(context),
+            label: AppLocalizations.of(context).search,
+            child: OutlinedButton(
+              onPressed: presenter.onSearch(context),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child:
+                    _searchButton(context, presenter.isSearchingForRepository),
               ),
             ),
           ),
-          const SizedBox(height: 32),
-
-          // 検索ボタン
-          // アプリでは、キーボードが非表示でキーワードが入力済みの時のみ表示される
-
-          Visibility(
-            visible: visibleWidgetLogic.isButtonVisible,
-            child: Semantics(
-              container: true,
-              label: AppLocalizations.of(context).search,
-              child: OutlinedButton(
-                onPressed: presenter.onSearch(context),
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _searchButton(
-                      context, presenter.isSearchingForRepository),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

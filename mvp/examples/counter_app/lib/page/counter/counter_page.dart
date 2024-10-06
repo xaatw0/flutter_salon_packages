@@ -55,9 +55,7 @@ class _CounterPageState extends State<CounterPage> implements CounterView {
                   },
                   child: const Icon(Icons.remove),
                 ),
-                Text(
-                  '${_presenter.counter}',
-                ),
+                Text(_presenter.counter),
                 FilledButton(
                   onPressed: () {
                     _presenter.incrementCounter();

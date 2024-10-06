@@ -48,7 +48,7 @@ class KanjiNumberFormatter implements NumberFormatter {
   // フォーマットメソッド
   @override
   String format(int number) {
-    if (number < -100000 || number > 100000) {
+    if (number < -99999 || number > 99999) {
       throw ArgumentError('対応している範囲は-99999から99999までです。');
     }
 
@@ -145,13 +145,16 @@ class SpelledOutFormatter implements NumberFormatter {
   static const List<String> higherUnits = ['', 'thousand'];
 
   String format(int number) {
-    if (number < 0 || number > 99999) {
-      throw ArgumentError('The range supported is from 0 to 99999.');
+    if (number < -99999 || number > 99999) {
+      throw ArgumentError('The range supported is from -99999 to 99999.');
     }
 
     if (number == 0) {
       return englishNumbers[0]; // Return "zero" for 0
     }
+
+    bool isMinus = number < 0;
+    number = isMinus ? -number : number;
 
     String result = '';
     int unitGroupIndex = 0;
@@ -169,7 +172,7 @@ class SpelledOutFormatter implements NumberFormatter {
       number ~/= 1000;
     }
 
-    return result.trim();
+    return (isMinus ? 'minus ' : '') + result.trim();
   }
 
   String _convertGroupToEnglish(int number) {

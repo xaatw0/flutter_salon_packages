@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:github_browser/app/pages/search_page/search_view.dart';
 import 'package:github_browser/app/pages/search_result_page/search_result_page.dart';
-import 'package:github_browser/domain/entities/search_model.dart';
+import 'package:github_browser/app/widgets/templates/day_night_template.dart';
 import 'package:github_browser/domain/entities/search_result_model.dart';
 import 'package:mvp/mvp.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../domain/repositories/git_repository.dart';
 import 'search_model_with_view.dart';
 
@@ -56,7 +56,11 @@ class SearchPresenter {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
-            return SearchResultPage(searchResultModel);
+            return DayNightTemplate(
+              title:
+                  '${AppLocalizations.of(context).searchResult} [${_model.searchWord}]',
+              child: SearchResultPage(searchResultModel),
+            );
           },
         ),
       );

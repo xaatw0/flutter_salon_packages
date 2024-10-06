@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:github_browser/app/pages/search_result_page/search_result_presenter.dart';
 import 'package:github_browser/app/pages/search_result_page/search_result_view.dart';
 import 'package:github_browser/domain/entities/git_repository_data.dart';
@@ -36,33 +35,28 @@ class _SearchResultPageState extends State<SearchResultPage>
   Widget build(BuildContext context) {
     final data = _presenter.repositoryData;
 
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(
-              '${AppLocalizations.of(context).searchResult} [${_presenter.searchWord}]')),
-      body: Stack(
-        children: [
-          NotificationListener<ScrollEndNotification>(
-            onNotification: (ScrollEndNotification notification) =>
-                _presenter.onGitListScrolled(notification.metrics.extentAfter),
-            child: data.isEmpty
-                ? const NotFoundResult()
-                : SearchResultListView(
-                    data: data,
-                    onTapped: (context, repository) =>
-                        _presenter.onRepositoryTapped(repository),
-                    isLoading: _presenter.isLoadingForRepository,
-                  ),
+    return Stack(
+      children: [
+        NotificationListener<ScrollEndNotification>(
+          onNotification: (ScrollEndNotification notification) =>
+              _presenter.onGitListScrolled(notification.metrics.extentAfter),
+          child: data.isEmpty
+              ? const NotFoundResult()
+              : SearchResultListView(
+                  data: data,
+                  onTapped: (context, repository) =>
+                      _presenter.onRepositoryTapped(repository),
+                  isLoading: _presenter.isLoadingForRepository,
+                ),
+        ),
+        ModelessDrawer<GitRepositoryData>(
+          key: _kerDrawer,
+          builder: (BuildContext context, GitRepositoryData? selectedValue) =>
+              GitRepositoryDataDrawer(
+            _presenter.selectedRepository ?? GitRepositoryData.empty,
           ),
-          ModelessDrawer<GitRepositoryData>(
-            key: _kerDrawer,
-            builder: (BuildContext context, GitRepositoryData? selectedValue) =>
-                GitRepositoryDataDrawer(
-              _presenter.selectedRepository ?? GitRepositoryData.empty,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

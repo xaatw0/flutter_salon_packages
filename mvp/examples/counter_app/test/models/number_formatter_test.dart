@@ -29,23 +29,21 @@ void main() {
       expect(formatter.format(12345), '一万二千三百四十五');
       expect(formatter.format(99999), '九万九千九百九十九');
       expect(formatter.format(10000), '一万');
-      expect(formatter.format(100000), '十万');
       expect(formatter.format(0), '零');
 
       expect(formatter.format(-5), '負の五');
       expect(formatter.format(-15), '負の十五');
       expect(formatter.format(-145), '負の百四十五');
-      expect(formatter.format(-100000), '負の十万');
     });
 
     test('throws error for numbers out of range', () {
       KanjiNumberFormatter formatter = KanjiNumberFormatter();
-      expect(() => formatter.format(100001), throwsArgumentError);
-      expect(() => formatter.format(-100001), throwsArgumentError);
+      expect(() => formatter.format(100000), throwsArgumentError);
+      expect(() => formatter.format(-100000), throwsArgumentError);
     });
   });
 
-  group('LuigiFormatter', () {
+  group('SpelledOutFormatter', () {
     test('small number', () {
       SpelledOutFormatter formatter = SpelledOutFormatter();
       expect(formatter.format(0), 'zero');
@@ -80,12 +78,14 @@ void main() {
           'ninety nine thousand nine hundred ninety nine');
       expect(formatter.format(10000), 'ten thousand');
       expect(formatter.format(0), 'zero');
+
+      expect(formatter.format(-10000), 'minus ten thousand');
     });
 
     test('throws error for numbers out of range', () {
       SpelledOutFormatter formatter = SpelledOutFormatter();
       expect(() => formatter.format(100000), throwsArgumentError);
-      expect(() => formatter.format(-1), throwsArgumentError);
+      expect(() => formatter.format(-100000), throwsArgumentError);
     });
   });
 }

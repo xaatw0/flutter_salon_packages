@@ -15,7 +15,7 @@ class CounterModel {
   ];
 
   factory CounterModel.initialValue() {
-    return CounterModel(Counter(0), formatters.first);
+    return CounterModel(const Counter(0), formatters.first);
   }
 
   String get formattedValue => _formatter.format(_counter.counter);

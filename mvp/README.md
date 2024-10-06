@@ -32,6 +32,8 @@ It is a clean design that separates the GUI into three parts: Model, View, and P
 - **Model:** Represents the business logic and data of the application. Responsible for managing and updating data.
 - **View:** Responsible for the user interface (UI), displaying data on the screen based on data from the Presenter.
 
+![img](https://raw.githubusercontent.com/xaatw0/flutter_salon_packages/main/mvp/memo/mermaid-diagram.png)
+
 
 ## Usage
 Let's use this package to create an MVP architecture using the Flutter standard count-up app as an example.

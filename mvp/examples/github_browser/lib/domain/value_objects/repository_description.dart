@@ -1,2 +1,2 @@
 /// レポジトリの概要を表すValueObject
-extension type RepositoryDescription(String? value) {}
+extension type const RepositoryDescription(String? value) {}

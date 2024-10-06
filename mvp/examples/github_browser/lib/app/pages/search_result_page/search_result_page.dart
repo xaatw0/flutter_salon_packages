@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:github_browser/app/pages/search_result_page/search_result_presenter.dart';
 import 'package:github_browser/app/pages/search_result_page/search_result_view.dart';
 import 'package:github_browser/domain/entities/git_repository_data.dart';
@@ -27,43 +26,37 @@ class SearchResultPage extends StatefulWidget {
 
 class _SearchResultPageState extends State<SearchResultPage>
     implements SearchResultView {
-  late final presenter =
+  late final _presenter =
       widget.presenter ?? SearchResultPresenter(this, widget.searchResultModel);
 
   final _kerDrawer = GlobalKey<ModelessDrawerState<GitRepositoryData>>();
 
   @override
   Widget build(BuildContext context) {
-    final data = presenter.model.repositoryData;
+    final data = _presenter.repositoryData;
 
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(
-              '${AppLocalizations.of(context).searchResult} [${widget.searchResultModel.searchModel.searchWord}]')),
-      body: Stack(
-        children: [
-          NotificationListener<ScrollEndNotification>(
-            onNotification: (ScrollEndNotification notification) =>
-                presenter.onGitListScrolled(notification.metrics.extentAfter),
-            child: data.isEmpty
-                ? const NotFoundResult()
-                : SearchResultListView(
-                    data: data,
-                    onTapped: (context, repository) =>
-                        presenter.onRepositoryTapped(repository),
-                    isLoading: presenter.model.isLoadingForRepository,
-                  ),
+    return Stack(
+      children: [
+        NotificationListener<ScrollEndNotification>(
+          onNotification: (ScrollEndNotification notification) =>
+              _presenter.onGitListScrolled(notification.metrics.extentAfter),
+          child: data.isEmpty
+              ? const NotFoundResult()
+              : SearchResultListView(
+                  data: data,
+                  onTapped: (context, repository) =>
+                      _presenter.onRepositoryTapped(repository),
+                  isLoading: _presenter.isLoadingForRepository,
+                ),
+        ),
+        ModelessDrawer<GitRepositoryData>(
+          key: _kerDrawer,
+          builder: (BuildContext context, GitRepositoryData? selectedValue) =>
+              GitRepositoryDataDrawer(
+            _presenter.selectedRepository ?? GitRepositoryData.empty,
           ),
-          ModelessDrawer<GitRepositoryData>(
-            key: _kerDrawer,
-            builder: (BuildContext context, GitRepositoryData? selectedValue) =>
-                GitRepositoryDataDrawer(
-              presenter.model.selectedRepository ??
-                  presenter.model.repositoryData.first,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -74,8 +67,6 @@ class _SearchResultPageState extends State<SearchResultPage>
       return Future.value();
     }
 
-    return presenter.model.selectedRepository == null
-        ? state.close()
-        : state.open();
+    return _presenter.selectedRepository == null ? state.close() : state.open();
   }
 }

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-abstract interface class BaseView<T> {
+abstract interface class BaseView {
   void setState(VoidCallback fn);
 }
 
-abstract class BasePresenter<T> {
-  BasePresenter(this._model);
+class PresenterDelegate<T> {
+  PresenterDelegate(this._model);
   T _model;
   T get model => _model;
 

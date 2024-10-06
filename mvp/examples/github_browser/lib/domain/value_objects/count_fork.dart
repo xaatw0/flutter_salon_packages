@@ -1,2 +1,2 @@
 /// 該当リポジトリのFork 数
-extension type CountFork(int value) {}
+extension type const CountFork(int value) {}

@@ -17,7 +17,8 @@ class GitRepositoryDataDrawer extends StatelessWidget {
     return Column(
       children: [
         Text(repositoryData.repositoryName.value),
-        OwnerClip(repositoryData.ownerIconUrl),
+        if (repositoryData.ownerIconUrl.value?.isNotEmpty ?? false)
+          OwnerClip(repositoryData.ownerIconUrl),
         Text(repositoryData.repositoryHtmlUrl.value),
         const SizedBox(height: 32),
         RepositoryDetailColumn(

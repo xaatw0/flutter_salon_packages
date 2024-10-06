@@ -51,4 +51,18 @@ class GitRepositoryData {
 
   /// 該当レポジトリの更新日時
   final RepositoryUpdateTime updateTime;
+
+  static GitRepositoryData empty = GitRepositoryData(
+      repositoryId: const RepositoryId(-1),
+      repositoryName: const RepositoryName(''),
+      ownerIconUrl: const OwnerIconUrl(''),
+      projectLanguage: const ProjectLanguage(''),
+      repositoryDescription: const RepositoryDescription(''),
+      countStar: const CountStar(-1),
+      countWatcher: const CountWatcher(-1),
+      countFork: const CountFork(-1),
+      countIssue: const CountIssue(-1),
+      repositoryHtmlUrl: const RepositoryHtmlUrl(''),
+      createTime: RepositoryCreateTime(DateTime(0)),
+      updateTime: RepositoryUpdateTime(DateTime(0)));
 }

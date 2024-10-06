@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -71,6 +72,62 @@ class TalkServer {
 
     // save received message to DB
     return message.save();
+  }
+
+  /// chat with streaming
+  Stream<String> sendMessage(
+    ChatEntity chat,
+    String prompt, {
+    DateTime? dateTime,
+    Completer<int>? messageId,
+  }) async* {
+    // get message from DB
+    final queryMessage = store.box<ChatMessageEntity>().query()
+      ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat.id));
+    final listMessage = queryMessage.build().find();
+
+    // make messages
+    final newMessage =
+        ChatMessageEntity(dateTime: dateTime ?? DateTime.now(), message: prompt)
+          ..chat.target = chat;
+
+    final messages = <ChatMessageEntity>[...listMessage, newMessage]
+        .map((data) => [
+              MessageData(Role.user, data.message),
+              if (data.response.isNotEmpty)
+                MessageData(Role.assistant, data.response)
+            ])
+        .expand((e) => e)
+        .map(ChatRequestMessage.fromData)
+        .toList()
+      ..insert(0,
+          ChatRequestMessage.fromData(MessageData(Role.system, chat.system)));
+
+    // send message to ollama server
+    final chatRequest =
+        ChatRequestModel(model: chat.llmModel, messages: messages);
+    final finalMessage = StringBuffer();
+    final responseModelStream = await ollamaServer.chat(chatRequest);
+
+    await for (final ChatResponseModel model in responseModelStream) {
+      if (model.done == false) {
+        final content = model.message!.content;
+        finalMessage.write(content);
+        yield content;
+      } else {
+        final message = ChatMessageEntity(
+          dateTime: newMessage.dateTime,
+          message: newMessage.message,
+          response: finalMessage.toString(),
+        );
+        chat.messages.add(message);
+        // save received message to DB
+        final id = message.save();
+        if (messageId != null) {
+          messageId.complete(id);
+        }
+      }
+    }
   }
 
 /*

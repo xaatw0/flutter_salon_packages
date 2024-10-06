@@ -29,9 +29,10 @@ class TalkServer {
     store.close();
   }
 
-  Future<int> openChat(String model, String system) {
+  Future<ChatEntity> openChat(String model, String system) async {
     final chatEntity = ChatEntity(llmModel: model, system: system);
-    return store.box<ChatEntity>().putAsync(chatEntity);
+    final id = store.box<ChatEntity>().putAsync(chatEntity);
+    return store.box<ChatEntity>().get(await id)!;
   }
 
   /// chat without streaming
@@ -130,122 +131,7 @@ class TalkServer {
     }
   }
 
-/*
-  /// Generate a completion
-  Stream<String> sendMessageToOllamaAndWaitResponse(
-      ChatEntity chat, String prompt) async* {
-    final futureRagResult = _getEmbeddingVector(prompt);
-    final futureMessages = chat.getHistories(store);
-
-    var url = Uri.parse('$baseUrl/generate');
-    var headers = {'Content-Type': 'application/json'};
-    var body = jsonEncode({
-      'model': chat.llmModel,
-      'prompt': '''
-          Using this data: ${(await futureRagResult).join(',')}
-          History: ${(await futureMessages).join(',')} 
-          characterization:  ${chat.system}
-          Question：$prompt''',
-    });
-    final request = http.Request('POST', url)
-      ..headers.addAll(headers)
-      ..body = body;
-
-    try {
-      // collect information
-
-      // send message
-      final messageEntity =
-          ChatMessageEntity(dateTime: DateTime.now(), message: prompt)
-            ..chat.target = chat;
-
-      final response = await client.send(request);
-
-      // receive response
-      await for (final String dataLine in response.stream
-          .transform(const Utf8Decoder())
-          .transform(const LineSplitter())) {
-        final responseData =
-            GenerateResponseEntity.fromJson(jsonDecode(dataLine));
-        yield responseData.response;
-
-        messageEntity.receiveResponse(responseData.response, responseData.done);
-      }
-
-      // response wad finished normally
-      messageEntity.save();
-    } finally {
-      print('finished');
-    }
-  }
-
-  /// Generate a chat completion
-  Stream<String> chatAndWaitResponse(ChatEntity chat, String prompt) async* {
-    final futureRagResult = findRelatedInformation(prompt);
-    final futureMessages = chat.getHistories(store);
-
-    final messages = (await futureMessages)
-        .map(MessageEntity.fromChatMessageEntity)
-        .expand((e) => e)
-        .toList();
-
-    final systemMessage = chat.getSystemMessage();
-    if (systemMessage != null) {
-      messages.insert(0, systemMessage);
-    }
-
-    final referenceData =
-        '{"data":[\n  {"${(await futureRagResult).map((e) => e.message).join('"},\n  {"')}"}\n]}';
-
-    final newMessage = MessageEntity(
-        role: Role.user, content: '$prompt\n\nUse these data:$referenceData');
-    messages.add(newMessage);
-
-    final chatRequest = chat.request(messages);
-
-    final messageEntity = chat.sendMessage(store, prompt, DateTime.now());
-
-    var url = Uri.parse('$baseUrl/chat');
-    var headers = {'Content-Type': 'application/json'};
-    var body = jsonEncode(chatRequest.toJson());
-    final request = http.Request('POST', url)
-      ..headers.addAll(headers)
-      ..body = body;
-
-    try {
-      // send message
-      final response = await client.send(request);
-
-      // receive response
-      await for (final String dataLine in response.stream
-          .transform(const Utf8Decoder())
-          .transform(const LineSplitter())) {
-        final responseData = ChatResponseEntity.fromJson(jsonDecode(dataLine));
-        yield responseData.message.content;
-
-        messageEntity.receiveResponse(
-            responseData.message.content, responseData.done);
-      }
-
-      // response wad finished normally
-      messageEntity.save();
-    } finally {
-      print('finished');
-    }
-  }
-
-  Future<String> sendMessageToOllamaAndGetResult(String prompt) async {
-    var url = Uri.parse('$baseUrl/generate');
-    var headers = {'Content-Type': 'application/json'};
-    final message = MessageEntity(role: Role.user, content: prompt);
-    var body = jsonEncode(message.toJson());
-
-    // send message
-    final response = await client.post(url, headers: headers, body: body);
-    final responseData = ChatResponseEntity.fromJson(jsonDecode(response.body));
-    return responseData.message.content;
-  }
-
+  /// load chat list in ObjectBox
   Future<List<ChatEntity>> loadChatList() {
     return store.box<ChatEntity>().getAllAsync();
   }
@@ -382,8 +268,6 @@ class TalkServer {
         .findFirst();
   }
 
-
-
   // memory
 
   // find RagData
@@ -425,6 +309,4 @@ class TalkServer {
   List<ChatMessageEntity> loadMessagesInChat() {
     return store.box<ChatMessageEntity>().getAll();
   }
-
-*/
 }

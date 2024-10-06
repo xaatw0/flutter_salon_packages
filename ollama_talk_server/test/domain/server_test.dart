@@ -19,6 +19,15 @@ import 'server_test.mocks.dart';
   MockSpec<ChatResponseModel>(),
 ])
 void main() {
+  test('open chat', () async {
+    final store = await getStore();
+    final mockOllama = MockOllamaServer();
+
+    final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+    final chat = await server.openChat('model', 'system');
+    expect(chat.llmModel, 'model');
+  });
+
   test('chat(sendMessageWithoutStream)のテスト', () async {
     final mockClient = MockClient();
     when(mockClient.get(Uri.parse('http://test.com/index')))
@@ -37,10 +46,9 @@ void main() {
 
     final server = TalkServer(mockClient, 'test.com', store, mockOllama);
     expect(store.box<ChatEntity>().getAll().length, 0);
-    final chatId1 = await server.openChat('llm_model', 'system message');
+    final chat1 = await server.openChat('llm_model', 'system message');
     expect(store.box<ChatEntity>().getAll().length, 1);
 
-    final chat1 = store.box<ChatEntity>().get(chatId1)!;
     expect(chat1.llmModel, 'llm_model');
     expect(chat1.system, 'system message');
     expect(chat1.messages.length, 0);
@@ -99,16 +107,15 @@ void main() {
     expect(message2?.message, 'prompt2');
     expect(message2?.response, 'response2');
 
-    final chatId2 = await server.openChat('llm_model', 'system message');
-    final chat2 = store.box<ChatEntity>().get(chatId2)!;
+    final chat2 = await server.openChat('llm_model', 'system message');
     await server.sendMessageWithoutStream(chat2, 'prompt1', dateTime: now);
 
     expect(store.box<ChatEntity>().getAll().length, 2);
 
     final messages = store.box<ChatMessageEntity>().getAll();
     expect(messages.length, 3);
-    expect(messages.where((e) => e.chat.target?.id == chatId1).length, 2);
-    expect(messages.where((e) => e.chat.target?.id == chatId2).length, 1);
+    expect(messages.where((e) => e.chat.target?.id == chat1.id).length, 2);
+    expect(messages.where((e) => e.chat.target?.id == chat2.id).length, 1);
   });
 
   test('chat(sendMessage)のテスト', () async {
@@ -129,10 +136,9 @@ void main() {
 
     final server = TalkServer(mockClient, 'test.com', store, mockOllama);
     expect(store.box<ChatEntity>().getAll().length, 0);
-    final chatId1 = await server.openChat('llm_model', 'system message');
+    final chat1 = await server.openChat('llm_model', 'system message');
     expect(store.box<ChatEntity>().getAll().length, 1);
 
-    final chat1 = store.box<ChatEntity>().get(chatId1)!;
     expect(chat1.llmModel, 'llm_model');
     expect(chat1.system, 'system message');
     expect(chat1.messages.length, 0);
@@ -188,5 +194,58 @@ void main() {
     expect(chat1.messages.length, 1);
     expect(chat1.messages[0].message, 'prompt1');
     expect(chat1.messages[0].response, 'response1response2');
+  });
+
+  test('load chat and chat list', () async {
+    final mockClient = MockClient();
+    when(mockClient.get(Uri.parse('http://test.com/index')))
+        .thenAnswer((_) async => http.Response('body', 200));
+
+    final store = await getStore();
+
+    final mock = MockServiceLocator();
+    when(mock.apiRoot).thenReturn('test.com');
+    when(mock.httpClient).thenReturn(mockClient);
+    when(mock.store).thenReturn(store);
+
+    ServiceLocator.setMock(mock);
+
+    final mockOllama = MockOllamaServer();
+
+    final server = TalkServer(mockClient, 'test.com', store, mockOllama);
+    expect((await server.loadChatList()).length, 0);
+
+    final chat1 = await server.openChat('llm_model', 'system message');
+    expect((await server.loadChatList()).length, 1);
+
+    expect(chat1.llmModel, 'llm_model');
+    expect(chat1.system, 'system message');
+    expect(chat1.messages.length, 0);
+
+    final chatRequest1 = ChatRequestModel(
+        model: 'llm_model',
+        messages: [
+          ChatRequestMessage(
+              role: 'system', content: 'system message', images: const []),
+          ChatRequestMessage(
+              role: 'user', content: 'prompt1', images: const []),
+        ],
+        options: null);
+    when(mockOllama.chatWithoutStream(chatRequest1)).thenAnswer((_) async =>
+        ChatResponseModel(
+            model: 'llm_model',
+            createdAt: DateTime(2024, 1, 1, 0, 0, 1),
+            message:
+                ChatResponseMessage(role: 'assistant', content: 'response1'),
+            done: true));
+
+    DateTime now = DateTime(2024, 1, 1, 0, 0, 0);
+    await server.sendMessageWithoutStream(chat1, 'prompt1', dateTime: now);
+
+    expect((await server.loadChatList()).length, 1);
+    final chat1_1 = await server.loadChat(chat1.id);
+    expect(chat1_1!.llmModel, 'llm_model');
+    expect(chat1_1.system, 'system message');
+    expect(chat1_1.messages.length, 1);
   });
 }

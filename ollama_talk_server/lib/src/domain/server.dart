@@ -30,29 +30,29 @@ class TalkServer {
     store.close();
   }
 
-  Future<ChatEntity> openChat(String model, String system) async {
-    final chatEntity = ChatEntity(llmModel: model, system: system);
-    final id = store.box<ChatEntity>().putAsync(chatEntity);
-    return store.box<ChatEntity>().get(await id)!;
+  Future<ChatBox> openChat(String model, String system) async {
+    final chatEntity = ChatBox(llmModel: model, system: system);
+    final id = store.box<ChatBox>().putAsync(chatEntity);
+    return store.box<ChatBox>().get(await id)!;
   }
 
   /// chat without streaming
   Future<int> sendMessageWithoutStream(
-    ChatEntity chat,
+    ChatBox chat,
     String prompt, {
     DateTime? dateTime,
   }) async {
     // get message from DB
-    final queryMessage = store.box<ChatMessageEntity>().query()
+    final queryMessage = store.box<ChatMessageBox>().query()
       ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat.id));
     final listMessage = queryMessage.build().find();
 
     // make messages
     final message =
-        ChatMessageEntity(dateTime: dateTime ?? DateTime.now(), message: prompt)
+        ChatMessageBox(dateTime: dateTime ?? DateTime.now(), message: prompt)
           ..chat.target = chat;
 
-    final messages = <ChatMessageEntity>[...listMessage, message]
+    final messages = <ChatMessageBox>[...listMessage, message]
         .map((data) => [
               MessageData(Role.user, data.message),
               if (data.response.isNotEmpty)
@@ -78,22 +78,22 @@ class TalkServer {
 
   /// chat with streaming
   Stream<String> sendMessage(
-    ChatEntity chat,
+    ChatBox chat,
     String prompt, {
     DateTime? dateTime,
     Completer<int>? messageId,
   }) async* {
     // get message from DB
-    final queryMessage = store.box<ChatMessageEntity>().query()
+    final queryMessage = store.box<ChatMessageBox>().query()
       ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat.id));
     final listMessage = queryMessage.build().find();
 
     // make messages
     final newMessage =
-        ChatMessageEntity(dateTime: dateTime ?? DateTime.now(), message: prompt)
+        ChatMessageBox(dateTime: dateTime ?? DateTime.now(), message: prompt)
           ..chat.target = chat;
 
-    final messages = <ChatMessageEntity>[...listMessage, newMessage]
+    final messages = <ChatMessageBox>[...listMessage, newMessage]
         .map((data) => [
               MessageData(Role.user, data.message),
               if (data.response.isNotEmpty)
@@ -117,7 +117,7 @@ class TalkServer {
         finalMessage.write(content);
         yield content;
       } else {
-        final message = ChatMessageEntity(
+        final message = ChatMessageBox(
           dateTime: newMessage.dateTime,
           message: newMessage.message,
           response: finalMessage.toString(),
@@ -133,12 +133,12 @@ class TalkServer {
   }
 
   /// load chat list in ObjectBox
-  Future<List<ChatEntity>> loadChatList() {
-    return store.box<ChatEntity>().getAllAsync();
+  Future<List<ChatBox>> loadChatList() {
+    return store.box<ChatBox>().getAllAsync();
   }
 
-  Future<ChatEntity?> loadChat(int chatId) async {
-    final chat = store.box<ChatEntity>().get(chatId);
+  Future<ChatBox?> loadChat(int chatId) async {
+    final chat = store.box<ChatBox>().get(chatId);
     if (chat == null) {
       return null;
     }
@@ -151,26 +151,25 @@ class TalkServer {
 
   // Document
 
-  Future<DocumentEmbeddingEntity> _createEmbedding(String message) async {
+  Future<DocumentEmbeddingBox> _createEmbedding(String message) async {
     final embedResponseModel =
         ollamaServer.embed(EmbeddingModel.kDefaultModel(), message);
-    final embeddingData = DocumentEmbeddingEntity(
+    final embeddingData = DocumentEmbeddingBox(
       message: message,
       vector: (await embedResponseModel).embeddings.first,
     );
     return embeddingData;
   }
 
-  Future<List<DocumentEmbeddingEntity>> findRelatedInformation(
+  Future<List<DocumentEmbeddingBox>> findRelatedInformation(
     String message,
   ) async {
     final embedding = await _createEmbedding(message);
-    return DocumentEmbeddingEntity.findRelatedInformation(
-        store, embedding.vector);
+    return DocumentEmbeddingBox.findRelatedInformation(store, embedding.vector);
   }
 
   /// save new document into DB
-  Future<List<DocumentEmbeddingEntity>> insertDocument(
+  Future<List<DocumentEmbeddingBox>> insertDocument(
     String fileName,
     String fileData, {
     String? memo,
@@ -181,13 +180,13 @@ class TalkServer {
           '$fileName is exist. Change the file name. If you want to update this file, please delete it before.');
     }
 
-    var document = DocumentEntity(
+    var document = DocumentBox(
       fileName: fileName,
       memo: memo ?? '',
       createDate: DateTime.now(),
     ).save(store);
 
-    final futures = <Future<DocumentEmbeddingEntity>>[];
+    final futures = <Future<DocumentEmbeddingBox>>[];
     for (final line in LineSplitter.split(fileData)) {
       if (line.isEmpty) {
         continue;
@@ -213,7 +212,7 @@ class TalkServer {
   }
 
   bool deleteDocument(int documentId) {
-    if (store.box<DocumentEntity>().get(documentId) == null) {
+    if (store.box<DocumentBox>().get(documentId) == null) {
       return false;
     }
 
@@ -224,46 +223,43 @@ class TalkServer {
 
   void _deleteDocumentAndEmbedding(int documentId) {
     final embeddingIds = store
-        .box<DocumentEmbeddingEntity>()
+        .box<DocumentEmbeddingBox>()
         .query(DocumentEmbeddingEntity_.document.equals(documentId));
 
     store.runInTransaction(TxMode.write, () {
       store
-          .box<DocumentEmbeddingEntity>()
+          .box<DocumentEmbeddingBox>()
           .removeMany(embeddingIds.build().findIds());
 
       // remove document data
-      store.box<DocumentEntity>().remove(documentId);
+      store.box<DocumentBox>().remove(documentId);
     });
   }
 
-  Stream<Query<DocumentEntity>> watchDocuments() {
-    return (store
-            .box<DocumentEntity>()
-            .query()
-            .order(DocumentEntity_.createDate))
+  Stream<Query<DocumentBox>> watchDocuments() {
+    return (store.box<DocumentBox>().query().order(DocumentEntity_.createDate))
         .watch(triggerImmediately: true);
   }
 
-  Future<List<DocumentEntity>> getDocuments() {
-    return store.box<DocumentEntity>().getAllAsync();
+  Future<List<DocumentBox>> getDocuments() {
+    return store.box<DocumentBox>().getAllAsync();
   }
 
-  Future<DocumentEntity?> getDocument(int id) {
-    return store.box<DocumentEntity>().getAsync(id);
+  Future<DocumentBox?> getDocument(int id) {
+    return store.box<DocumentBox>().getAsync(id);
   }
 
-  Stream<Query<ChatMessageEntity>> watchMessages(ChatEntity chat) {
+  Stream<Query<ChatMessageBox>> watchMessages(ChatBox chat) {
     return (store
-            .box<ChatMessageEntity>()
+            .box<ChatMessageBox>()
             .query(ChatMessageEntity_.chat.equals(chat.id))
           ..order(ChatMessageEntity_.dateTime))
         .watch(triggerImmediately: true);
   }
 
-  DocumentEntity? _findDocument(String fileName) {
+  DocumentBox? _findDocument(String fileName) {
     return store
-        .box<DocumentEntity>()
+        .box<DocumentBox>()
         .query(DocumentEntity_.fileName.equals(fileName))
         .build()
         .findFirst();
@@ -272,10 +268,10 @@ class TalkServer {
   // memory
 
   // find RagData
-  Future<List<DocumentEmbeddingEntity>> getRelatedEmbedding(String prompt,
+  Future<List<DocumentEmbeddingBox>> getRelatedEmbedding(String prompt,
       {int limit = 5}) async {
     final embedding = await _createEmbedding(prompt);
-    final query = store.box<DocumentEmbeddingEntity>().query(
+    final query = store.box<DocumentEmbeddingBox>().query(
         DocumentEmbeddingEntity_.vector
             .nearestNeighborsF32(embedding.vector, limit));
     return query.build().find();
@@ -318,15 +314,15 @@ class TalkServer {
 
   // User
   int insertUser(String name) {
-    return store.box<UserEntity>().put(UserEntity(name: name));
+    return store.box<UserBox>().put(UserBox(name: name));
   }
 
-  List<UserEntity> getUsers() {
-    return store.box<UserEntity>().getAll();
+  List<UserBox> getUsers() {
+    return store.box<UserBox>().getAll();
   }
 
   // Message
-  List<ChatMessageEntity> loadMessagesInChat() {
-    return store.box<ChatMessageEntity>().getAll();
+  List<ChatMessageBox> loadMessagesInChat() {
+    return store.box<ChatMessageBox>().getAll();
   }
 }

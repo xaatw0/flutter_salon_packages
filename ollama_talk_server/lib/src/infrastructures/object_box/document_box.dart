@@ -1,7 +1,7 @@
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class DocumentEntity {
+class DocumentBox {
   @Id()
   int id = 0;
 
@@ -11,19 +11,19 @@ class DocumentEntity {
   @Property(type: PropertyType.date)
   DateTime createDate;
 
-  DocumentEntity({
+  DocumentBox({
     required this.fileName,
     required this.memo,
     required this.createDate,
   });
 
-  Future<DocumentEntity> save(Store store) async {
-    final id = store.box<DocumentEntity>().putAsync(this);
-    return store.box<DocumentEntity>().get(await id)!;
+  Future<DocumentBox> save(Store store) async {
+    final id = store.box<DocumentBox>().putAsync(this);
+    return store.box<DocumentBox>().get(await id)!;
   }
 
-  factory DocumentEntity.fromJson(Map<String, dynamic> json) {
-    return DocumentEntity(
+  factory DocumentBox.fromJson(Map<String, dynamic> json) {
+    return DocumentBox(
       fileName: json['fileName'],
       memo: json['memo'],
       createDate: DateTime.parse(json['createDate']),

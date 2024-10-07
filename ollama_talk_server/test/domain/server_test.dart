@@ -46,9 +46,9 @@ void main() {
     final mockOllama = MockOllamaServer();
 
     final server = TalkServer(mockClient, 'test.com', store, mockOllama);
-    expect(store.box<ChatEntity>().getAll().length, 0);
+    expect(store.box<ChatBox>().getAll().length, 0);
     final chat1 = await server.openChat('llm_model', 'system message');
-    expect(store.box<ChatEntity>().getAll().length, 1);
+    expect(store.box<ChatBox>().getAll().length, 1);
 
     expect(chat1.llmModel, 'llm_model');
     expect(chat1.system, 'system message');
@@ -75,7 +75,7 @@ void main() {
     final message_id1 =
         await server.sendMessageWithoutStream(chat1, 'prompt1', dateTime: now);
 
-    final message1 = store.box<ChatMessageEntity>().get(message_id1);
+    final message1 = store.box<ChatMessageBox>().get(message_id1);
     expect(message1, isNotNull);
     expect(message1?.message, 'prompt1');
     expect(message1?.response, 'response1');
@@ -103,7 +103,7 @@ void main() {
     final message_id2 =
         await server.sendMessageWithoutStream(chat1, 'prompt2', dateTime: now);
 
-    final message2 = store.box<ChatMessageEntity>().get(message_id2);
+    final message2 = store.box<ChatMessageBox>().get(message_id2);
     expect(message2, isNotNull);
     expect(message2?.message, 'prompt2');
     expect(message2?.response, 'response2');
@@ -111,9 +111,9 @@ void main() {
     final chat2 = await server.openChat('llm_model', 'system message');
     await server.sendMessageWithoutStream(chat2, 'prompt1', dateTime: now);
 
-    expect(store.box<ChatEntity>().getAll().length, 2);
+    expect(store.box<ChatBox>().getAll().length, 2);
 
-    final messages = store.box<ChatMessageEntity>().getAll();
+    final messages = store.box<ChatMessageBox>().getAll();
     expect(messages.length, 3);
     expect(messages.where((e) => e.chat.target?.id == chat1.id).length, 2);
     expect(messages.where((e) => e.chat.target?.id == chat2.id).length, 1);
@@ -136,9 +136,9 @@ void main() {
     final mockOllama = MockOllamaServer();
 
     final server = TalkServer(mockClient, 'test.com', store, mockOllama);
-    expect(store.box<ChatEntity>().getAll().length, 0);
+    expect(store.box<ChatBox>().getAll().length, 0);
     final chat1 = await server.openChat('llm_model', 'system message');
-    expect(store.box<ChatEntity>().getAll().length, 1);
+    expect(store.box<ChatBox>().getAll().length, 1);
 
     expect(chat1.llmModel, 'llm_model');
     expect(chat1.system, 'system message');
@@ -187,7 +187,7 @@ void main() {
         model: 'llm_model', createdAt: datetime, done: true, message: null));
     controller.close();
 
-    final message = store.box<ChatMessageEntity>().get(await messageId.future);
+    final message = store.box<ChatMessageBox>().get(await messageId.future);
     expect(message, isNotNull);
     expect(message?.message, 'prompt1');
     expect(message?.response, 'response1response2');
@@ -279,18 +279,18 @@ void main() {
       final chat = await server.openChat('model', 'system');
       expect(chat.llmModel, 'model');
 
-      expect(store.box<DocumentEmbeddingEntity>().getAll().length, 0);
+      expect(store.box<DocumentEmbeddingBox>().getAll().length, 0);
       await server.insertDocument('fileName1', 'a');
-      expect(store.box<DocumentEntity>().getAll().length, 1);
-      expect(store.box<DocumentEmbeddingEntity>().getAll().length, 1);
+      expect(store.box<DocumentBox>().getAll().length, 1);
+      expect(store.box<DocumentEmbeddingBox>().getAll().length, 1);
 
-      final embeddingData = store.box<DocumentEmbeddingEntity>().getAll().first;
+      final embeddingData = store.box<DocumentEmbeddingBox>().getAll().first;
       expect(embeddingData.message, 'a');
       expect(embeddingData.vector, [1.0, 1.0]);
 
       await server.insertDocument('fileName2', 'a\nb', memo: 'memo');
-      expect(store.box<DocumentEntity>().getAll().length, 2);
-      expect(store.box<DocumentEmbeddingEntity>().getAll().length, 3);
+      expect(store.box<DocumentBox>().getAll().length, 2);
+      expect(store.box<DocumentEmbeddingBox>().getAll().length, 3);
     });
 
     test('getDocuments/getDocument', () async {

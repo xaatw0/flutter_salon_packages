@@ -1,10 +1,10 @@
 import 'package:objectbox/objectbox.dart';
 
 import '../../../objectbox.g.dart'; // auto generate file
-import 'document_entity.dart';
+import 'document_box.dart';
 
 @Entity()
-class DocumentEmbeddingEntity {
+class DocumentEmbeddingBox {
   @Id()
   int id = 0;
 
@@ -13,24 +13,24 @@ class DocumentEmbeddingEntity {
   List<double> vector;
   String message;
 
-  final document = ToOne<DocumentEntity>();
+  final document = ToOne<DocumentBox>();
 
-  DocumentEmbeddingEntity({
+  DocumentEmbeddingBox({
     required this.vector,
     required this.message,
   });
 
-  Future<DocumentEmbeddingEntity> save(Store store) async {
-    final id = store.box<DocumentEmbeddingEntity>().putAsync(this);
-    return store.box<DocumentEmbeddingEntity>().get(await id)!;
+  Future<DocumentEmbeddingBox> save(Store store) async {
+    final id = store.box<DocumentEmbeddingBox>().putAsync(this);
+    return store.box<DocumentEmbeddingBox>().get(await id)!;
   }
 
-  static Future<List<DocumentEmbeddingEntity>> findRelatedInformation(
+  static Future<List<DocumentEmbeddingBox>> findRelatedInformation(
     Store store,
     List<double> vector, {
     int count = 5,
   }) {
-    final query = store.box<DocumentEmbeddingEntity>().query(
+    final query = store.box<DocumentEmbeddingBox>().query(
         DocumentEmbeddingEntity_.vector.nearestNeighborsF32(vector, count));
 
     return query.build().findAsync();

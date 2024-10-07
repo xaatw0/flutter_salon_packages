@@ -6,9 +6,9 @@ import 'utility.dart';
 void main() async {
   test('CRUD', () async {
     final store = await getStore();
-    final box = store.box<ChatEntity>();
-    final chat1 = ChatEntity(title: 'title1', llmModel: 'model1');
-    final chat2 = ChatEntity(title: 'title2', llmModel: 'model1');
+    final box = store.box<ChatBox>();
+    final chat1 = ChatBox(title: 'title1', llmModel: 'model1');
+    final chat2 = ChatBox(title: 'title2', llmModel: 'model1');
     final ids = await box.putManyAsync([chat1, chat2]);
     expect(ids, [1, 2]);
 
@@ -22,25 +22,25 @@ void main() async {
 
   test('getHistory', () async {
     final store = await getStore();
-    final chatBox = store.box<ChatEntity>();
-    final chatHistoryBox = store.box<ChatMessageEntity>();
+    final chatBox = store.box<ChatBox>();
+    final chatHistoryBox = store.box<ChatMessageBox>();
 
-    final chat1 = ChatEntity(title: 'Chat Title 1', llmModel: 'model1');
-    final chat2 = ChatEntity(title: 'Chat Title 2', llmModel: 'model1');
+    final chat1 = ChatBox(title: 'Chat Title 1', llmModel: 'model1');
+    final chat2 = ChatBox(title: 'Chat Title 2', llmModel: 'model1');
     final chatIds = await chatBox.putManyAsync([chat1, chat2]);
     expect(chatIds, [1, 2]);
 
-    final chatHistory1_1 = ChatMessageEntity(
+    final chatHistory1_1 = ChatMessageBox(
       dateTime: DateTime.now(),
       message: 'Message 1-1',
     )..chat.target = chat1;
 
-    final chatHistory1_2 = ChatMessageEntity(
+    final chatHistory1_2 = ChatMessageBox(
       dateTime: DateTime.now(),
       message: 'Message 1-2',
     )..chat.target = chat1;
 
-    final chatHistory2 = ChatMessageEntity(
+    final chatHistory2 = ChatMessageBox(
       dateTime: DateTime.now(),
       message: 'Message 2',
     )..chat.target = chat2;

@@ -14,7 +14,6 @@ Future<Response> onRequest(RequestContext context, String model) async {
 Future<Response> _onGet(RequestContext context, String model) async {
   final client = context.read<TalkServer>();
   final modelInfo = await client.showModelInformation(LlmModel(model));
-  print(modelInfo.details.quantizationLevel);
   return Response.json(
     body: {'message': 'Success'},
   );

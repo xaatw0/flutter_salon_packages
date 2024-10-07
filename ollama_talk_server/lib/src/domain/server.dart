@@ -137,6 +137,7 @@ class TalkServer {
     return store.box<ChatBox>().getAllAsync();
   }
 
+  /// load specify chat detail
   Future<ChatBox?> loadChat(int chatId) async {
     final chat = store.box<ChatBox>().get(chatId);
     if (chat == null) {
@@ -151,6 +152,7 @@ class TalkServer {
 
   // Document
 
+  /// create embedding vector
   Future<DocumentEmbeddingBox> _createEmbedding(String message) async {
     final embedResponseModel =
         ollamaServer.embed(EmbeddingModel.kDefaultModel(), message);
@@ -161,6 +163,7 @@ class TalkServer {
     return embeddingData;
   }
 
+  /// find document related to message
   Future<List<DocumentEmbeddingBox>> findRelatedInformation(
     String message,
   ) async {
@@ -297,19 +300,11 @@ class TalkServer {
   }
 
   Future<ShowResponseData> showModelInformation(LlmModel model) async {
-    final url = Uri.parse('$baseUrl/show');
-    final body = {'name': model()};
-    final response = await client.post(url, body: body);
-
-    return ShowResponseData.fromJson(jsonDecode(response.body));
+    return ollamaServer.show(model());
   }
 
   Future<bool> pullModel(String modelName) async {
-    var url = Uri.parse('$baseUrl/pull');
-    String body = jsonEncode({'name': modelName});
-    final response = await client.post(url, body: jsonEncode(body));
-    print(response.body);
-    return jsonDecode(response.body)['status'] == 'pulling manifest';
+    return ollamaServer.pull(modelName);
   }
 
   // User

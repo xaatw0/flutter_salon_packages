@@ -35,9 +35,9 @@ Future<Response> _onGet(RequestContext context) async {
   }
 
   final client = context.read<TalkServer>();
-  final chatId = client.openChat(modelName!, systemMessage!);
+  final chat = client.openChat(modelName!, systemMessage!);
 
   return Response.json(
-    body: ChatId(await chatId).toJson(),
+    body: ChatId((await chat).id).toJson(),
   );
 }

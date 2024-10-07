@@ -30,7 +30,7 @@ Future<Response> _onPost(RequestContext context) async {
 
   //final jsonData = jsonDecode(await context.request.json());
   try {
-    await ollamaTalkClient.insertDocument(file.name, fileData, memo);
+    await ollamaTalkClient.insertDocument(file.name, fileData, memo: memo);
   } catch (e) {
     return Response.json(
         statusCode: HttpStatus.badRequest, body: {'message': '$e'});

@@ -30,15 +30,12 @@ Future<Response> onRequest(RequestContext context) async {
       chat.title = sendChatMessage.prompt;
     }
 
-    final streamToLLM =
-        client.sendMessageToOllamaAndWaitResponse(chat, sendChatMessage.prompt);
+    final streamToLLM = client.sendMessage(chat, sendChatMessage.prompt);
 
     // send message from Ollama server to client
-    var responseMessage = '';
     streamToLLM.listen(
       (data) {
         clientChannel.sink.add(data);
-        responseMessage += data;
       },
       onDone: () {
         clientChannel.sink.close();

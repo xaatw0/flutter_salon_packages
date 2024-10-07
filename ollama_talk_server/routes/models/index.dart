@@ -23,15 +23,15 @@ Future<Response> onRequest(RequestContext context) async {
 
 Future<Response> _onGet(RequestContext context) async {
   final client = context.read<TalkServer>();
-  final entities = await client.loadLocalModels();
-  final llmModels = entities.where((e) => !e.isEmbeddingModel());
-  final embeddedModels = entities.where((e) => e.isEmbeddingModel());
+  final llmModels = client.loadLocalLlmModes();
+  final embeddedModels = client.loadLocalEmbeddingModel();
 
   return Response.json(
     body: {
-      'llmModels': json.encode(llmModels.map((e) => LlmModel(e.name)).toList()),
-      'embeddedModels': json
-          .encode(embeddedModels.map((e) => EmbeddingModel(e.name)).toList())
+      'llmModels':
+          json.encode((await llmModels).map((e) => LlmModel(e())).toList()),
+      'embeddedModels': json.encode(
+          (await embeddedModels).map((e) => EmbeddingModel(e())).toList())
     },
   );
 }

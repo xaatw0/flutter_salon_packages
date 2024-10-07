@@ -8,17 +8,17 @@ import 'service_locator_test.mocks.dart';
 void main() {
   test('real', () {
     final target = ServiceLocator.getInstance();
-    expect(target.ollamaTalkServerUrl, 'http://192.168.1.33:8080');
+    expect(target.ollamaTalkServerUrl, '192.168.1.33:8080');
   });
 
   test('mock', () {
     final mock = MockServiceLocator();
-    when(mock.ollamaTalkServerUrl).thenReturn('http://test.com');
-    expect(mock.ollamaTalkServerUrl, 'http://test.com');
+    when(mock.ollamaTalkServerUrl).thenReturn('test.com');
+    expect(mock.ollamaTalkServerUrl, 'test.com');
 
     expect(
       ServiceLocator.getInstance(mock).ollamaTalkServerUrl,
-      'http://test.com',
+      'test.com',
     );
   });
 }

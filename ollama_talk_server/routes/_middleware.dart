@@ -4,7 +4,7 @@ import 'package:ollama_talk_server/objectbox.g.dart';
 import 'package:ollama_talk_server/src/domain/server.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
-const kBaseUrl = 'http://192.168.1.33:5050/api';
+const kBaseUrl = '192.168.1.33:5050/api';
 
 final httpClient = http.Client();
 

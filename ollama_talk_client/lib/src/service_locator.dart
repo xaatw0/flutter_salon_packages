@@ -15,5 +15,5 @@ class ServiceLocator {
   }
 
   final httpClient = http.Client();
-  final ollamaTalkServerUrl = 'http://192.168.1.33:8080';
+  final ollamaTalkServerUrl = '192.168.1.33:8080';
 }

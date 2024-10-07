@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 
+//
 Future<Response> onRequest(RequestContext context) async {
   try {
     return switch (context.request.method) {
@@ -26,8 +27,23 @@ Future<Response> _onPost(RequestContext context) async {
         body: {'message': 'prompt not found'});
   }
 
-  final server = context.read<TalkServer>();
-  final result = server.sendMessageToOllamaAndGetResult(prompt);
+  final chatId = int.tryParse(formData.fields['id'] ?? '');
+  if (chatId == null) {
+    return Response.json(
+        statusCode: HttpStatus.badRequest,
+        body: {'message': 'id not found or not number format'});
+  }
+
+  final client = context.read<TalkServer>();
+
+  final chat = await client.loadChat(chatId);
+  if (chat == null) {
+    throw Exception('No specified chat: chatId=$chatId');
+  } else if (chat.title.isEmpty) {
+    chat.title = 'no title';
+  }
+
+  final result = client.sendMessageWithoutStream(chat, prompt);
 
   return Response.json(
     body: {'message': result},

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dart_frog/dart_frog.dart';
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
@@ -278,6 +279,22 @@ class TalkServer {
         DocumentEmbeddingEntity_.vector
             .nearestNeighborsF32(embedding.vector, limit));
     return query.build().find();
+  }
+
+  Future<List<LlmModel>> loadLocalLlmModes() async {
+    final models = await ollamaServer.tags();
+    return models
+        .where((e) => !e.isEmbeddingModel())
+        .map((e) => LlmModel(e.name))
+        .toList();
+  }
+
+  Future<List<EmbeddingModel>> loadLocalEmbeddingModel() async {
+    final models = await ollamaServer.tags();
+    return models
+        .where((e) => e.isEmbeddingModel())
+        .map((e) => EmbeddingModel(e.name))
+        .toList();
   }
 
   Future<ShowResponseModel> showModelInformation(LlmModel model) async {

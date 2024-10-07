@@ -19,14 +19,15 @@ void main() {
       when(() => context.read<Future<TalkServer>>())
           .thenAnswer((_) => Future.value(ollama));
 
-      final llmDetailsEntity = LlmDetailsEntity(
+      final llmDetailsEntity = LlmDetailsData(
         format: 'gguf',
         family: 'llama',
         families: [],
         parameterSize: '13B',
         quantizationLevel: 'Q4_0',
       );
-      when(() => ollama.loadLocalModels()).thenAnswer((_) async => <LlmEntity>[
+      when(() => ollama.loadLocalLlmModels()).thenAnswer((_) async =>
+          <LlmEntity>[
             LlmEntity(
               name: 'model1',
               modifiedAt: DateTime.parse('2023-11-04T14:56:49.277302595-07:00'),

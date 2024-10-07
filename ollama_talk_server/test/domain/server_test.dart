@@ -17,7 +17,7 @@ import 'server_test.mocks.dart';
   MockSpec<http.Client>(),
   MockSpec<ServiceLocator>(),
   MockSpec<OllamaServer>(),
-  MockSpec<ChatResponseModel>(),
+  MockSpec<ChatResponseData>(),
 ])
 void main() {
   test('open chat', () async {
@@ -54,7 +54,7 @@ void main() {
     expect(chat1.system, 'system message');
     expect(chat1.messages.length, 0);
 
-    final chatRequest1 = ChatRequestModel(
+    final chatRequest1 = ChatRequestData(
         model: 'llm_model',
         messages: [
           ChatRequestMessage(
@@ -64,7 +64,7 @@ void main() {
         ],
         options: null);
     when(mockOllama.chatWithoutStream(chatRequest1)).thenAnswer((_) async =>
-        ChatResponseModel(
+        ChatResponseData(
             model: 'llm_model',
             createdAt: DateTime(2024, 1, 1, 0, 0, 1),
             message:
@@ -80,7 +80,7 @@ void main() {
     expect(message1?.message, 'prompt1');
     expect(message1?.response, 'response1');
 
-    final chatRequest2 = ChatRequestModel(
+    final chatRequest2 = ChatRequestData(
         model: 'llm_model',
         messages: [
           ChatRequestMessage(
@@ -94,7 +94,7 @@ void main() {
         ],
         options: null);
     when(mockOllama.chatWithoutStream(chatRequest2)).thenAnswer((_) async =>
-        ChatResponseModel(
+        ChatResponseData(
             model: 'llm_model',
             createdAt: DateTime(2024, 1, 1, 0, 0, 1),
             message:
@@ -144,7 +144,7 @@ void main() {
     expect(chat1.system, 'system message');
     expect(chat1.messages.length, 0);
 
-    final chatRequest1 = ChatRequestModel(
+    final chatRequest1 = ChatRequestData(
         model: 'llm_model',
         messages: [
           ChatRequestMessage(
@@ -155,7 +155,7 @@ void main() {
         options: null);
 
     final datetime = DateTime(2024, 1, 1);
-    final controller = StreamController<ChatResponseModel>();
+    final controller = StreamController<ChatResponseData>();
 
     when(mockOllama.chat(chatRequest1)).thenAnswer((_) => controller.stream);
 
@@ -173,17 +173,17 @@ void main() {
       emitsInOrder(['response1', 'response2', emitsDone]),
     );
 
-    controller.add(ChatResponseModel(
+    controller.add(ChatResponseData(
         model: 'llm_model',
         createdAt: datetime,
         message: ChatResponseMessage(role: 'assistant', content: 'response1'),
         done: false));
-    controller.add(ChatResponseModel(
+    controller.add(ChatResponseData(
         model: 'llm_model',
         createdAt: datetime,
         message: ChatResponseMessage(role: 'assistant', content: 'response2'),
         done: false));
-    controller.add(ChatResponseModel(
+    controller.add(ChatResponseData(
         model: 'llm_model', createdAt: datetime, done: true, message: null));
     controller.close();
 
@@ -223,7 +223,7 @@ void main() {
     expect(chat1.system, 'system message');
     expect(chat1.messages.length, 0);
 
-    final chatRequest1 = ChatRequestModel(
+    final chatRequest1 = ChatRequestData(
         model: 'llm_model',
         messages: [
           ChatRequestMessage(
@@ -233,7 +233,7 @@ void main() {
         ],
         options: null);
     when(mockOllama.chatWithoutStream(chatRequest1)).thenAnswer((_) async =>
-        ChatResponseModel(
+        ChatResponseData(
             model: 'llm_model',
             createdAt: DateTime(2024, 1, 1, 0, 0, 1),
             message:
@@ -260,14 +260,14 @@ void main() {
     final mockOllama = MockOllamaServer();
     when(mockOllama.embed(EmbeddingModel.kDefaultModel(), 'a')).thenAnswer(
       (_) => Future.value(
-        EmbedResponseModel(model: EmbeddingModel.kDefaultModel(), embeddings: [
+        EmbedResponseData(model: EmbeddingModel.kDefaultModel(), embeddings: [
           [1, 1]
         ]),
       ),
     );
     when(mockOllama.embed(EmbeddingModel.kDefaultModel(), 'b')).thenAnswer(
       (_) => Future.value(
-        EmbedResponseModel(model: EmbeddingModel.kDefaultModel(), embeddings: [
+        EmbedResponseData(model: EmbeddingModel.kDefaultModel(), embeddings: [
           [-1, -1]
         ]),
       ),

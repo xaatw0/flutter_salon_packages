@@ -125,7 +125,7 @@ void main() {
         ),
       ).thenAnswer((_) async => http.Response(body, HttpStatus.ok));
 
-      final chatRequest = ChatRequestModel(model: 'llama3.2', messages: [
+      final chatRequest = ChatRequestData(model: 'llama3.2', messages: [
         ChatRequestMessage(role: 'user', content: 'why is the sky blue?')
       ]);
       final result = await target.chatWithoutStream(chatRequest);

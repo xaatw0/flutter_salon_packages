@@ -1,11 +1,11 @@
-class TagsResponseModel {
+class TagsResponseData {
   final String name;
   final DateTime modifiedAt;
   final int size;
   final String digest;
   final _Details details;
 
-  const TagsResponseModel({
+  const TagsResponseData({
     required this.name,
     required this.modifiedAt,
     required this.size,
@@ -13,8 +13,8 @@ class TagsResponseModel {
     required this.details,
   });
 
-  factory TagsResponseModel.fromJson(Map<String, dynamic> json) {
-    return TagsResponseModel(
+  factory TagsResponseData.fromJson(Map<String, dynamic> json) {
+    return TagsResponseData(
       name: json['name'],
       modifiedAt: DateTime.parse(json['modified_at']),
       size: json['size'] ?? 0,

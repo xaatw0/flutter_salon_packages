@@ -46,7 +46,7 @@ void main() {
 }
 ''';
 
-    final result = ShowResponseModel.fromJson(jsonDecode(jsonSource));
+    final result = ShowResponseData.fromJson(jsonDecode(jsonSource));
     expect(result.parameters, '8.0B');
     expect(result.details.format, 'gguf');
   });

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ollama_talk_server/src/infrastructures/ollama/models/tags_response_model.dart';
+import 'package:ollama_talk_server/src/infrastructures/ollama/data/tags_response_data.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -41,7 +41,7 @@ void main() {
     final json = jsonDecode(jsonSource)['models'] as List<dynamic>;
     expect(json.length, 2);
 
-    final data = TagsResponseModel.fromJson(json[0]);
+    final data = TagsResponseData.fromJson(json[0]);
     expect(data.name, 'codellama:13b');
     expect(data.details.format, 'gguf');
   });

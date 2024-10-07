@@ -1,19 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 
-class ChatRequestModel {
+class ChatRequestData {
   final String model;
   final List<ChatRequestMessage> messages;
   final ChatRequestOptions? options;
 
-  ChatRequestModel({
+  ChatRequestData({
     required this.model,
     required this.messages,
     this.options,
   });
 
-  factory ChatRequestModel.fromJson(Map<String, dynamic> json) {
-    return ChatRequestModel(
+  factory ChatRequestData.fromJson(Map<String, dynamic> json) {
+    return ChatRequestData(
       model: json['model'],
       messages: (json['messages'] as List)
           .map((message) => ChatRequestMessage.fromJson(message))
@@ -40,7 +40,7 @@ class ChatRequestModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! ChatRequestModel) return false;
+    if (other is! ChatRequestData) return false;
     return model == other.model &&
         ListEquality().equals(messages, other.messages) &&
         options == other.options;

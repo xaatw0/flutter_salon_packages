@@ -5,7 +5,7 @@ void main() {
   group('EmbeddingModel Tests', () {
     test('1. Create class from constructor', () {
       // 1. Create an instance using the constructor
-      final embeddingModel = EmbedResponseModel(
+      final embeddingModel = EmbedResponseData(
         model: 'all-minilm',
         embeddings: [
           [
@@ -82,7 +82,7 @@ void main() {
         };
 
         // Create the object from JSON
-        final embeddingModel = EmbedResponseModel.fromJson(json);
+        final embeddingModel = EmbedResponseData.fromJson(json);
 
         // Verify the properties
         expect(embeddingModel.model, 'all-minilm');
@@ -129,7 +129,7 @@ void main() {
       };
 
       // Create the object from JSON
-      final embeddingModel = EmbedResponseModel.fromJson(json);
+      final embeddingModel = EmbedResponseData.fromJson(json);
 
       // Verify the properties
       expect(embeddingModel.model, 'all-minilm');

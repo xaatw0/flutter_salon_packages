@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:ollama_talk_server/src/infrastructures/ollama/models/generate_response_model.dart';
-import '../../../ollama_talk_server.dart';
-import 'models/tags_response_model.dart';
+import 'package:ollama_talk_server/ollama_talk_server.dart';
+
+import 'data/generate_response.dart';
+import 'data/tags_response_data.dart';
 
 /// Contact to OllamaServer
 class OllamaServer {
@@ -11,7 +12,7 @@ class OllamaServer {
   final String endpoint;
   final http.Client client;
 
-  Stream<GenerateResponseModel> generate(String model, String prompt) async* {
+  Stream<GenerateResponseData> generate(String model, String prompt) async* {
     var url = Uri.parse('https://$endpoint/generate');
     var headers = {'Content-Type': 'application/json'};
 
@@ -29,37 +30,37 @@ class OllamaServer {
     await for (final String dataLine in response.stream
         .transform(const Utf8Decoder())
         .transform(const LineSplitter())) {
-      final responseData = GenerateResponseModel.fromJson(jsonDecode(dataLine));
+      final responseData = GenerateResponseData.fromJson(jsonDecode(dataLine));
       yield responseData;
     }
   }
 
-  Future<EmbedResponseModel> embed(String model, String message) async {
+  Future<EmbedResponseData> embed(String model, String message) async {
     var url = Uri.parse('http://$endpoint/embed');
     var headers = {'Content-Type': 'application/json'};
     String body = jsonEncode({'model': model, 'input': message});
 
     final response = await client.post(url, body: body, headers: headers);
-    return EmbedResponseModel.fromJson(jsonDecode(response.body));
+    return EmbedResponseData.fromJson(jsonDecode(response.body));
   }
 
   /// List Local Models
-  Future<List<TagsResponseModel>> tags() async {
+  Future<List<TagsResponseData>> tags() async {
     var url = Uri.parse('http://$endpoint/tags');
     var headers = {'Content-Type': 'application/json'};
 
     final response = await client.get(url, headers: headers);
     final modelList = jsonDecode(response.body)['models'] as List<dynamic>;
-    return modelList.map((e) => TagsResponseModel.fromJson(e)).toList();
+    return modelList.map((e) => TagsResponseData.fromJson(e)).toList();
   }
 
   /// Show Model Information
-  Future<ShowResponseModel> show(String name) async {
+  Future<ShowResponseData> show(String name) async {
     final url = Uri.parse('$endpoint/show');
     final body = {'name': name};
     final response = await client.post(url, body: body);
 
-    return ShowResponseModel.fromJson(jsonDecode(response.body));
+    return ShowResponseData.fromJson(jsonDecode(response.body));
   }
 
   /// Pull a Model
@@ -71,7 +72,7 @@ class OllamaServer {
   }
 
   /// Chat Request (Streaming)
-  Stream<ChatResponseModel> chat(ChatRequestModel chatRequest) async* {
+  Stream<ChatResponseData> chat(ChatRequestData chatRequest) async* {
     var url = Uri.parse('http://$endpoint/chat');
     var headers = {'Content-Type': 'application/json'};
 
@@ -85,14 +86,14 @@ class OllamaServer {
     await for (final String dataLine in response.stream
         .transform(const Utf8Decoder())
         .transform(const LineSplitter())) {
-      final responseData = ChatResponseModel.fromJson(jsonDecode(dataLine));
+      final responseData = ChatResponseData.fromJson(jsonDecode(dataLine));
       yield responseData;
     }
   }
 
   /// Chat request (No streaming)
-  Future<ChatResponseModel> chatWithoutStream(
-      ChatRequestModel chatRequest) async {
+  Future<ChatResponseData> chatWithoutStream(
+      ChatRequestData chatRequest) async {
     var url = Uri.parse('http://$endpoint/chat');
     var headers = {'Content-Type': 'application/json'};
 
@@ -100,6 +101,6 @@ class OllamaServer {
         jsonEncode(chatRequest.toJson()..putIfAbsent('stream', () => false));
 
     final response = await client.post(url, body: body, headers: headers);
-    return ChatResponseModel.fromJson(jsonDecode(response.body));
+    return ChatResponseData.fromJson(jsonDecode(response.body));
   }
 }

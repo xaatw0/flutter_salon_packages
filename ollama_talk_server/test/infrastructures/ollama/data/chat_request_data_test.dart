@@ -8,7 +8,7 @@ void main() {
       // 1. コンストラクタからインスタンスを作成
       final message1 = ChatRequestMessage(role: 'user', content: 'Hello!');
       final options = ChatRequestOptions(seed: 101, temperature: 0.0);
-      final chatRequestModel = ChatRequestModel(
+      final chatRequestModel = ChatRequestData(
         model: 'llama3.2',
         messages: [message1],
         options: options,
@@ -26,7 +26,7 @@ void main() {
     test('image あり', () {
       final message1 =
           ChatRequestMessage(role: 'user', content: 'Hello!', images: ['test']);
-      final chatRequestModel = ChatRequestModel(
+      final chatRequestModel = ChatRequestData(
         model: 'llama3.2',
         messages: [message1],
       );
@@ -36,7 +36,7 @@ void main() {
     });
     test('image なし', () {
       final message1 = ChatRequestMessage(role: 'user', content: 'Hello!');
-      final chatRequestModel = ChatRequestModel(
+      final chatRequestModel = ChatRequestData(
         model: 'llama3.2',
         messages: [message1],
       );
@@ -58,7 +58,7 @@ void main() {
         ]
       };
 
-      final chatRequestModel = ChatRequestModel.fromJson(json1);
+      final chatRequestModel = ChatRequestData.fromJson(json1);
 
       // プロパティの確認
       expect(chatRequestModel.model, 'llama3.2');
@@ -90,7 +90,7 @@ void main() {
         ]
       };
 
-      final chatRequestModel = ChatRequestModel.fromJson(json2);
+      final chatRequestModel = ChatRequestData.fromJson(json2);
 
       // プロパティの確認
       expect(chatRequestModel.model, 'llama3.2');
@@ -131,7 +131,7 @@ void main() {
         ]
       };
 
-      final chatRequestModel = ChatRequestModel.fromJson(json3);
+      final chatRequestModel = ChatRequestData.fromJson(json3);
 
       // プロパティの確認
       expect(chatRequestModel.model, 'llava');
@@ -164,7 +164,7 @@ void main() {
         "options": {"seed": 101, "temperature": 0}
       };
 
-      final chatRequestModel = ChatRequestModel.fromJson(json4);
+      final chatRequestModel = ChatRequestData.fromJson(json4);
 
       // プロパティの確認
       expect(chatRequestModel.model, 'llama3.2');

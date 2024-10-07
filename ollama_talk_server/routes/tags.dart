@@ -8,7 +8,7 @@ import 'package:ollama_talk_server/ollama_talk_server.dart';
 Future<Response> onRequest(RequestContext context) async {
   final ollamaTalkClient = await context.read<TalkServer>();
 
-  final models = await ollamaTalkClient.loadLocalLlmModes();
+  final models = await ollamaTalkClient.loadLocalLlmModels();
 
   return Response.json(body: {"models": models.toList()});
 }

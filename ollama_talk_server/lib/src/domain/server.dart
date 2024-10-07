@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dart_frog/dart_frog.dart';
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
 import '../../ollama_talk_server.dart';
-import 'package:ollama_talk_common/src/value_objects/chat_id.dart';
+
+import '../infrastructures/ollama/data/chat_request_data.dart';
 
 ///
 ///
@@ -66,7 +66,7 @@ class TalkServer {
 
     // send message to ollama server
     final chatRequest =
-        ChatRequestModel(model: chat.llmModel, messages: messages);
+        ChatRequestData(model: chat.llmModel, messages: messages);
 
     final responseModel = await ollamaServer.chatWithoutStream(chatRequest);
     message.receiveResponse(responseModel.message!.content, responseModel.done);
@@ -107,11 +107,11 @@ class TalkServer {
 
     // send message to ollama server
     final chatRequest =
-        ChatRequestModel(model: chat.llmModel, messages: messages);
+        ChatRequestData(model: chat.llmModel, messages: messages);
     final finalMessage = StringBuffer();
     final responseModelStream = await ollamaServer.chat(chatRequest);
 
-    await for (final ChatResponseModel model in responseModelStream) {
+    await for (final ChatResponseData model in responseModelStream) {
       if (model.done == false) {
         final content = model.message!.content;
         finalMessage.write(content);
@@ -281,28 +281,31 @@ class TalkServer {
     return query.build().find();
   }
 
-  Future<List<LlmModel>> loadLocalLlmModes() async {
+  Future<List<LlmModel>> loadLocalLlmModels() async {
+    return _convertModels<LlmModel>(true, (e) => LlmModel(e));
+  }
+
+  Future<List<EmbeddingModel>> loadLocalEmbeddingModels() async {
+    return _convertModels<EmbeddingModel>(false, (e) => EmbeddingModel(e));
+  }
+
+  Future<List<T>> _convertModels<T>(
+    bool isEmbeddingModel,
+    T convert(String value),
+  ) async {
     final models = await ollamaServer.tags();
     return models
-        .where((e) => !e.isEmbeddingModel())
-        .map((e) => LlmModel(e.name))
+        .where((e) => e.isEmbeddingModel() == isEmbeddingModel)
+        .map((e) => convert(e.name))
         .toList();
   }
 
-  Future<List<EmbeddingModel>> loadLocalEmbeddingModel() async {
-    final models = await ollamaServer.tags();
-    return models
-        .where((e) => e.isEmbeddingModel())
-        .map((e) => EmbeddingModel(e.name))
-        .toList();
-  }
-
-  Future<ShowResponseModel> showModelInformation(LlmModel model) async {
+  Future<ShowResponseData> showModelInformation(LlmModel model) async {
     final url = Uri.parse('$baseUrl/show');
     final body = {'name': model()};
     final response = await client.post(url, body: body);
 
-    return ShowResponseModel.fromJson(jsonDecode(response.body));
+    return ShowResponseData.fromJson(jsonDecode(response.body));
   }
 
   Future<bool> pullModel(String modelName) async {

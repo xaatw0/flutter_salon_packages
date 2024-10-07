@@ -1,11 +1,12 @@
-import 'package:ollama_talk_server/src/infrastructures/ollama/models/generate_response_model.dart';
+import 'package:ollama_talk_server/src/infrastructures/ollama/data/generate_response.dart';
+
 import 'package:test/test.dart';
 
 void main() {
   group('GenerateResponseModel tests', () {
     // 1. 通常のコンストラクタからクラスを作成するテスト
     test('Create instance using constructor', () {
-      final model = GenerateResponseModel(
+      final model = GenerateResponseData(
         model: 'llama3.2',
         createdAt: DateTime.parse('2023-08-04T08:52:19.385406455-07:00'),
         response: 'The',
@@ -35,7 +36,7 @@ void main() {
         "eval_duration": 4709213000
       };
 
-      final model = GenerateResponseModel.fromJson(json);
+      final model = GenerateResponseData.fromJson(json);
 
       expect(model.model, 'llama3.2');
       expect(model.createdAt, DateTime.parse('2023-08-04T19:22:45.499127Z'));

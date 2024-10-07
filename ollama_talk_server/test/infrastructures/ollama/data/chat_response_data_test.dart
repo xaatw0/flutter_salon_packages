@@ -1,4 +1,4 @@
-import 'package:ollama_talk_server/src/infrastructures/ollama/models/chat_response_model.dart';
+import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -11,7 +11,7 @@ void main() {
         images: null,
       );
 
-      final chatResponse = ChatResponseModel(
+      final chatResponse = ChatResponseData(
         model: 'llama3.2',
         createdAt: DateTime.parse('2023-12-12T14:13:43.416799Z'),
         message: message,
@@ -50,7 +50,7 @@ void main() {
         };
 
         // JSONからオブジェクトを作成
-        final chatResponse = ChatResponseModel.fromJson(json);
+        final chatResponse = ChatResponseData.fromJson(json);
 
         // プロパティの確認
         expect(chatResponse.model, 'llama3.2');
@@ -76,7 +76,7 @@ void main() {
         };
 
         // JSONからオブジェクトを作成
-        final chatResponse = ChatResponseModel.fromJson(json);
+        final chatResponse = ChatResponseData.fromJson(json);
 
         // プロパティの確認
         expect(chatResponse.model, 'llama3.2');
@@ -111,7 +111,7 @@ void main() {
         };
 
         // JSONからオブジェクトを作成
-        final chatResponse = ChatResponseModel.fromJson(json);
+        final chatResponse = ChatResponseData.fromJson(json);
 
         // プロパティの確認
         expect(chatResponse.model, 'llava');
@@ -147,7 +147,7 @@ void main() {
         };
 
         // JSONからオブジェクトを作成
-        final chatResponse = ChatResponseModel.fromJson(json);
+        final chatResponse = ChatResponseData.fromJson(json);
 
         // プロパティの確認
         expect(chatResponse.model, 'llama3.2');

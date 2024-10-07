@@ -23,8 +23,8 @@ Future<Response> onRequest(RequestContext context) async {
 
 Future<Response> _onGet(RequestContext context) async {
   final client = context.read<TalkServer>();
-  final llmModels = client.loadLocalLlmModes();
-  final embeddedModels = client.loadLocalEmbeddingModel();
+  final llmModels = client.loadLocalLlmModels();
+  final embeddedModels = client.loadLocalEmbeddingModels();
 
   return Response.json(
     body: {

@@ -92,14 +92,14 @@ class _ModelInfo {
   }
 }
 
-class ShowResponseModel {
+class ShowResponseData {
   final String modelfile;
   final String parameters;
   final String template;
   final _Details details;
   final _ModelInfo modelInfo;
 
-  ShowResponseModel({
+  ShowResponseData({
     required this.modelfile,
     required this.parameters,
     required this.template,
@@ -107,8 +107,8 @@ class ShowResponseModel {
     required this.modelInfo,
   });
 
-  factory ShowResponseModel.fromJson(Map<String, dynamic> json) {
-    return ShowResponseModel(
+  factory ShowResponseData.fromJson(Map<String, dynamic> json) {
+    return ShowResponseData(
       modelfile: json['modelfile'],
       parameters: json['parameters'],
       template: json['template'],

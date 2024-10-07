@@ -1,46 +1,44 @@
-class GenerateResponseModel {
+/// Response for Generate a chat completion
+/// https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion
+class ChatResponseData {
   final String model;
   final DateTime createdAt;
-  final String? response;
+  final ChatResponseMessage? message;
   final bool done;
-  final List<int>? context;
   final int? totalDuration;
   final int? loadDuration;
   final int? promptEvalCount;
   final int? promptEvalDuration;
   final int? evalCount;
   final int? evalDuration;
-  final String? doneReason;
 
-  GenerateResponseModel({
+  ChatResponseData({
     required this.model,
     required this.createdAt,
-    this.response,
+    required this.message,
     required this.done,
-    this.context,
     this.totalDuration,
     this.loadDuration,
     this.promptEvalCount,
     this.promptEvalDuration,
     this.evalCount,
     this.evalDuration,
-    this.doneReason,
   });
 
-  factory GenerateResponseModel.fromJson(Map<String, dynamic> json) {
-    return GenerateResponseModel(
+  factory ChatResponseData.fromJson(Map<String, dynamic> json) {
+    return ChatResponseData(
       model: json['model'],
       createdAt: DateTime.parse(json['created_at']),
-      response: json['response'],
+      message: json['message'] == null
+          ? null
+          : ChatResponseMessage.fromJson(json['message']),
       done: json['done'],
-      context: json['context'] != null ? List<int>.from(json['context']) : null,
       totalDuration: json['total_duration'],
       loadDuration: json['load_duration'],
       promptEvalCount: json['prompt_eval_count'],
       promptEvalDuration: json['prompt_eval_duration'],
       evalCount: json['eval_count'],
       evalDuration: json['eval_duration'],
-      doneReason: json['done_reason'],
     );
   }
 
@@ -48,16 +46,42 @@ class GenerateResponseModel {
     return {
       'model': model,
       'created_at': createdAt.toIso8601String(),
-      'response': response,
+      'message': message?.toJson(),
       'done': done,
-      'context': context,
       'total_duration': totalDuration,
       'load_duration': loadDuration,
       'prompt_eval_count': promptEvalCount,
       'prompt_eval_duration': promptEvalDuration,
       'eval_count': evalCount,
       'eval_duration': evalDuration,
-      'done_reason': doneReason,
+    };
+  }
+}
+
+class ChatResponseMessage {
+  final String role;
+  final String content;
+  final List<String>? images;
+
+  ChatResponseMessage({
+    required this.role,
+    required this.content,
+    this.images,
+  });
+
+  factory ChatResponseMessage.fromJson(Map<String, dynamic> json) {
+    return ChatResponseMessage(
+      role: json['role'],
+      content: json['content'],
+      images: json['images'] != null ? List<String>.from(json['images']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'role': role,
+      'content': content,
+      'images': images,
     };
   }
 }

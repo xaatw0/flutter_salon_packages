@@ -30,8 +30,9 @@ class DocumentEmbeddingBox {
     List<double> vector, {
     int count = 5,
   }) {
-    final query = store.box<DocumentEmbeddingBox>().query(
-        DocumentEmbeddingEntity_.vector.nearestNeighborsF32(vector, count));
+    final query = store
+        .box<DocumentEmbeddingBox>()
+        .query(DocumentEmbeddingBox_.vector.nearestNeighborsF32(vector, count));
 
     return query.build().findAsync();
   }

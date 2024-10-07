@@ -4,7 +4,6 @@ import '../../../objectbox.g.dart'; // auto generate file
 import 'package:ollama_talk_server/src/domain/service_locator.dart';
 
 import 'chat_message_box.dart';
-import 'package:ollama_talk_common/src/data/message_data.dart';
 
 @Entity()
 class ChatBox {
@@ -37,9 +36,9 @@ class ChatBox {
     final orderQuery = store
         .box<ChatMessageBox>()
         .query()
-        .order(ChatMessageEntity_.id, flags: Order.descending);
+        .order(ChatMessageBox_.id, flags: Order.descending);
 
-    orderQuery.link(ChatMessageEntity_.chat, ChatEntity_.id.equals(id));
+    orderQuery.link(ChatMessageBox_.chat, ChatBox_.id.equals(id));
 
     return (orderQuery.build()..limit = limit).find();
   }
@@ -56,7 +55,7 @@ class ChatBox {
     return system.isEmpty ? null : systemMessage;
   }
 
-  ChatModel toChatModel() {
+  ChatEntity toChatModel() {
     final chatMessage = messages.map(
       (e) => ChatMessageModel(
         dateTime: e.dateTime,
@@ -65,7 +64,7 @@ class ChatBox {
       ),
     );
 
-    return ChatModel(
+    return ChatEntity(
       id: id,
       title: title,
       llmModel: llmModel,
@@ -74,8 +73,8 @@ class ChatBox {
     );
   }
 
-  ChatModel toSummary() {
-    return ChatModel(
+  ChatEntity toSummary() {
+    return ChatEntity(
       id: id,
       title: title,
       llmModel: llmModel,

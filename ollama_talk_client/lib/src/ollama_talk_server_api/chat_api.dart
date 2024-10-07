@@ -39,25 +39,25 @@ class ChatApi {
     return json['message'];
   }
 
-  Future<List<ChatModel>> loadChatList() async {
+  Future<List<ChatEntity>> loadChatList() async {
     final apiPath = '/chat';
     final url = Uri.parse('http://${infraInfo.apiUrlBase}$apiPath');
 
     final response = await infraInfo.httpClient.get(url);
     final json = jsonDecode(response.body);
     final list = (jsonDecode(json['chat_list']) as List<dynamic>)
-        .map((e) => ChatModel.fromJson(e))
+        .map((e) => ChatEntity.fromJson(e))
         .toList();
     return list;
   }
 
-  Future<ChatModel> loadChat(int chatId) async {
+  Future<ChatEntity> loadChat(int chatId) async {
     final apiPath = '/chat/$chatId';
     final url = Uri.parse('http://${infraInfo.apiUrlBase}$apiPath');
 
     final response = await infraInfo.httpClient.get(url);
     final json = jsonDecode(response.body);
-    final data = ChatModel.fromJson(json);
+    final data = ChatEntity.fromJson(json);
     return data;
   }
 

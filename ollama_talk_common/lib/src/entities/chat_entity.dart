@@ -1,5 +1,5 @@
-class ChatModel {
-  const ChatModel({
+class ChatEntity {
+  const ChatEntity({
     required this.id,
     required this.title,
     required this.llmModel,
@@ -13,12 +13,12 @@ class ChatModel {
   final String system;
   final List<ChatMessageModel> messages;
 
-  factory ChatModel.fromJson(Map<String, dynamic> json) {
+  factory ChatEntity.fromJson(Map<String, dynamic> json) {
     final messages = List<ChatMessageModel>.from(
         json['messages'].map((message) => ChatMessageModel.fromJson(message)))
       ..sort((e1, e2) => e1.dateTime.compareTo(e2.dateTime));
 
-    return ChatModel(
+    return ChatEntity(
       id: json['id'],
       title: json['title'],
       llmModel: json['llm_model'],

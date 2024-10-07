@@ -44,7 +44,7 @@ class TalkServer {
   }) async {
     // get message from DB
     final queryMessage = store.box<ChatMessageBox>().query()
-      ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat.id));
+      ..link(ChatMessageBox_.chat, ChatBox_.id.equals(chat.id));
     final listMessage = queryMessage.build().find();
 
     // make messages
@@ -85,7 +85,7 @@ class TalkServer {
   }) async* {
     // get message from DB
     final queryMessage = store.box<ChatMessageBox>().query()
-      ..link(ChatMessageEntity_.chat, ChatEntity_.id.equals(chat.id));
+      ..link(ChatMessageBox_.chat, ChatBox_.id.equals(chat.id));
     final listMessage = queryMessage.build().find();
 
     // make messages
@@ -224,7 +224,7 @@ class TalkServer {
   void _deleteDocumentAndEmbedding(int documentId) {
     final embeddingIds = store
         .box<DocumentEmbeddingBox>()
-        .query(DocumentEmbeddingEntity_.document.equals(documentId));
+        .query(DocumentEmbeddingBox_.document.equals(documentId));
 
     store.runInTransaction(TxMode.write, () {
       store
@@ -237,7 +237,7 @@ class TalkServer {
   }
 
   Stream<Query<DocumentBox>> watchDocuments() {
-    return (store.box<DocumentBox>().query().order(DocumentEntity_.createDate))
+    return (store.box<DocumentBox>().query().order(DocumentBox_.createDate))
         .watch(triggerImmediately: true);
   }
 
@@ -252,15 +252,15 @@ class TalkServer {
   Stream<Query<ChatMessageBox>> watchMessages(ChatBox chat) {
     return (store
             .box<ChatMessageBox>()
-            .query(ChatMessageEntity_.chat.equals(chat.id))
-          ..order(ChatMessageEntity_.dateTime))
+            .query(ChatMessageBox_.chat.equals(chat.id))
+          ..order(ChatMessageBox_.dateTime))
         .watch(triggerImmediately: true);
   }
 
   DocumentBox? _findDocument(String fileName) {
     return store
         .box<DocumentBox>()
-        .query(DocumentEntity_.fileName.equals(fileName))
+        .query(DocumentBox_.fileName.equals(fileName))
         .build()
         .findFirst();
   }
@@ -271,9 +271,9 @@ class TalkServer {
   Future<List<DocumentEmbeddingBox>> getRelatedEmbedding(String prompt,
       {int limit = 5}) async {
     final embedding = await _createEmbedding(prompt);
-    final query = store.box<DocumentEmbeddingBox>().query(
-        DocumentEmbeddingEntity_.vector
-            .nearestNeighborsF32(embedding.vector, limit));
+    final query = store.box<DocumentEmbeddingBox>().query(DocumentEmbeddingBox_
+        .vector
+        .nearestNeighborsF32(embedding.vector, limit));
     return query.build().find();
   }
 

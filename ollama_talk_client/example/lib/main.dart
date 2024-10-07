@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late final infraInfo = InfraInfo(http.Client(), serverUrl);
 
-  late Completer<List<ChatModel>> _chatList;
+  late Completer<List<ChatEntity>> _chatList;
   late final _llmModels = Completer<List<LlmModel>>();
 
   LlmModel? _selectedModel;
@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int? _chatId;
 
-  ChatModel? _currentChat;
+  ChatEntity? _currentChat;
 
   late final _chatApi = ChatApi(infraInfo);
 
@@ -225,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
         message: _messageController.text,
         response: '');
     _chatId ??= await _openNewChat();
-    _currentChat ??= ChatModel(
+    _currentChat ??= ChatEntity(
         id: _chatId!,
         title: '',
         llmModel: _selectedModel!(),
@@ -265,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return chatId;
   }
 
-  Future<void> _selectChat(ChatModel chat) async {
+  Future<void> _selectChat(ChatEntity chat) async {
     final model =
         (await (_llmModels.future)).firstWhere((e) => e() == chat.llmModel);
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:test/test.dart';
 
@@ -16,35 +17,11 @@ void main() {
     test('responds with a 200', () async {
       final context = _MockRequestContext();
       final ollama = _MockOllamaTalkClient();
-      when(() => context.read<Future<TalkServer>>())
-          .thenAnswer((_) => Future.value(ollama));
+      when(() => context.read<TalkServer>()).thenAnswer((_) => ollama);
+      when(() => ollama.loadLocalLlmModels()).thenAnswer((_) =>
+          Future.value(<LlmModel>[LlmModel('model1'), LlmModel('model2')]));
 
-      final llmDetailsEntity = LlmDetailsData(
-        format: 'gguf',
-        family: 'llama',
-        families: [],
-        parameterSize: '13B',
-        quantizationLevel: 'Q4_0',
-      );
-      when(() => ollama.loadLocalLlmModels()).thenAnswer((_) async =>
-          <LlmEntity>[
-            LlmEntity(
-              name: 'model1',
-              modifiedAt: DateTime.parse('2023-11-04T14:56:49.277302595-07:00'),
-              size: 7365960935,
-              digest: '',
-              details: llmDetailsEntity,
-            ),
-            LlmEntity(
-              name: 'model2',
-              modifiedAt: DateTime.parse('2023-11-04T14:56:49.277302595-07:00'),
-              size: 7365960935,
-              digest: '',
-              details: llmDetailsEntity,
-            )
-          ]);
-
-      final source = '{\"models\":[\"model1\",\"model2\"]}';
+      final source = '{"models":["model1","model2"]}';
       final response = await route.onRequest(context);
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(

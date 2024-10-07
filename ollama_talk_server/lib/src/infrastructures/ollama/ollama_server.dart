@@ -12,6 +12,7 @@ class OllamaServer {
   final String endpoint;
   final http.Client client;
 
+  /// Generate a completion
   Stream<GenerateResponseData> generate(String model, String prompt) async* {
     var url = Uri.parse('https://$endpoint/generate');
     var headers = {'Content-Type': 'application/json'};
@@ -35,6 +36,7 @@ class OllamaServer {
     }
   }
 
+  /// Generate Embeddings
   Future<EmbedResponseData> embed(String model, String message) async {
     var url = Uri.parse('http://$endpoint/embed');
     var headers = {'Content-Type': 'application/json'};

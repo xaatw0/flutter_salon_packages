@@ -149,55 +149,55 @@ class TalkServer {
   }
 
   // Document
+
   Future<DocumentEmbeddingEntity> _createEmbedding(String message) async {
-    final vectorData = _getEmbeddingVector(message);
+    final embedResponseModel =
+        ollamaServer.embed(EmbeddingModel.kDefaultModel(), message);
     final embeddingData = DocumentEmbeddingEntity(
       message: message,
-      vector: await vectorData,
+      vector: (await embedResponseModel).embeddings.first,
     );
     return embeddingData;
-  }
-
-  Future<List<double>> _getEmbeddingVector(String message) async {
-    var url = Uri.parse('$baseUrl/embeddings');
-    var headers = {'Content-Type': 'application/json'};
-    String body = jsonEncode(
-        {'model': EmbeddingModel.kMxbaiEmbedLarge(), 'prompt': message});
-
-    final response = await client.post(url, body: body, headers: headers);
-    final vectorList = jsonDecode(response.body)['embedding'] as List<dynamic>;
-    return vectorList.map((e) => e as double).toList();
   }
 
   Future<List<DocumentEmbeddingEntity>> findRelatedInformation(
     String message,
   ) async {
-    final vector = await _getEmbeddingVector(message);
-    return DocumentEmbeddingEntity.findRelatedInformation(store, vector);
+    final embedding = await _createEmbedding(message);
+    return DocumentEmbeddingEntity.findRelatedInformation(
+        store, embedding.vector);
   }
 
-  Future<void> insertDocument(
-      String fileName, String fileData, String memo) async {
+  /// save new document into DB
+  Future<List<DocumentEmbeddingEntity>> insertDocument(
+    String fileName,
+    String fileData, {
+    String? memo,
+  }) async {
     final existData = _findDocument(fileName);
-
     if (existData != null) {
-      throw Exception('$fileName is exist');
+      throw Exception(
+          '$fileName is exist. Change the file name. If you want to update this file, please delete it before.');
     }
 
-    final document = DocumentEntity(
-        fileName: fileName, memo: memo, createDate: DateTime.now());
+    var document = DocumentEntity(
+      fileName: fileName,
+      memo: memo ?? '',
+      createDate: DateTime.now(),
+    ).save(store);
 
-    store.box<DocumentEntity>().put(document);
-
-    final lines = const LineSplitter().convert(fileData);
-    for (final line in lines) {
+    final futures = <Future<DocumentEmbeddingEntity>>[];
+    for (final line in LineSplitter.split(fileData)) {
       if (line.isEmpty) {
         continue;
       }
-      final entity = await _createEmbedding(line);
-      entity.document.target = document;
-      store.box<DocumentEmbeddingEntity>().put(entity);
+
+      final entity = (await _createEmbedding(line))
+        ..document.target = await document;
+      futures.add(entity.save(store));
     }
+
+    return Future.wait(futures);
   }
 
   Future<void> removeDocument(String fileName) async {
@@ -273,10 +273,10 @@ class TalkServer {
   // find RagData
   Future<List<DocumentEmbeddingEntity>> getRelatedEmbedding(String prompt,
       {int limit = 5}) async {
-    final vector = _getEmbeddingVector(prompt);
+    final embedding = await _createEmbedding(prompt);
     final query = store.box<DocumentEmbeddingEntity>().query(
         DocumentEmbeddingEntity_.vector
-            .nearestNeighborsF32(await vector, limit));
+            .nearestNeighborsF32(embedding.vector, limit));
     return query.build().find();
   }
 

@@ -17,8 +17,9 @@ class DocumentEntity {
     required this.createDate,
   });
 
-  Future<int> save(Store store) {
-    return store.box<DocumentEntity>().putAsync(this);
+  Future<DocumentEntity> save(Store store) async {
+    final id = store.box<DocumentEntity>().putAsync(this);
+    return store.box<DocumentEntity>().get(await id)!;
   }
 
   factory DocumentEntity.fromJson(Map<String, dynamic> json) {

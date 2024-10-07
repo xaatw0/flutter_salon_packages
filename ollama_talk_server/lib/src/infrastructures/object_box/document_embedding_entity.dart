@@ -20,8 +20,9 @@ class DocumentEmbeddingEntity {
     required this.message,
   });
 
-  Future<int> save(Store store) {
-    return store.box<DocumentEmbeddingEntity>().putAsync(this);
+  Future<DocumentEmbeddingEntity> save(Store store) async {
+    final id = store.box<DocumentEmbeddingEntity>().putAsync(this);
+    return store.box<DocumentEmbeddingEntity>().get(await id)!;
   }
 
   static Future<List<DocumentEmbeddingEntity>> findRelatedInformation(

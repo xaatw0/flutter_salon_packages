@@ -72,13 +72,12 @@ void main() {
             done: true));
 
     DateTime now = DateTime(2024, 1, 1, 0, 0, 0);
-    final message_id1 =
+    final message1 =
         await server.sendMessageWithoutStream(chat1, 'prompt1', dateTime: now);
 
-    final message1 = store.box<ChatMessageBox>().get(message_id1);
     expect(message1, isNotNull);
-    expect(message1?.message, 'prompt1');
-    expect(message1?.response, 'response1');
+    expect(message1.message, 'prompt1');
+    expect(message1.response, 'response1');
 
     final chatRequest2 = ChatRequestData(
         model: 'llm_model',
@@ -100,10 +99,9 @@ void main() {
             message:
                 ChatResponseMessage(role: 'assistant', content: 'response2'),
             done: true));
-    final message_id2 =
+    final message2 =
         await server.sendMessageWithoutStream(chat1, 'prompt2', dateTime: now);
 
-    final message2 = store.box<ChatMessageBox>().get(message_id2);
     expect(message2, isNotNull);
     expect(message2?.message, 'prompt2');
     expect(message2?.response, 'response2');

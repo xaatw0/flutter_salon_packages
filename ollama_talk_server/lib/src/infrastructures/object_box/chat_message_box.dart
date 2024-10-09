@@ -28,8 +28,9 @@ class ChatMessageBox {
     isDone = done;
   }
 
-  Future<int> save() {
-    return ServiceLocator.instance.store.box<ChatMessageBox>().putAsync(this);
+  Future<ChatMessageBox> save(Store store) async {
+    final id = store.box<ChatMessageBox>().putAsync(this);
+    return store.box<ChatMessageBox>().get(await id)!;
   }
 
   Map<String, dynamic> toJson() {

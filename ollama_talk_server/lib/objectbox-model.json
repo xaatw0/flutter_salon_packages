@@ -161,9 +161,28 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "12:7979840262436331245",
+      "lastPropertyId": "2:2709991636253843451",
+      "name": "TestBox",
+      "properties": [
+        {
+          "id": "1:7988444588065461020",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2709991636253843451",
+          "name": "name",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "11:1241858432595359945",
+  "lastEntityId": "12:7979840262436331245",
   "lastIndexId": "8:4523302852284793941",
   "lastRelationId": "2:8438332999886439681",
   "lastSequenceId": "0:0",

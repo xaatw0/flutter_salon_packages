@@ -37,7 +37,7 @@ class TalkServer {
   }
 
   /// chat without streaming
-  Future<int> sendMessageWithoutStream(
+  Future<ChatMessageBox> sendMessageWithoutStream(
     ChatBox chat,
     String prompt, {
     DateTime? dateTime,
@@ -73,7 +73,7 @@ class TalkServer {
     chat.messages.add(message);
 
     // save received message to DB
-    return message.save();
+    return message.save(store);
   }
 
   /// chat with streaming
@@ -84,8 +84,8 @@ class TalkServer {
     Completer<int>? messageId,
   }) async* {
     // get message from DB
-    final queryMessage = store.box<ChatMessageBox>().query()
-      ..link(ChatMessageBox_.chat, ChatBox_.id.equals(chat.id));
+    final queryMessage =
+        store.box<ChatMessageBox>().query(ChatMessageBox_.chat.equals(chat.id));
     final listMessage = queryMessage.build().find();
 
     // make messages
@@ -108,6 +108,7 @@ class TalkServer {
     // send message to ollama server
     final chatRequest =
         ChatRequestData(model: chat.llmModel, messages: messages);
+
     final finalMessage = StringBuffer();
     final responseModelStream = await ollamaServer.chat(chatRequest);
 
@@ -121,12 +122,14 @@ class TalkServer {
           dateTime: newMessage.dateTime,
           message: newMessage.message,
           response: finalMessage.toString(),
-        );
+        )..chat.target = chat;
+
         chat.messages.add(message);
+
         // save received message to DB
-        final id = message.save();
+        final messageInDb = message.save(store);
         if (messageId != null) {
-          messageId.complete(id);
+          messageId.complete((await messageInDb).id);
         }
       }
     }
@@ -281,11 +284,11 @@ class TalkServer {
   }
 
   Future<List<LlmModel>> loadLocalLlmModels() async {
-    return _convertModels<LlmModel>(true, (e) => LlmModel(e));
+    return _convertModels<LlmModel>(false, (e) => LlmModel(e));
   }
 
   Future<List<EmbeddingModel>> loadLocalEmbeddingModels() async {
-    return _convertModels<EmbeddingModel>(false, (e) => EmbeddingModel(e));
+    return _convertModels<EmbeddingModel>(true, (e) => EmbeddingModel(e));
   }
 
   Future<List<T>> _convertModels<T>(

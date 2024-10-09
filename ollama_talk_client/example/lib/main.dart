@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.pop(context);
                     },
                   ),
-                  for (final chat in chatList)
+                  for (final chat in chatList.reversed)
                     ListTile(
                       title: Text(
                         chat.title.isNotEmpty ? chat.title : 'No title',
@@ -220,10 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void sendMessage() async {
-    final message = ChatMessageModel(
-        dateTime: DateTime.now(),
-        message: _messageController.text,
-        response: '');
+    final prompt = _messageController.text;
+    final message = ChatMessageEntity(
+        dateTime: DateTime.now(), message: prompt, response: '');
     _chatId ??= await _openNewChat();
     _currentChat ??= ChatEntity(
         id: _chatId!,
@@ -240,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final chatApi = ChatApi(infraInfo);
     await for (final responsePart in chatApi.sendMessage(
       _chatId!,
-      _messageController.text,
+      prompt,
     )) {
       _responseMessage += responsePart;
       _currentChat!.messages.removeLast();
@@ -253,6 +252,20 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _waitingResponse = false;
     });
+
+    if (_currentChat!.title.isEmpty) {
+      chatApi
+          .sendMessageAsFuture(_chatId!,
+              'Make a title for chat. First message is "$prompt". Give me only title.')
+          .then((title) async {
+        final newTitle = await _chatApi.updateTitle(_chatId!, title);
+        final newChat = _currentChat?.copyWith(title: newTitle.title);
+        setState(() {
+          _currentChat = newChat;
+        });
+        _loadChatList();
+      });
+    }
   }
 
   bool _canChangeLlmModel() {
@@ -279,6 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _selectNewChat() async {
     setState(() {
+      _chatId = null;
       _currentChat = null;
       _selectedModel = null;
     });

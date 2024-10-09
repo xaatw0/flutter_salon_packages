@@ -55,9 +55,9 @@ class ChatBox {
     return system.isEmpty ? null : systemMessage;
   }
 
-  ChatEntity toChatModel() {
+  ChatEntity toChatEntity() {
     final chatMessage = messages.map(
-      (e) => ChatMessageModel(
+      (e) => ChatMessageEntity(
         dateTime: e.dateTime,
         message: e.message,
         response: e.response,
@@ -88,7 +88,8 @@ class ChatBox {
     return store.box<ChatMessageBox>().putAsync(messageEntity);
   }
 
-  Future<int> save() {
-    return ServiceLocator.instance.store.box<ChatBox>().putAsync(this);
+  Future<ChatBox> save(Store store) async {
+    final id = store.box<ChatBox>().putAsync(this);
+    return store.box<ChatBox>().get(await id)!;
   }
 }

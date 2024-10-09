@@ -31,9 +31,8 @@ class TalkServer {
   }
 
   Future<ChatBox> openChat(String model, String system) async {
-    final chatEntity = ChatBox(llmModel: model, system: system);
-    final id = store.box<ChatBox>().putAsync(chatEntity);
-    return store.box<ChatBox>().get(await id)!;
+    final chat = ChatBox(llmModel: model, system: system);
+    return chat.save(store);
   }
 
   /// chat without streaming
@@ -151,6 +150,16 @@ class TalkServer {
     chat.messages.addAll(histories);
 
     return chat;
+  }
+
+  Future<ChatBox?> updateTitle(int chatId, String title) async {
+    final chat = store.box<ChatBox>().get(chatId);
+    if (chat == null) {
+      return null;
+    }
+
+    chat.title = title;
+    return chat.save(store);
   }
 
   // Document

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ollama_talk_client/ollama_talk_client.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
@@ -29,14 +30,17 @@ class ChatApi {
     return controller.stream;
   }
 
-  Future<String> sendMessageAsFuture(String prompt) async {
+  Future<String> sendMessageAsFuture(int chatId, String prompt) async {
     final apiPath = '/send_message_as_future';
 
     final url = Uri.parse('http://${infraInfo.apiUrlBase}$apiPath');
 
-    final response = await infraInfo.httpClient.get(url);
+    final body = {'id': chatId, 'prompt': prompt};
+    final response = await infraInfo.httpClient.post(url,
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+        body: jsonEncode(body));
     final json = jsonDecode(response.body);
-    return json['message'];
+    return json['data'];
   }
 
   Future<List<ChatEntity>> loadChatList() async {
@@ -74,5 +78,23 @@ class ChatApi {
 
     final chatId = json['chat_id'];
     return chatId;
+  }
+
+  Future<ChatEntity> updateTitle(int chatId, String title) async {
+    final apiPath = '/chat/$chatId';
+    final url = Uri.parse('http://${infraInfo.apiUrlBase}$apiPath');
+
+    final chat = ChatEntity(
+        id: chatId, title: title, llmModel: '', system: '', messages: []);
+    final body = chat.toJson()
+      ..removeWhere((_, value) => value != title && value != chatId);
+
+    final response =
+        await infraInfo.httpClient.post(url, body: jsonEncode(body));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == HttpStatus.ok) {
+      return ChatEntity.fromJson(json);
+    }
+    throw Exception(json['message']);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
@@ -19,15 +20,16 @@ Future<Response> onRequest(RequestContext context) async {
 }
 
 Future<Response> _onPost(RequestContext context) async {
-  final formData = await context.request.formData();
-  final prompt = formData.fields['prompt'];
+  final source = await context.request.body();
+  final body = jsonDecode(source);
+  final prompt = body['prompt'] as String?;
   if (prompt == null) {
     return Response.json(
         statusCode: HttpStatus.badRequest,
         body: {'message': 'prompt not found'});
   }
 
-  final chatId = int.tryParse(formData.fields['id'] ?? '');
+  final chatId = body['id'] as int?;
   if (chatId == null) {
     return Response.json(
         statusCode: HttpStatus.badRequest,
@@ -43,9 +45,10 @@ Future<Response> _onPost(RequestContext context) async {
     chat.title = 'no title';
   }
 
-  final result = client.sendMessageWithoutStream(chat, prompt);
+  final chatMessageBox = await client.sendMessageWithoutStream(chat, prompt);
 
-  return Response.json(
-    body: {'message': result},
-  );
+  return Response.json(body: {
+    'message': 'ok',
+    'data': chatMessageBox.response,
+  });
 }

@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 class ChatEntity {
   const ChatEntity({
     required this.id,
@@ -11,11 +13,11 @@ class ChatEntity {
   final String title;
   final String llmModel;
   final String system;
-  final List<ChatMessageModel> messages;
+  final List<ChatMessageEntity> messages;
 
   factory ChatEntity.fromJson(Map<String, dynamic> json) {
-    final messages = List<ChatMessageModel>.from(
-        json['messages'].map((message) => ChatMessageModel.fromJson(message)))
+    final messages = List<ChatMessageEntity>.from(
+        json['messages'].map((message) => ChatMessageEntity.fromJson(message)))
       ..sort((e1, e2) => e1.dateTime.compareTo(e2.dateTime));
 
     return ChatEntity(
@@ -38,10 +40,47 @@ class ChatEntity {
           List<dynamic>.from(messages.map((message) => message.toJson())),
     };
   }
+
+  // equalsメソッド
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    final ChatEntity otherEntity = other as ChatEntity;
+    return id == otherEntity.id &&
+        title == otherEntity.title &&
+        llmModel == otherEntity.llmModel &&
+        system == otherEntity.system &&
+        ListEquality().equals(messages, otherEntity.messages);
+  }
+
+  // hashCodeメソッド
+  @override
+  int get hashCode {
+    return Object.hash(
+      id,
+      title,
+      llmModel,
+      system,
+      ListEquality().hash(messages),
+    );
+  }
+
+  ChatEntity copyWith({
+    String? title,
+  }) {
+    return ChatEntity(
+      id: id,
+      title: title ?? this.title,
+      llmModel: llmModel,
+      system: system,
+      messages: messages,
+    );
+  }
 }
 
-class ChatMessageModel {
-  const ChatMessageModel({
+class ChatMessageEntity {
+  const ChatMessageEntity({
     required this.dateTime,
     required this.message,
     required this.response,
@@ -51,8 +90,8 @@ class ChatMessageModel {
   final String message;
   final String response;
 
-  factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
-    return ChatMessageModel(
+  factory ChatMessageEntity.fromJson(Map<String, dynamic> json) {
+    return ChatMessageEntity(
       dateTime: DateTime.parse(json['date_time']),
       message: json['message'],
       response: json['response'],
@@ -67,8 +106,8 @@ class ChatMessageModel {
     };
   }
 
-  ChatMessageModel withResponse(String newResponse) {
-    return ChatMessageModel(
+  ChatMessageEntity withResponse(String newResponse) {
+    return ChatMessageEntity(
         dateTime: dateTime, message: message, response: newResponse);
   }
 }

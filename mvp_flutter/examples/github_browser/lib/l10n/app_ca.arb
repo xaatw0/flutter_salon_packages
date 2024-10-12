@@ -1,0 +1,12 @@
+{"@@locale":"ca",
+"swapTheme":"Canvieu el mode de llum i el mode fosc de la pantalla",
+"searchInGithub":"Cerqueu a GitHub!",
+"search":"cerca",
+"sortOptions":"Ordena les opcions",
+"sortOk":"Conjunt",
+"sortCancel":"Cancel · lar",
+"searchExplain":"Podeu cercar a GitHub. Introduïu les paraules clau i premeu el botó de cerca",
+"changeSort":"Estableix el mètode d'ordenació per als resultats de la cerca",
+"searchResult":"Resultat",
+"notFound":"No s'ha trobat res",
+"goGithub":"Premeu per anar al dipòsit de GitHub"}

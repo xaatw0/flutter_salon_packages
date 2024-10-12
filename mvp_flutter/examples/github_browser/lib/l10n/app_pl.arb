@@ -1,0 +1,12 @@
+{"@@locale":"pl",
+"swapTheme":"Zamień tryb światła i ciemny tryb ekranu",
+"searchInGithub":"Wyszukaj w Github!",
+"search":"Szukaj",
+"sortOptions":"Opcje sortowania",
+"sortOk":"Ustawić",
+"sortCancel":"Anulować",
+"searchExplain":"Możesz wyszukiwać na GitHub. Wprowadź słowa kluczowe i naciśnij przycisk wyszukiwania",
+"changeSort":"Ustawia metodę sortowania dla wyników wyszukiwania",
+"searchResult":"Wynik",
+"notFound":"Nic nie znaleziono",
+"goGithub":"Naciśnij, aby przejść do repozytorium Github"}

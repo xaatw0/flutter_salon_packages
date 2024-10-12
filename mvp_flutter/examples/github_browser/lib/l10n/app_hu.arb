@@ -1,0 +1,12 @@
+{"@@locale":"hu",
+"swapTheme":"Cserélje ki a képernyő fény- és sötét módját",
+"searchInGithub":"Keresés a github -ban!",
+"search":"keresés",
+"sortOptions":"Rendezési lehetőségek",
+"sortOk":"Készlet",
+"sortCancel":"Megszünteti",
+"searchExplain":"Kereshet a GitHub -on. Kérjük, írja be a kulcsszavakat, és nyomja meg a Keresés gombot",
+"changeSort":"Beállítja a válogatási módszert a keresési eredményekhez",
+"searchResult":"Eredmény",
+"notFound":"Nincs találat",
+"goGithub":"Nyomja meg a gombot a GitHub tárolóhoz"}

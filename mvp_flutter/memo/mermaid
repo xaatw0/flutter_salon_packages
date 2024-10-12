@@ -1,0 +1,28 @@
+https://mermaid.live/
+
+sequenceDiagram
+    participant User
+    participant View
+    participant Presenter
+    participant Model
+
+    User->>View: ユーザー操作
+    View->>Presenter: 入力の通知
+    Presenter->>Model: ビジネスロジックの処理要求
+    Model-->>Presenter: 処理結果
+    Presenter->>View: UI更新データの提供
+    View-->>User: 更新されたUIの表示
+
+
+sequenceDiagram
+    participant User
+    participant View
+    participant Presenter
+    participant Model
+
+    User->>View: User operation
+    View->>Presenter: Input notification
+    Presenter->>Model: Business logic processing request
+    Model-->>Presenter: Processing result
+    Presenter->>View: Provision of UI update data
+    View-->>User: Display of updated UI

@@ -35,21 +35,21 @@ class _DummyCounterPresenter extends CounterPresenter {
 
   @override
   void decrementCounter() {
-    print('called: decrementCounter() ');
+    debugPrint('called: decrementCounter() ');
   }
 
   @override
   void incrementCounter() {
-    print('called: incrementCounter()');
+    debugPrint('called: incrementCounter()');
   }
 
   @override
   void onChangeNumberFormatter(NumberFormatter? formatter) {
-    print('called: onChangeNumberFormatter(${formatter?.name ?? 'NULL'})');
+    debugPrint('called: onChangeNumberFormatter(${formatter?.name ?? 'NULL'})');
   }
 
   @override
   Future<void> resetCounter() async {
-    print('called: resetCounter()');
+    debugPrint('called: resetCounter()');
   }
 }

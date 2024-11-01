@@ -36,4 +36,15 @@ class CounterModel {
   CounterModel changeFormatter(NumberFormatter formatter) {
     return CounterModel(_counter, formatter);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CounterModel &&
+          runtimeType == other.runtimeType &&
+          _counter == other._counter &&
+          _formatter == other._formatter;
+
+  @override
+  int get hashCode => _counter.hashCode ^ _formatter.hashCode;
 }

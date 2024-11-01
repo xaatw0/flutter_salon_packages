@@ -1,7 +1,7 @@
 name: mvp_flutter
 description: "A framework that easily implements the MVP(Model-View-Presenter) architecture in Flutter"
-version: 0.0.1
-homepage: "https://github.com/xaatw0/flutter_salon_packages/mvp"
+version: 0.0.2
+homepage: "https://github.com/xaatw0/flutter_salon_packages/tree/main/mvp_flutter"
 
 environment:
   sdk: '>=3.4.4 <4.0.0'

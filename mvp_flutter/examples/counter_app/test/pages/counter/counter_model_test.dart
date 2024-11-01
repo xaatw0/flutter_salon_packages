@@ -3,7 +3,6 @@ import 'package:counter_app/page/counter/counter_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:counter_app/page/counter/counter_view.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 
 @GenerateNiceMocks([

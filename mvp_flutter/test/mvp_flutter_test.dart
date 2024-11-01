@@ -65,6 +65,19 @@ class CounterPresenter {
   // public property and method
   int get counter => _model.counter;
   void incrementCounter() => _delegate.refresh(_view, _model.increase());
+
+  void noChange() => _delegate.refresh(_view, _model);
+
+  void valueZero() => _delegate.refresh(_view, CounterModel(0));
+
+  void valueZeroWithCondition() =>
+      _delegate.refresh(_view, CounterModel(0), updateWhen: (e) => e.counter);
+
+  void incrementCounterWithCondition() => _delegate.refresh(
+        _view,
+        _model.increase(),
+        updateWhen: (e) => e.counter,
+      );
 }
 
 @GenerateNiceMocks([MockSpec<BaseView>()])
@@ -97,6 +110,32 @@ void main() {
       target.incrementCounter();
       expect(target.counter, 1);
       verify(view.setState(any)).called(1);
+    });
+
+    test('noChange', () {
+      final view = MockBaseView();
+      final target = CounterPresenter(view);
+      expect(target.counter, 0);
+      verifyNever(view.setState(any));
+
+      target.noChange();
+      expect(target.counter, 0);
+      verifyNever(view.setState(any));
+    });
+
+    test('updateWhen', () {
+      final view = MockBaseView();
+      final target = CounterPresenter(view);
+      expect(target.counter, 0);
+      verifyNever(view.setState(any));
+
+      target.valueZero();
+      expect(target.counter, 0);
+      verify(view.setState(any)).called(1);
+
+      target.valueZeroWithCondition();
+      expect(target.counter, 0);
+      verifyNever(view.setState(any));
     });
   });
 

@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('NumberWithCommas', () {
     test('formats number with commas correctly', () {
-      ThousandsSeparatedFormatter formatter = ThousandsSeparatedFormatter();
+      ThousandsSeparatedFormatter formatter =
+          const ThousandsSeparatedFormatter();
       expect(formatter.format(12345), '12,345');
       expect(formatter.format(987654321), '987,654,321');
       expect(formatter.format(1000), '1,000');
@@ -12,14 +13,15 @@ void main() {
     });
 
     test('handles small numbers without commas', () {
-      ThousandsSeparatedFormatter formatter = ThousandsSeparatedFormatter();
+      ThousandsSeparatedFormatter formatter =
+          const ThousandsSeparatedFormatter();
       expect(formatter.format(5), '5');
     });
   });
 
   group('KanjiNumber', () {
     test('formats number into Kanji correctly', () {
-      KanjiNumberFormatter formatter = KanjiNumberFormatter();
+      KanjiNumberFormatter formatter = const KanjiNumberFormatter();
       expect(formatter.format(5), '五');
       expect(formatter.format(15), '十五');
       expect(formatter.format(145), '百四十五');
@@ -37,7 +39,7 @@ void main() {
     });
 
     test('throws error for numbers out of range', () {
-      KanjiNumberFormatter formatter = KanjiNumberFormatter();
+      KanjiNumberFormatter formatter = const KanjiNumberFormatter();
       expect(() => formatter.format(100000), throwsArgumentError);
       expect(() => formatter.format(-100000), throwsArgumentError);
     });
@@ -45,7 +47,7 @@ void main() {
 
   group('SpelledOutFormatter', () {
     test('small number', () {
-      SpelledOutFormatter formatter = SpelledOutFormatter();
+      SpelledOutFormatter formatter = const SpelledOutFormatter();
       expect(formatter.format(0), 'zero');
       expect(formatter.format(1), 'one');
       expect(formatter.format(2), 'two');
@@ -71,7 +73,7 @@ void main() {
     });
 
     test('formats number into English words correctly', () {
-      SpelledOutFormatter formatter = SpelledOutFormatter();
+      SpelledOutFormatter formatter = const SpelledOutFormatter();
       expect(
           formatter.format(12345), 'twelve thousand three hundred forty five');
       expect(formatter.format(99999),
@@ -83,7 +85,7 @@ void main() {
     });
 
     test('throws error for numbers out of range', () {
-      SpelledOutFormatter formatter = SpelledOutFormatter();
+      SpelledOutFormatter formatter = const SpelledOutFormatter();
       expect(() => formatter.format(100000), throwsArgumentError);
       expect(() => formatter.format(-100000), throwsArgumentError);
     });

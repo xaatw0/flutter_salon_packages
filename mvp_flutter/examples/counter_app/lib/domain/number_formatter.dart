@@ -144,6 +144,7 @@ class SpelledOutFormatter implements NumberFormatter {
   // Higher units
   static const List<String> higherUnits = ['', 'thousand'];
 
+  @override
   String format(int number) {
     if (number < -99999 || number > 99999) {
       throw ArgumentError('The range supported is from -99999 to 99999.');
@@ -162,11 +163,8 @@ class SpelledOutFormatter implements NumberFormatter {
     while (number > 0) {
       int group = number % 1000;
       if (group != 0) {
-        result = _convertGroupToEnglish(group) +
-            ' ' +
-            higherUnits[unitGroupIndex] +
-            ' ' +
-            result;
+        result =
+            '${_convertGroupToEnglish(group)} ${higherUnits[unitGroupIndex]} $result';
       }
       unitGroupIndex++;
       number ~/= 1000;
@@ -183,13 +181,11 @@ class SpelledOutFormatter implements NumberFormatter {
       int tensPart = number ~/ 10;
       int onesPart = number % 10;
       return tens[tensPart] +
-          (onesPart != 0 ? ' ' + englishNumbers[onesPart] : '');
+          (onesPart != 0 ? ' ${englishNumbers[onesPart]}' : '');
     } else {
       int hundredsPart = number ~/ 100;
       int remainder = number % 100;
-      return englishNumbers[hundredsPart] +
-          ' hundred' +
-          (remainder != 0 ? ' ' + _convertGroupToEnglish(remainder) : '');
+      return '${englishNumbers[hundredsPart]} hundred${remainder != 0 ? ' ${_convertGroupToEnglish(remainder)}' : ''}';
     }
   }
 

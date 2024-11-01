@@ -8,12 +8,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Flutter Demo with mvp'),
+      home: MyHomePage(title: 'Flutter Demo with MVP'),
     );
   }
 }
@@ -27,9 +26,14 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+/// The state class for [MyHomePage], implements [BaseView].
 class _MyHomePageState extends State<MyHomePage> implements BaseView {
+  /// The presenter for managing the counter logic.
   late final _presenter = CounterPresenter(this);
 
+  /// Builds the UI of the home page.
+  ///
+  /// - [context]: The build context.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,21 +64,39 @@ class _MyHomePageState extends State<MyHomePage> implements BaseView {
   }
 }
 
+/// A model representing the counter value.
 class CounterModel {
+  /// Creates a new [CounterModel] instance.
+  ///
+  /// - [counter]: The current value of the counter.
   const CounterModel(this.counter);
+
+  /// The current value of the counter.
   final int counter;
 
+  /// Increases the counter by one and returns a new [CounterModel].
   CounterModel increase() => CounterModel(counter + 1);
 }
 
+/// The presenter responsible for handling counter logic.
 class CounterPresenter {
+  /// Creates a new [CounterPresenter].
+  ///
+  /// - [_view]: The view that this presenter interacts with.
   CounterPresenter(this._view);
-  CounterModel get _model => _delegate.model;
 
+  /// The view that this presenter interacts with.
   final BaseView _view;
+
+  /// The delegate that manages the [CounterModel] state.
   final _delegate = PresenterDelegate<CounterModel>(const CounterModel(0));
 
-  // public property and method
+  /// Gets the current [CounterModel].
+  CounterModel get _model => _delegate.model;
+
+  /// Gets the current counter value.
   int get counter => _model.counter;
+
+  /// Increments the counter and refreshes the view.
   void incrementCounter() => _delegate.refresh(_view, _model.increase());
 }

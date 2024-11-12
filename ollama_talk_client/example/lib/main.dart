@@ -201,6 +201,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
+                    minLines: 1,
+                    maxLines: 3,
                   ),
                 ),
                 FilledButton(

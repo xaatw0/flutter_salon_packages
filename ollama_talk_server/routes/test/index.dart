@@ -5,7 +5,8 @@ import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:ollama_talk_server/src/infrastructures/object_box/test_box.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
-/// curl  http://localhost:8080/test
+// curl  http://localhost:8080/test
+// curl  http://192.168.1.33:8080/test
 Future<Response> onRequest(RequestContext context) async {
   try {
     return switch (context.request.method) {

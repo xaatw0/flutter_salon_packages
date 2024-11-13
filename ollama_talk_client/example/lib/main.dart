@@ -36,6 +36,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const _networkErrorMessage = 'Could not connect to OllamaTalkServer\n'
+      '- Check that you are connected to the network\n'
+      '- Check that OllamaTalkServer is running on $serverUrl';
+
   static const serverUrl = String.fromEnvironment(
     'OLLAMA_TALK_SERVER_URL',
     defaultValue: 'http://localhost',
@@ -49,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late final infraInfo = InfraInfo(http.Client(), serverUrl);
 
-  late Completer<List<ChatEntity>> _chatList;
+  late Completer<List<ChatEntity>> _chatList = Completer();
   late final _llmModels = Completer<List<LlmModel>>();
 
   LlmModel? _selectedModel;
@@ -68,19 +72,38 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    ModelApi(infraInfo).loadLlmModelList().then((data) {
-      _llmModels.complete(data);
-    });
-    _loadChatList().then(
-      (_) => _scaffoldKey.currentState?.openDrawer(),
-    );
+    _loadModelsAndChatList()
+        .then((_) => _scaffoldKey.currentState?.openDrawer());
+  }
+
+  Future<void> _loadModelsAndChatList() async {
+    await _loadChatList();
+
+    try {
+      final modelList = await ModelApi(infraInfo).loadLlmModelList();
+      _llmModels.complete(modelList);
+    } on http.ClientException catch (error, st) {
+      final exception = Exception(_networkErrorMessage);
+      _llmModels.completeError(exception, st);
+    } catch (_) {
+      rethrow;
+    }
   }
 
   Future<void> _loadChatList() async {
     setState(() {
       _chatList = Completer();
     });
-    _chatList.complete(await _chatApi.loadChatList());
+
+    try {
+      final chatList = await _chatApi.loadChatList();
+      _chatList.complete(chatList);
+    } on http.ClientException catch (error, st) {
+      final exception = Exception(_networkErrorMessage);
+      _chatList.completeError(exception, st);
+    } catch (_) {
+      rethrow;
+    }
   }
 
   Future<void> _loadChatMessage(int chatId) async {
@@ -109,6 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: FutureBuilder(
             future: _chatList.future,
             builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
               if (!snapshot.hasData) {
                 return const CircularProgressIndicator();
               }
@@ -146,6 +172,10 @@ class _MyHomePageState extends State<MyHomePage> {
             FutureBuilder(
                 future: _llmModels.future,
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text(_networkErrorMessage);
+                  }
+
                   if (!snapshot.hasData) {
                     return const CircularProgressIndicator();
                   }
@@ -201,6 +231,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
+                    minLines: 1,
+                    maxLines: 3,
                   ),
                 ),
                 FilledButton(

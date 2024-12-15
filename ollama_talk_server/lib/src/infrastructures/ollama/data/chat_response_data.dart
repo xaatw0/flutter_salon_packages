@@ -1,3 +1,5 @@
+import 'package:ollama_talk_common/ollama_talk_common.dart';
+
 /// Response for Generate a chat completion
 /// https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion
 class ChatResponseData {
@@ -40,6 +42,10 @@ class ChatResponseData {
       evalCount: json['eval_count'],
       evalDuration: json['eval_duration'],
     );
+  }
+
+  MessageEntity toEntity() {
+    return MessageEntity(Role.system, message?.content ?? '');
   }
 
   Map<String, dynamic> toJson() {

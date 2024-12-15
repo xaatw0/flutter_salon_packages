@@ -21,13 +21,13 @@ class ChatBox {
   final messages = ToMany<ChatMessageBox>();
 
   @Transient()
-  final MessageData systemMessage;
+  final MessageEntity systemMessage;
 
   ChatBox({
     this.title = '',
     required this.llmModel,
     this.system = '',
-  }) : systemMessage = MessageData(Role.system, system);
+  }) : systemMessage = MessageEntity(Role.system, system);
 
   Future<List<ChatMessageBox>> getHistories(
     Store store, {
@@ -51,7 +51,7 @@ class ChatBox {
     return messageEntity;
   }
 
-  MessageData? getSystemMessage() {
+  MessageEntity? getSystemMessage() {
     return system.isEmpty ? null : systemMessage;
   }
 

@@ -188,7 +188,7 @@ void main() {
 
   group('ChatRequestMessage', () {
     test('MessageData', () {
-      final messageData = MessageData(Role.system, 'content');
+      final messageData = MessageEntity(Role.system, 'content');
       final result = ChatRequestMessage.fromData(messageData);
       expect(result.role, 'system');
       expect(result.content, 'content');

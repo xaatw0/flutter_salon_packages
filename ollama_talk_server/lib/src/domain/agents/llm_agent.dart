@@ -17,39 +17,18 @@ class LlmAgent extends AbstractAgent {
   Future<AgentResponse> process(String message) async {
     final llmServer = ServiceLocator.instance.ollamaServer;
 
-    final chatRequestMessage =
-        ChatRequestMessage(role: Role.user.name, content: prompt);
+    final messageEntity = MessageEntity(Role.user, message);
 
-    final chatRequest =
-        ChatRequestData(model: model(), messages: [chatRequestMessage]);
+    final chatRequest = ChatRequestData(
+        model: model(), messages: [ChatRequestMessage.fromData(messageEntity)]);
 
-    final responseModelStream = await llmServer.chat(chatRequest);
+    final response = await llmServer.chatWithoutStream(chatRequest);
 
-    final stream = StreamController<String>();
-    final buffer = StringBuffer();
-    stream.stream.listen((data) {
-      buffer.write(data);
-    });
-    await for (final ChatResponseData data in responseModelStream) {
-      final responseMessage = data.message?.content;
-      if (responseMessage == null) {
-        continue;
-      }
-
-      stream.sink.add(responseMessage);
-
-      if (data.done) {
-        stream.close();
-      }
-    }
-
-    final completer = Completer();
-    await completer.future;
-    print('-----test1');
-    final responseMessage = ''; //responseFromLlmServer.message?.content ?? '';
+    final responseMessage = response.message?.content ?? message;
     final messageForNextAgent = switch (handleReplies) {
       HandleReplies.replace => responseMessage,
-      HandleReplies.append => message + '\n' + responseMessage,
+      HandleReplies.append => '''{"question": "$message",
+            "answer": "$responseMessage"}''',
     };
 
     return AgentResponse(messageForNextAgent, handle: handleReplies);

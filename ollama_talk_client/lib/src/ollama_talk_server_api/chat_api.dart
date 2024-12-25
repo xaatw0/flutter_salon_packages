@@ -24,9 +24,10 @@ class ChatApi {
       onDone: () => controller.sink.close(),
     );
 
+    // サーバに初期設定を送る
     final data = SendChatMessageEntity(chatId: chatId, prompt: prompt);
-
     channel.sink.add(jsonEncode(data.toJson()));
+
     return controller.stream;
   }
 
@@ -41,6 +42,26 @@ class ChatApi {
         body: jsonEncode(body));
     final json = jsonDecode(response.body);
     return json['data'];
+  }
+
+  Future<String> sendMessageWithAgent(int chatId, String prompt) async {
+    final apiPath = '/send_message_with_agents2';
+
+    final url = Uri.parse('ws://${infraInfo.apiUrlBase}$apiPath');
+
+    final channel = WebSocketChannel.connect(url);
+
+    final completer = Completer<String>();
+    final buffer = StringBuffer();
+    channel.stream.listen(
+      (data) => buffer.write(data.toString()),
+      onDone: () => completer.complete(buffer.toString()),
+    );
+    // サーバに初期設定を送る
+    final data = SendChatMessageEntity(chatId: chatId, prompt: prompt);
+    channel.sink.add(jsonEncode(data.toJson()));
+
+    return completer.future;
   }
 
   Future<List<ChatEntity>> loadChatList() async {

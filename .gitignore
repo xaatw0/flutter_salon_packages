@@ -2,3 +2,5 @@
 # FVM Version Cache
 .fvm/
 .idea/
+/**/*.mocks.dart
+/**/*.g.dart

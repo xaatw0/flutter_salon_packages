@@ -1,0 +1,4 @@
+A
+<h3 class="vector-pinnable-header-label">目次</h3>
+B
+<h3 id="特記">C</h3>C2

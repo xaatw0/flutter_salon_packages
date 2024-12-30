@@ -140,4 +140,23 @@ void main() {
       expect(result.evalDuration, 4799921000);
     });
   });
+
+  group('tags', () {
+    test('Llm model: 1 embed model: 1', () async {
+      final body =
+          ' {"models":[{"name":"mxbai-embed-large:latest","model":"mxbai-embed-large:latest","modified_at":"2024-12-29T21:28:07.815504638-08:00","size":669615493,"digest":"468836162de7f81e041c43663fedbbba921dcea9b9fefea135685a39b2d83dd8","details":{"parent_model":"","format":"gguf","family":"bert","families":["bert"],"parameter_size":"334M","quantization_level":"F16"}},{"name":"elyza:jp8b","model":"elyza:jp8b","modified_at":"2024-12-25T15:31:15.565369276-08:00","size":4920734779,"digest":"975044073ed096b0e96201d655851a84f435c857bc9226380d015511b4cbaa28","details":{"parent_model":"","format":"gguf","family":"llama","families":["llama"],"parameter_size":"8.0B","quantization_level":"Q4_K_M"}}]}';
+
+      when(
+        client.get(
+          Uri.parse('http://localhost:11434/api/tags'),
+          headers: {'Content-Type': 'application/json'},
+        ),
+      ).thenAnswer((_) async => http.Response(body, HttpStatus.ok));
+
+      final result = await target.tags();
+      expect(result.length, 2);
+      expect(result[0].name, 'mxbai-embed-large:latest');
+      expect(result[1].name, 'elyza:jp8b');
+    });
+  });
 }

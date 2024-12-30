@@ -237,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 FilledButton(
                   onPressed: _selectedModel == null || _waitingResponse
-                      ? sendMessage
+                      ? null
                       : sendMessage,
                   child: _waitingResponse
                       ? const Text('送信中...')
@@ -245,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 FilledButton(
                   onPressed: _selectedModel == null || _waitingResponse
-                      ? () => sendMessage(stream: false)
+                      ? null
                       : () => sendMessage(stream: false),
                   child: _waitingResponse
                       ? const Text('送信中...')
@@ -291,7 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     } else {
-      final response = await chatApi.sendMessageWithAgent(_chatId!, prompt);
+      final response = await chatApi.sendMessageAsFuture(_chatId!, prompt);
       setState(() {
         _currentChat!.messages.add(message.withResponse(response));
       });

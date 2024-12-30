@@ -5,8 +5,9 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 
-/// curl http://localhost:11434/api/tags
-/// curl http://localhost:8080/models
+/// List llm models and embedding models in OllamaServer.
+/// from ollama: curl http://localhost:11434/api/tags,  curl http://127.0.0.1:11434/api/tags
+/// from OllamaTalkServer: curl http://localhost:8080/models
 Future<Response> onRequest(RequestContext context) async {
   try {
     return switch (context.request.method) {
@@ -22,9 +23,14 @@ Future<Response> onRequest(RequestContext context) async {
 }
 
 Future<Response> _onGet(RequestContext context) async {
+  print('test1');
+
   final client = context.read<TalkServer>();
-  final llmModels = client.loadLocalLlmModels();
-  final embeddedModels = client.loadLocalEmbeddingModels();
+  print('test2');
+  final llmModels = await client.loadLocalLlmModels();
+  print('test3');
+  final embeddedModels = await client.loadLocalEmbeddingModels();
+  print('test4');
 
   return Response.json(
     body: {

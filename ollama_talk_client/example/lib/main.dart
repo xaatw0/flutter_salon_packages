@@ -243,6 +243,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ? const Text('送信中...')
                       : const Text('送信'),
                 ),
+                FilledButton(
+                  onPressed: _selectedModel == null || _waitingResponse
+                      ? null
+                      : () => sendMessage(stream: false),
+                  child: _waitingResponse
+                      ? const Text('送信中...')
+                      : const Text('Future送信'),
+                ),
               ],
             ),
           ],
@@ -251,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void sendMessage() async {
+  void sendMessage({bool stream = true}) async {
     final prompt = _messageController.text;
     final message = ChatMessageEntity(
         dateTime: DateTime.now(), message: prompt, response: '');
@@ -269,18 +277,25 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     final chatApi = ChatApi(infraInfo);
-    await for (final responsePart in chatApi.sendMessage(
-      _chatId!,
-      prompt,
-    )) {
-      _responseMessage += responsePart;
-      _currentChat!.messages.removeLast();
 
+    if (stream) {
+      await for (final responsePart in chatApi.sendMessage(
+        _chatId!,
+        prompt,
+      )) {
+        _responseMessage += responsePart;
+        _currentChat!.messages.removeLast();
+
+        setState(() {
+          _currentChat!.messages.add(message.withResponse(_responseMessage));
+        });
+      }
+    } else {
+      final response = await chatApi.sendMessageAsFuture(_chatId!, prompt);
       setState(() {
-        _currentChat!.messages.add(message.withResponse(_responseMessage));
+        _currentChat!.messages.add(message.withResponse(response));
       });
     }
-
     setState(() {
       _waitingResponse = false;
     });

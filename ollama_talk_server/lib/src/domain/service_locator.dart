@@ -30,9 +30,13 @@ class ServiceLocator {
   String get apiRoot => _apiRoot;
 
   late final OllamaServer _ollamaServer = OllamaServer(httpClient, apiRoot);
+
+  /// Ollama Server(LLMサーバ)への参照
   OllamaServer get ollamaServer => _ollamaServer;
 
   late final TalkServer _ollamaTalkServer =
       TalkServer(_httpClient, _apiRoot, _store, _ollamaServer);
+
+  /// Ollama Talk Server(LLMを使用したチャット用のサーバ)への参照
   TalkServer get ollamaTalkServer => _ollamaTalkServer;
 }

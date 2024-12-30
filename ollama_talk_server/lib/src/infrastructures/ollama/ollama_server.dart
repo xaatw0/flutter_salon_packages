@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_server/ollama_talk_server.dart';
@@ -14,7 +15,7 @@ class OllamaServer {
 
   /// Generate a completion
   Stream<GenerateResponseData> generate(String model, String prompt) async* {
-    var url = Uri.parse('https://$endpoint/generate');
+    var url = Uri.parse('http://$endpoint/generate');
     var headers = {'Content-Type': 'application/json'};
 
     var body = jsonEncode({
@@ -34,6 +35,22 @@ class OllamaServer {
       final responseData = GenerateResponseData.fromJson(jsonDecode(dataLine));
       yield responseData;
     }
+  }
+
+  /// Generate a completion
+  Future<GenerateResponseData> generateWithFuture(
+      String model, String prompt) async {
+    var url = Uri.parse('http://$endpoint/generate');
+    var headers = {'Content-Type': 'application/json'};
+
+    var body = jsonEncode({
+      'model': model,
+      'prompt': prompt,
+      "stream": false,
+    });
+    final response = await client.post(url, headers: headers, body: body);
+    print('data:' + response.body);
+    return GenerateResponseData.fromJson(jsonDecode(response.body));
   }
 
   /// Generate Embeddings
@@ -58,7 +75,7 @@ class OllamaServer {
 
   /// Show Model Information
   Future<ShowResponseData> show(String name) async {
-    final url = Uri.parse('$endpoint/show');
+    final url = Uri.parse('http://$endpoint/show');
     final body = {'name': name};
     final response = await client.post(url, body: body);
 
@@ -67,13 +84,14 @@ class OllamaServer {
 
   /// Pull a Model
   Future<bool> pull(String modelName) async {
-    var url = Uri.parse('$endpoint/pull');
+    var url = Uri.parse('http://$endpoint/pull');
     String body = jsonEncode({'name': modelName});
     final response = await client.post(url, body: jsonEncode(body));
     return jsonDecode(response.body)['status'] == 'pulling manifest';
   }
 
   /// Chat Request (Streaming)
+  /// curl http://localhost:11434/api/pull -d '{ "name": "mxbai-embed-large"}'
   Stream<ChatResponseData> chat(ChatRequestData chatRequest) async* {
     var url = Uri.parse('http://$endpoint/chat');
     var headers = {'Content-Type': 'application/json'};
@@ -82,7 +100,6 @@ class OllamaServer {
     final request = http.Request('POST', url)
       ..headers.addAll(headers)
       ..body = body;
-
     final response = await client.send(request);
 
     await for (final String dataLine in response.stream
@@ -103,6 +120,8 @@ class OllamaServer {
         jsonEncode(chatRequest.toJson()..putIfAbsent('stream', () => false));
 
     final response = await client.post(url, body: body, headers: headers);
-    return ChatResponseData.fromJson(jsonDecode(response.body));
+    final result = ChatResponseData.fromJson(jsonDecode(response.body));
+    assert(result.done, true);
+    return result;
   }
 }

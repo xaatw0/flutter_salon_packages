@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:ollama_talk_common/ollama_talk_common.dart';
+import 'package:ollama_talk_server/src/domain/agents/abstract_agent.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
 import '../../ollama_talk_server.dart';
@@ -53,15 +54,15 @@ class TalkServer {
 
     final messages = <ChatMessageBox>[...listMessage, message]
         .map((data) => [
-              MessageData(Role.user, data.message),
+              MessageEntity(Role.user, data.message),
               if (data.response.isNotEmpty)
-                MessageData(Role.assistant, data.response)
+                MessageEntity(Role.assistant, data.response)
             ])
         .expand((e) => e)
         .map(ChatRequestMessage.fromData)
         .toList()
       ..insert(0,
-          ChatRequestMessage.fromData(MessageData(Role.system, chat.system)));
+          ChatRequestMessage.fromData(MessageEntity(Role.system, chat.system)));
 
     // send message to ollama server
     final chatRequest =
@@ -94,15 +95,15 @@ class TalkServer {
 
     final messages = <ChatMessageBox>[...listMessage, newMessage]
         .map((data) => [
-              MessageData(Role.user, data.message),
+              MessageEntity(Role.user, data.message),
               if (data.response.isNotEmpty)
-                MessageData(Role.assistant, data.response)
+                MessageEntity(Role.assistant, data.response)
             ])
         .expand((e) => e)
         .map(ChatRequestMessage.fromData)
         .toList()
       ..insert(0,
-          ChatRequestMessage.fromData(MessageData(Role.system, chat.system)));
+          ChatRequestMessage.fromData(MessageEntity(Role.system, chat.system)));
 
     // send message to ollama server
     final chatRequest =
@@ -132,6 +133,44 @@ class TalkServer {
         }
       }
     }
+  }
+
+  /// chat with streaming
+  Future<String> sendMessageWithAgent(
+    ChatBox chat,
+    String prompt,
+    AbstractAgent agent, {
+    DateTime? dateTime,
+    Completer<int>? messageId,
+  }) async {
+    // get message from DB
+    final queryMessage =
+        store.box<ChatMessageBox>().query(ChatMessageBox_.chat.equals(chat.id));
+
+    // make messages
+    final newMessage =
+        ChatMessageBox(dateTime: dateTime ?? DateTime.now(), message: prompt)
+          ..chat.target = chat;
+
+    // delete message history
+
+    final response = await agent.input(prompt);
+
+    final message = ChatMessageBox(
+      dateTime: newMessage.dateTime,
+      message: newMessage.message,
+      response: response.message,
+    )..chat.target = chat;
+
+    chat.messages.add(message);
+
+    // save received message to DB
+    final messageInDb = message.save(store);
+    if (messageId != null) {
+      messageId.complete((await messageInDb).id);
+    }
+
+    return response.message;
   }
 
   /// load chat list in ObjectBox

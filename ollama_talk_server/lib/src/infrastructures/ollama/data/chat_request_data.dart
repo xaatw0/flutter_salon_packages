@@ -69,8 +69,15 @@ class ChatRequestMessage {
     );
   }
 
-  factory ChatRequestMessage.fromData(MessageData data) {
+  factory ChatRequestMessage.fromData(MessageEntity data) {
     return ChatRequestMessage(role: data.role.name, content: data.content);
+  }
+
+  MessageEntity toEntity() {
+    return MessageEntity(
+      Role.values.firstWhere((e) => e.name == role),
+      content,
+    );
   }
 
   Map<String, dynamic> toJson() {

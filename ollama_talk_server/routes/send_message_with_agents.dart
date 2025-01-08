@@ -49,7 +49,7 @@ Future<Response> _onPost(RequestContext context) async {
   }
 
   final llmModel = LlmModel(chat.llmModel);
-  final agents = LlmAgent(llmModel, prompt, HandleReplies.replace);
+  final agents = LlmAgent(llmModel, prompt);
 
   final response = await client.sendMessageWithAgent(chat, prompt, agents);
 

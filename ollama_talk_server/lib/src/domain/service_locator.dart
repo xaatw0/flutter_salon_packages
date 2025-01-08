@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
 import '../../ollama_talk_server.dart';
@@ -26,16 +27,20 @@ class ServiceLocator {
   final http.Client _httpClient = http.Client();
   http.Client get httpClient => _httpClient;
 
-  final String _apiRoot = Platform.environment['API_URL'] ?? 'localhost:8080';
-  String get apiRoot => _apiRoot;
+  final OllamaAddress _ollamaHost =
+      OllamaAddress.create(Platform.environment['OLLAMA_HOST']);
+  OllamaAddress get ollamaHost => _ollamaHost;
 
-  late final OllamaServer _ollamaServer = OllamaServer(httpClient, apiRoot);
+  final OllamaTalkAddress _talkServerAddress =
+      OllamaTalkAddress.create(Platform.environment['OLLAMA_TALK_HOST']);
 
-  /// Ollama Server(LLMサーバ)への参照
-  OllamaServer get ollamaServer => _ollamaServer;
+  OllamaTalkAddress get talkServerAddress => _talkServerAddress;
 
-  late final TalkServer _ollamaTalkServer =
-      TalkServer(_httpClient, _apiRoot, _store, _ollamaServer);
+  late final TalkServer _ollamaTalkServer = TalkServer(
+    _httpClient,
+    _store,
+    OllamaServer(_httpClient, _ollamaHost),
+  );
 
   /// Ollama Talk Server(LLMを使用したチャット用のサーバ)への参照
   TalkServer get ollamaTalkServer => _ollamaTalkServer;

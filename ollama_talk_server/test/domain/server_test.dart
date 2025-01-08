@@ -25,7 +25,7 @@ void main() {
       final store = await getStore();
       final mockOllama = MockOllamaServer();
 
-      final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+      final server = TalkServer(MockClient(), store, mockOllama);
       final chat = await server.openChat('model', 'system');
       expect(chat.llmModel, 'model');
     });
@@ -34,7 +34,7 @@ void main() {
       final store = await getStore();
       final mockOllama = MockOllamaServer();
 
-      final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+      final server = TalkServer(MockClient(), store, mockOllama);
       final chat1 = await server.openChat('model', 'system');
       expect(chat1.title, '');
       final chat2 = await server.updateTitle(chat1.id, 'good title');
@@ -52,7 +52,8 @@ void main() {
       final store = await getStore();
 
       final mock = MockServiceLocator();
-      when(mock.apiRoot).thenReturn('test.com');
+      when(mock.talkServerAddress)
+          .thenReturn(OllamaTalkAddress.create('test.com:8080'));
       when(mock.httpClient).thenReturn(mockClient);
       when(mock.store).thenReturn(store);
 
@@ -60,7 +61,7 @@ void main() {
 
       final mockOllama = MockOllamaServer();
 
-      final server = TalkServer(mockClient, 'test.com', store, mockOllama);
+      final server = TalkServer(mockClient, store, mockOllama);
       expect(store.box<ChatBox>().getAll().length, 0);
       final chat1 = await server.openChat('llm_model', 'system message');
       expect(store.box<ChatBox>().getAll().length, 1);
@@ -134,13 +135,14 @@ void main() {
 
     test('chat(sendMessage)のテスト', () async {
       final mockClient = MockClient();
-      when(mockClient.get(Uri.parse('http://test.com/index')))
+      when(mockClient.get(Uri.parse('http://test.com:8080/index')))
           .thenAnswer((_) async => http.Response('body', 200));
 
       final store = await getStore();
 
       final mock = MockServiceLocator();
-      when(mock.apiRoot).thenReturn('test.com');
+      when(mock.talkServerAddress)
+          .thenReturn(OllamaTalkAddress.create('test.com:8080'));
       when(mock.httpClient).thenReturn(mockClient);
       when(mock.store).thenReturn(store);
 
@@ -148,7 +150,7 @@ void main() {
 
       final mockOllama = MockOllamaServer();
 
-      final server = TalkServer(mockClient, 'test.com', store, mockOllama);
+      final server = TalkServer(mockClient, store, mockOllama);
       expect(store.box<ChatBox>().getAll().length, 0);
       final chat1 = await server.openChat('llm_model', 'system message');
       expect(store.box<ChatBox>().getAll().length, 1);
@@ -212,13 +214,14 @@ void main() {
 
     test('load chat and chat list', () async {
       final mockClient = MockClient();
-      when(mockClient.get(Uri.parse('http://test.com/index')))
+      when(mockClient.get(Uri.parse('http://test.com:8080/index')))
           .thenAnswer((_) async => http.Response('body', 200));
 
       final store = await getStore();
 
       final mock = MockServiceLocator();
-      when(mock.apiRoot).thenReturn('test.com');
+      when(mock.talkServerAddress)
+          .thenReturn(OllamaTalkAddress.create('test.com:8080'));
       when(mock.httpClient).thenReturn(mockClient);
       when(mock.store).thenReturn(store);
 
@@ -226,7 +229,7 @@ void main() {
 
       final mockOllama = MockOllamaServer();
 
-      final server = TalkServer(mockClient, 'test.com', store, mockOllama);
+      final server = TalkServer(mockClient, store, mockOllama);
       expect((await server.loadChatList()).length, 0);
 
       final chat1 = await server.openChat('llm_model', 'system message');
@@ -288,7 +291,7 @@ void main() {
 
     test('insert', () async {
       final store = await getStore();
-      final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+      final server = TalkServer(MockClient(), store, mockOllama);
       final chat = await server.openChat('model', 'system');
       expect(chat.llmModel, 'model');
 
@@ -308,7 +311,7 @@ void main() {
 
     test('getDocuments/getDocument', () async {
       final store = await getStore();
-      final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+      final server = TalkServer(MockClient(), store, mockOllama);
       final chat = await server.openChat('model', 'system');
       expect(chat.llmModel, 'model');
 
@@ -336,7 +339,7 @@ void main() {
 
     test('removeDocument', () async {
       final store = await getStore();
-      final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+      final server = TalkServer(MockClient(), store, mockOllama);
       final chat = await server.openChat('model', 'system');
       expect(chat.llmModel, 'model');
 
@@ -356,7 +359,7 @@ void main() {
 
     test(skip: Platform.isWindows, 'getRelatedEmbedding', () async {
       final store = await getStore();
-      final server = TalkServer(MockClient(), 'test.com', store, mockOllama);
+      final server = TalkServer(MockClient(), store, mockOllama);
       final chat = await server.openChat('model', 'system');
       expect(chat.llmModel, 'model');
 

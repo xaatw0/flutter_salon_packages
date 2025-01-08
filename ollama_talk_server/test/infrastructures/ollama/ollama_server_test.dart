@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 import 'package:test/test.dart';
@@ -13,7 +14,7 @@ import 'ollama_server_test.mocks.dart';
 @GenerateNiceMocks([MockSpec<http.Client>()])
 void main() {
   final client = MockClient();
-  final target = OllamaServer(client, 'localhost:11434/api');
+  final target = OllamaServer(client, OllamaAddress.create());
 
   group('embed', () {
     test('embed 単数メッセージ', () async {

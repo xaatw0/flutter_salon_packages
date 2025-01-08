@@ -7,3 +7,5 @@ export 'src/entities/chat_entity.dart';
 export 'src/value_objects/abstract_value_object.dart';
 export 'src/value_objects/embedding_model.dart';
 export 'src/value_objects/llm_model.dart';
+export 'src/value_objects/ollama_address.dart';
+export 'src/value_objects/ollama_talk_address.dart';

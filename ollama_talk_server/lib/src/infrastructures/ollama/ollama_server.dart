@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 
 import 'data/generate_response.dart';
@@ -8,10 +9,11 @@ import 'data/tags_response_data.dart';
 
 /// Contact to OllamaServer
 class OllamaServer {
-  const OllamaServer(this.client, this.endpoint);
+  OllamaServer(this.client, OllamaAddress address)
+      : endpoint = '${address()}/api';
 
-  final String endpoint;
   final http.Client client;
+  final String endpoint;
 
   /// Generate a completion
   Stream<GenerateResponseData> generate(String model, String prompt) async* {
@@ -118,7 +120,7 @@ class OllamaServer {
 
     var body =
         jsonEncode(chatRequest.toJson()..putIfAbsent('stream', () => false));
-
+    print('$url $body');
     final response = await client.post(url, body: body, headers: headers);
     final result = ChatResponseData.fromJson(jsonDecode(response.body));
     assert(result.done, true);

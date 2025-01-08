@@ -31,8 +31,7 @@ Future<Response> onRequest(RequestContext context) async {
       chat.title = sendChatMessage.prompt;
     }
 
-    final agents =
-        LlmAgent(LlmModel(chat.llmModel), '愛情たっぷりに表現して', HandleReplies.replace);
+    final agents = LlmAgent(LlmModel(chat.llmModel), '愛情たっぷりに表現して');
     final agentResponse = await agents.input(sendChatMessage.prompt);
     clientChannel.sink.add(agentResponse.message);
     clientChannel.sink.close();

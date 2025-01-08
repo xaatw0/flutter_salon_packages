@@ -16,13 +16,11 @@ import '../infrastructures/ollama/data/chat_request_data.dart';
 class TalkServer {
   const TalkServer(
     this.client,
-    this.baseUrl,
     this.store,
     this.ollamaServer,
   );
 
   final http.Client client;
-  final String baseUrl;
   final Store store;
   final OllamaServer ollamaServer;
 

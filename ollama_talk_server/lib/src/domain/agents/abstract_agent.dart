@@ -11,12 +11,15 @@ abstract class AbstractAgent {
       return response;
     }
 
-    return nextAgent!.process(response.message);
+    return nextAgent!.input(response.message);
   }
 
-  AbstractAgent setNext(AbstractAgent nextAgent) {
-    this.nextAgent = nextAgent;
-    return nextAgent;
+  void setNext(AbstractAgent nextAgent) {
+    var agentWithoutNext = this;
+    for (;
+        agentWithoutNext.nextAgent != null;
+        agentWithoutNext = agentWithoutNext.nextAgent!);
+    agentWithoutNext.nextAgent = nextAgent;
   }
 }
 

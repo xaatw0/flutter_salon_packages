@@ -7,17 +7,26 @@ import 'package:ollama_talk_server/src/domain/agents/abstract_agent.dart';
 import '../service_locator.dart';
 
 class LlmAgent extends AbstractAgent {
-  LlmAgent(this.model, this.prompt, this.handleReplies);
+  LlmAgent(this.model, this.command);
 
   final LlmModel model;
-  final String prompt;
-  final HandleReplies handleReplies;
+  final String command;
+
+  static const kKeyCommand = '%command%';
+  static const kKeyInput = '%input%';
+  static const kRequestFormatForLlm =
+      '{"command":"$kKeyCommand","input":"$kKeyInput"}';
 
   @override
   Future<AgentResponse> process(String message) async {
-    final llmServer = ServiceLocator.instance.ollamaServer;
+    final llmServer = ServiceLocator.instance.ollamaTalkServer.ollamaServer;
 
-    final messageEntity = MessageEntity(Role.user, message);
+    final messageEntity = MessageEntity(
+      Role.user,
+      kRequestFormatForLlm
+          .replaceAll(kKeyCommand, command)
+          .replaceAll(kKeyInput, message),
+    );
 
     final chatRequest = ChatRequestData(
         model: model(), messages: [ChatRequestMessage.fromData(messageEntity)]);
@@ -25,12 +34,7 @@ class LlmAgent extends AbstractAgent {
     final response = await llmServer.chatWithoutStream(chatRequest);
 
     final responseMessage = response.message?.content ?? message;
-    final messageForNextAgent = switch (handleReplies) {
-      HandleReplies.replace => responseMessage,
-      HandleReplies.append => '''{"question": "$message",
-            "answer": "$responseMessage"}''',
-    };
 
-    return AgentResponse(messageForNextAgent, handle: handleReplies);
+    return AgentResponse(responseMessage, handle: HandleReplies.replace);
   }
 }

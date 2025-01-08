@@ -15,17 +15,21 @@ import 'llm_agent_test.mocks.dart';
   MockSpec<http.Client>(),
   MockSpec<ServiceLocator>(),
   MockSpec<OllamaServer>(),
+  MockSpec<TalkServer>(),
   MockSpec<ChatResponseData>(),
 ])
 void main() {
-  final mock = MockServiceLocator();
-  final mockOllama = MockOllamaServer();
-  when(mock.ollamaServer).thenReturn(mockOllama);
-  ServiceLocator.setMock(mock);
+  final serviceLocator = MockServiceLocator();
+  final ollamaServer = MockOllamaServer();
+  final talkServer = MockTalkServer();
+
+  when(serviceLocator.ollamaTalkServer).thenReturn(talkServer);
+  when(talkServer.ollamaServer).thenReturn(ollamaServer);
+  ServiceLocator.setMock(serviceLocator);
 
   group('LlmAgent', () {
     test('HandleReplies.append', () async {
-      when(mockOllama.generateWithFuture('model', 'prompt1\nabc'))
+      when(ollamaServer.generateWithFuture('model', 'prompt1\nabc'))
           .thenAnswer((_) async {
         return GenerateResponseData(
           model: 'model',
@@ -35,14 +39,13 @@ void main() {
         );
       });
 
-      final llmAgent1 =
-          LlmAgent(LlmModel('model'), 'prompt1', HandleReplies.append);
+      final llmAgent1 = LlmAgent(LlmModel('model'), 'prompt1');
       final response = await llmAgent1.input('abc');
       expect(response.message, 'abc\ndef');
     });
 
     test('HandleReplies.replace', () async {
-      when(mockOllama.generateWithFuture('model', 'prompt2\nabc'))
+      when(ollamaServer.generateWithFuture('model', 'prompt2\nabc'))
           .thenAnswer((_) async {
         return GenerateResponseData(
           model: 'model',
@@ -52,8 +55,7 @@ void main() {
         );
       });
 
-      final llmAgent1 =
-          LlmAgent(LlmModel('model'), 'prompt2', HandleReplies.replace);
+      final llmAgent1 = LlmAgent(LlmModel('model'), 'prompt2');
       final response = await llmAgent1.input('abc');
       expect(response.message, 'def');
     });
@@ -61,7 +63,7 @@ void main() {
 
   group('ChainOfResponsibility', () {
     test('setNext', () async {
-      when(mockOllama.generateWithFuture('model', 'prompt1\nabc'))
+      when(ollamaServer.generateWithFuture('model', 'prompt1\nabc'))
           .thenAnswer((_) async {
         return GenerateResponseData(
           model: 'model',
@@ -71,7 +73,7 @@ void main() {
         );
       });
 
-      when(mockOllama.generateWithFuture('model', 'prompt2\nabc'))
+      when(ollamaServer.generateWithFuture('model', 'prompt2\nabc'))
           .thenAnswer((_) async {
         return GenerateResponseData(
           model: 'model',
@@ -81,7 +83,7 @@ void main() {
         );
       });
 
-      when(mockOllama.generateWithFuture('model', 'prompt3\ndef'))
+      when(ollamaServer.generateWithFuture('model', 'prompt3\ndef'))
           .thenAnswer((_) async {
         return GenerateResponseData(
           model: 'model',
@@ -91,10 +93,9 @@ void main() {
         );
       });
 
-      final agents = LlmAgent(
-          LlmModel('model'), 'prompt1', HandleReplies.replace)
-        ..setNext(LlmAgent(LlmModel('model'), 'prompt2', HandleReplies.append))
-        ..setNext(LlmAgent(LlmModel('model'), 'prompt3', HandleReplies.append));
+      final agents = LlmAgent(LlmModel('model'), 'prompt1')
+        ..setNext(LlmAgent(LlmModel('model'), 'prompt2'))
+        ..setNext(LlmAgent(LlmModel('model'), 'prompt3'));
 
       final response = await agents.input('abc');
       expect(response.message, 'def\nghi');

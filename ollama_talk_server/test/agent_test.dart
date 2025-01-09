@@ -342,10 +342,10 @@ test2''';
       final resultError = ['', '', 'not found'];
 
       for (int i = 0; i < fileDataList.length; i++) {
-        final data = jsonDecode(fileDataList[i]);
-        expect(data['fileName'], resultFiles[i]);
-        expect(data['content'] ?? '', resultContent[i]);
-        expect(data['error'] ?? '', resultError[i]);
+        final entity = FileEntity.fromJson(fileDataList[i]);
+        expect(entity.fileName, resultFiles[i]);
+        expect(entity.content, resultContent[i]);
+        expect(entity.errorMessage ?? '', resultError[i]);
       }
 
       fileNames.forEach((fileName) => File(fileName).deleteSync());

@@ -120,7 +120,7 @@ class OllamaServer {
 
     var body =
         jsonEncode(chatRequest.toJson()..putIfAbsent('stream', () => false));
-    print('$url $body');
+
     final response = await client.post(url, body: body, headers: headers);
     final result = ChatResponseData.fromJson(jsonDecode(response.body));
     assert(result.done, true);

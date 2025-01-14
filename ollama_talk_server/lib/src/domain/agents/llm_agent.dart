@@ -30,9 +30,7 @@ class LlmAgent extends AbstractAgent {
 
     final chatRequest = ChatRequestData(
         model: model(), messages: [ChatRequestMessage.fromData(messageEntity)]);
-
     final response = await llmServer.chatWithoutStream(chatRequest);
-
     final responseMessage = response.message?.content ?? message;
 
     return AgentResponse(responseMessage, handle: HandleReplies.replace);

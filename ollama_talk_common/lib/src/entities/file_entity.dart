@@ -35,7 +35,7 @@ class FileEntity {
     return {
       'fileName': fileName,
       'content': content,
-      'errorMessage': errorMessage,
+      if (errorMessage != null) 'errorMessage': errorMessage,
     };
   }
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/src/domain/agents/abstract_agent.dart';
@@ -16,10 +17,12 @@ class FileOutputAgent extends AbstractAgent {
   Please extract the part to be output as a file from the "input" data and rewrite them in the format above. Please only output the part in the format above.
 ''';
 
-  FileOutputAgent(this.model) : llmAgent = LlmAgent(model, kPrompt);
+  FileOutputAgent(this.model, {this.directory})
+      : llmAgent = LlmAgent(model, kPrompt);
 
   final LlmModel model;
   final LlmAgent llmAgent;
+  final Directory? directory;
 
   @override
   Future<AgentResponse> process(String message) async {
@@ -31,7 +34,7 @@ class FileOutputAgent extends AbstractAgent {
       final fileName = fileData[kKeyFileName];
       fileNames.add(fileName);
 
-      final file = File(fileName);
+      final file = File(path.join(directory?.path ?? '', fileName));
       file.writeAsString(fileData[kKeyContent]);
     }
 

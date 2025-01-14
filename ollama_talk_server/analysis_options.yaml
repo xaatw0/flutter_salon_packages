@@ -1,0 +1,3 @@
+analyzer:
+  exclude:
+    - test/domain/agents/dart_compile/lib/*.dart

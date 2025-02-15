@@ -22,6 +22,25 @@ class FileEntity {
     return FileEntity(fileName: fileName, content: content);
   }
 
+  @override
+  int get hashCode => super.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    if (other is FileEntity) {
+      return this.runtimeType == other.runtimeType &&
+          this.fileName == other.fileName &&
+          this.content == other.content &&
+          this.errorMessage == other.errorMessage;
+    } else {
+      return false;
+    }
+  }
+
   factory FileEntity.error(String fileName, String errorMessage) {
     return FileEntity(
       fileName: fileName,

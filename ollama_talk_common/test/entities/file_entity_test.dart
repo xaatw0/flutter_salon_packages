@@ -78,4 +78,25 @@ void main() {
     expect(result[0].content, file.readAsStringSync());
     expect(result[1].content, file.readAsStringSync());
   });
+
+  test('equals', () {
+    final file1 = FileEntity.file('fileName', 'content');
+    final file2 = FileEntity.file('fileName', 'content');
+    final file3 = FileEntity.file('fileName_', 'content');
+    final file4 = FileEntity.file('fileName', 'content_');
+
+    final file5 = FileEntity.error('fileName', 'errorMessage');
+    final file6 = FileEntity.error('fileName', 'errorMessage');
+    final file7 = FileEntity.error('fileName_', 'errorMessage');
+    final file8 = FileEntity.error('fileName', 'errorMessage_');
+
+    expect(file1 == file2, true);
+    expect(file1 == file3, false);
+    expect(file1 == file4, false);
+
+    expect(file5 == file6, true);
+    expect(file1 == file5, false);
+    expect(file5 == file7, false);
+    expect(file5 == file8, false);
+  });
 }

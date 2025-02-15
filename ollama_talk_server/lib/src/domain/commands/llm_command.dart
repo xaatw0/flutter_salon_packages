@@ -16,4 +16,9 @@ class LlmCommand implements ICommand<String, String> {
     final prompt = '$basePrompt\n----------\n$data';
     return model.execute(prompt);
   }
+
+  @override
+  String toString() {
+    return 'LlmCommand[model:$model prompt:$basePrompt]';
+  }
 }

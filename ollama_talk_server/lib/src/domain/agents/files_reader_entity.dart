@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'package:ollama_talk_common/ollama_talk_common.dart';
-import 'package:ollama_talk_server/src/domain/command.dart';
+import 'package:ollama_talk_server/src/domain/commands/command.dart';
 
 class FilesReaderAgent
     implements ICommand<Iterable<FileNameEntity>, Iterable<FileEntity>> {

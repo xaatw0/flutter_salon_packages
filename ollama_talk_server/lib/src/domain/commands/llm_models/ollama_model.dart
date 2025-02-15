@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:ollama_talk_server/src/domain/command.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 
-class OllamaAgent implements ICommand<String, String> {
+import 'llm_model.dart';
+
+class OllamaModel implements ILlmModel {
   static const kModelName = '';
   static const kNoMessageInResponse = '[No Message]';
 
-  const OllamaAgent(this.server);
+  const OllamaModel(this.server);
 
   final OllamaServer server;
 

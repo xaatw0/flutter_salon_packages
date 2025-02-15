@@ -1,7 +1,7 @@
-import 'package:ollama_talk_server/src/domain/command.dart';
 import 'package:http/http.dart' as http;
+import 'package:ollama_talk_server/src/domain/commands/llm_models/llm_model.dart';
 
-class GeminiAgent implements ICommand<String, String> {
+class GeminiModel implements ILlmModel {
   final _kUrl =
       Uri.parse('https://geminiapi-477639193964.asia-northeast2.run.app');
 

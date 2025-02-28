@@ -65,6 +65,17 @@ class OllamaServer {
     return EmbedResponseData.fromJson(jsonDecode(response.body));
   }
 
+  /// Generate Embeddings with Multiple input
+  Future<EmbedResponseData> embedWithMultipleInput(
+      String model, List<String> message) async {
+    var url = Uri.parse('http://$endpoint/embed');
+    var headers = {'Content-Type': 'application/json'};
+    String body = jsonEncode({'model': model, 'input': message});
+
+    final response = await client.post(url, body: body, headers: headers);
+    return EmbedResponseData.fromJson(jsonDecode(response.body));
+  }
+
   /// List Local Models
   Future<List<TagsResponseData>> tags() async {
     var url = Uri.parse('http://$endpoint/tags');

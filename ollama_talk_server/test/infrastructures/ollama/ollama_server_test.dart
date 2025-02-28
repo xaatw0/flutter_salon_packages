@@ -84,6 +84,44 @@ void main() {
       expect(result.embeddings[0].length, 10);
       expect(result.embeddings[0][0], 0.010071029);
     });
+
+    test('embedWithMultipleInput', () async {
+      final body = '''
+{
+  "model": "all-minilm",
+  "embeddings": [[
+    0.010071029, -0.0017594862, 0.05007221, 0.04692972, 0.054916814,
+    0.008599704, 0.105441414, -0.025878139, 0.12958129, 0.031952348
+  ],[
+    -0.0098027075, 0.06042469, 0.025257962, -0.006364387, 0.07272725,
+    0.017194884, 0.09032035, -0.051705178, 0.09951512, 0.09072481
+  ]]
+}
+    ''';
+
+      when(
+        client.post(
+          Uri.parse('http://localhost:11434/api/embed'),
+          body: jsonEncode({
+            "model": "all-minilm",
+            "input": ["Why is the sky blue?", "Why is the grass green?"]
+          }),
+          headers: {'Content-Type': 'application/json'},
+          encoding: null,
+        ),
+      ).thenAnswer((_) async => http.Response(body, HttpStatus.ok));
+
+      final result = await target.embedWithMultipleInput(
+          'all-minilm', ["Why is the sky blue?", "Why is the grass green?"]);
+      expect(result.model, 'all-minilm');
+      expect(result.totalDuration, isNull);
+      expect(result.loadDuration, isNull);
+      expect(result.promptEvalCount, isNull);
+      expect(result.embeddings.length, 2);
+      expect(result.embeddings[0].length, 10);
+      expect(result.embeddings[0][0], 0.010071029);
+      expect(result.embeddings[1][0], -0.0098027075);
+    });
   });
 
   group('chat', () {

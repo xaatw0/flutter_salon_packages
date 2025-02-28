@@ -25,7 +25,7 @@ class DocumentEmbeddingBox {
     return store.box<DocumentEmbeddingBox>().get(await id)!;
   }
 
-  static Future<List<DocumentEmbeddingBox>> findRelatedInformation(
+  static Future<Iterable<DocumentEmbeddingBox>> findRelatedInformation(
     Store store,
     List<double> vector, {
     int count = 5,
@@ -34,6 +34,9 @@ class DocumentEmbeddingBox {
         .box<DocumentEmbeddingBox>()
         .query(DocumentEmbeddingBox_.vector.nearestNeighborsF32(vector, count));
 
-    return query.build().findAsync();
+    return query
+        .build()
+        .findWithScoresAsync()
+        .then((data) => data.map((e) => e.object));
   }
 }

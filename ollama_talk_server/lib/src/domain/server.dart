@@ -213,7 +213,7 @@ class TalkServer {
   }
 
   /// find document related to message
-  Future<List<DocumentEmbeddingBox>> findRelatedInformation(
+  Future<Iterable<DocumentEmbeddingBox>> findRelatedInformation(
     String message,
   ) async {
     final embedding = await _createEmbedding(message);

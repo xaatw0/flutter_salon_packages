@@ -12,7 +12,7 @@ class LlmCommand implements ICommand<String, String> {
   final String basePrompt;
 
   @override
-  FutureOr<String> execute(String data) {
+  Future<String> execute(String data) {
     final prompt = '$basePrompt\n----------\n$data';
     return model.execute(prompt);
   }

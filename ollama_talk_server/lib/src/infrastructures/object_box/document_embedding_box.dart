@@ -34,9 +34,6 @@ class DocumentEmbeddingBox {
         .box<DocumentEmbeddingBox>()
         .query(DocumentEmbeddingBox_.vector.nearestNeighborsF32(vector, count));
 
-    return query
-        .build()
-        .findWithScoresAsync()
-        .then((data) => data.map((e) => e.object));
+    return query.build().findAsync();
   }
 }

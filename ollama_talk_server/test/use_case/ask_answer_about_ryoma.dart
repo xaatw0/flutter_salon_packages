@@ -22,7 +22,7 @@ void main() async {
   final geminiModel = GeminiModel();
 
   final mockRag = MockLlmCommand();
-  when(mockRag.execute(any)).thenAnswer((_) => info);
+  when(mockRag.execute(any)).thenAnswer((_) async => info);
 
   test('情報の抽出', () async {
     final target = AdditionalInformationNode(geminiModel, mockRag);

@@ -1,4 +1,5 @@
 import 'package:objectbox/objectbox.dart';
+import 'package:ollama_talk_server/objectbox.g.dart';
 
 @Entity()
 class DocumentBox {
@@ -37,5 +38,24 @@ class DocumentBox {
       'memo': memo,
       'createDate': createDate.toIso8601String(),
     };
+  }
+
+  static Future<List<DocumentBox>> findByFileName(
+      Store store, String fileName) {
+    final query = store
+        .box<DocumentBox>()
+        .query(DocumentBox_.fileName.equals(fileName))
+        .build();
+    return query.findAsync();
+  }
+
+  static Future<List<DocumentBox>> remove(Store store, String fileName) {
+    final query = store
+        .box<DocumentBox>()
+        .query(DocumentBox_.fileName.equals(fileName))
+        .build();
+    final result = query.findAsync();
+    result.then((_) => query.removeAsync());
+    return result;
   }
 }

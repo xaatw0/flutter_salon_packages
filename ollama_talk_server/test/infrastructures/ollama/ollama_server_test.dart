@@ -198,4 +198,27 @@ void main() {
       expect(result[1].name, 'elyza:jp8b');
     });
   });
+
+  group('embeddingは実際に動作するか', () {
+    final client = http.Client();
+    final target = OllamaServer(client, OllamaAddress.create());
+    test('mxbai-embed-large', () async {
+      final result =
+          await target.embed(EmbeddingModel.kMxbaiEmbedLarge(), 'test');
+      expect(result.model, EmbeddingModel.kMxbaiEmbedLarge());
+      expect(result.embeddings.length, greaterThan(0));
+      expect(result.embeddings.first.length, greaterThan(0));
+    });
+
+    test('kun432/cl-nagoya-ruri-large:latest', () async {
+      final message =
+          '"坂本龍馬について  ### 幼少年期\n\n\\[[編集]\\]\n\n[![]]\n\n[高知市]の生誕地・[北緯33度33分25.8秒 東経133度31分33.6秒]\n\n[天保]6年[11月15日] \"11月15日 \")（[1836年][1月3日]）[\\[注 2\\]]、龍馬は[土佐国]土佐郡上街本町一丁目（現・[高知県][高知市][上町] \"上町 \")一丁目）の土佐藩郷士（下級武士・[足軽]）坂本家に父・[坂本直足]（八平）、母・[幸]の間の二男として生まれた。22歳年上の兄（[権平]）と3人の姉（千鶴、栄、[乙女]）がいた。坂本家は[質屋]、酒造業、呉服商を営む[豪商]才谷屋の分家で、第六代・直益のときに長男・直海が藩から郷士御用人に召し出されて坂本家を興した[\\[3\\]]。土佐藩の武士階級には上士と下士があり、商家出身の坂本家は下士（郷士）だったが（坂本家は福岡家に仕えていたという）、分家の際に才谷屋から多額の財産を分与されており、非常に裕福な家庭だった[\\[4\\]][\\[5\\]]。\n\n龍馬の父・坂本直足は[婿養子]として坂本家を継いだ人物で、[実祖父]の山本家（山本信固）や、その[弟]・[宮地信貞]（宮地家を相続）は共に白札郷士であり、龍馬は血統上は[上士]の人物である[\\[6\\]]。\n\n龍馬は幼少時、泣き虫で弱虫のひ弱な少年であった。実母の幸を10歳の時に病気で亡くす。以後、姉の[乙女]が母代わりに龍馬を教育する。12歳まで夜尿が直らなかったが、乙女が夜中に厠に起こして連れて行き克服させた。乙女は身長176cm、体重110kgを超える当時としては尋常ならざる体躯を持ち、剣術にも秀でていたため、龍馬の剣術師範も務めたと伝説的に語られる。龍馬は終生、乙女への感謝と恋慕を失わず、現存する龍馬直筆の乙女宛の手紙は16通残っている\\[_[要出典]_\\]。\n\n→詳細は「[坂本龍馬の系譜]」を参照\n\n" ';
+
+      final result = await target.embed(
+          EmbeddingModel.kclNagoyaRuriLarge(), message.substring(0, 256));
+      expect(result.model, 'kun432/cl-nagoya-ruri-large:latest');
+      expect(result.embeddings.length, greaterThan(0));
+      expect(result.embeddings.first.length, greaterThan(0));
+    });
+  });
 }

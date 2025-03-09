@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
 import 'package:test/test.dart';
 
-import '../infrastructures/object_box/utility.dart';
 import 'server_test.mocks.dart';
 
 @GenerateNiceMocks([
@@ -20,6 +19,13 @@ import 'server_test.mocks.dart';
   MockSpec<ChatResponseData>(),
 ])
 void main() {
+  Future<Store> getStore() async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    return openStore(
+        directory:
+            'memory:object-box-${DateTime.now().millisecondsSinceEpoch}');
+  }
+
   group('chat', () {
     test('open chat', () async {
       final store = await getStore();

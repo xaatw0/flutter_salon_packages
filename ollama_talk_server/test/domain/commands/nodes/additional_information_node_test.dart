@@ -13,7 +13,7 @@ void main() {
     final prompt = '坂本龍馬の誕生日は西暦で何年ですか(数字のみ)';
 
     final mockRag = MockLlmCommand();
-    when(mockRag.execute(prompt)).thenAnswer((_) =>
+    when(mockRag.execute(prompt)).thenAnswer((_) async =>
         '坂本 龍馬（さかもと りょうま、天保6年11月15日〈1836年1月3日〉 - 慶応3年11月15日〈1867年12月10日〉）は、日本の幕末の土佐藩士、志士、経営者。');
 
     final target = AdditionalInformationNode(

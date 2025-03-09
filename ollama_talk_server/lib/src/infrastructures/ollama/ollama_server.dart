@@ -51,7 +51,6 @@ class OllamaServer {
       "stream": false,
     });
     final response = await client.post(url, headers: headers, body: body);
-    print('data:' + response.body);
     return GenerateResponseData.fromJson(jsonDecode(response.body));
   }
 

@@ -11,6 +11,9 @@ class TrimWikipediaCommand implements ICommand<String, String> {
     final indexStart = data.indexOf(_kStartPart);
     final indexEnd = data.indexOf(_kEndPart);
 
-    return data.substring(indexStart, indexEnd);
+    final startAt = 0 < indexStart ? indexStart : 0;
+    final endAt = 0 < indexEnd ? indexEnd : null;
+
+    return data.substring(startAt, endAt);
   }
 }

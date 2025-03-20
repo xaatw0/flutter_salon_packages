@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/src/domain/service_locator.dart';
 
-import 'embedding_model.dart';
+import '../../domain/commands/llm_models/embedding_model.dart';
 
 class OllamaEmbeddingModel implements IEmbeddingModel {
   final EmbeddingModel model;

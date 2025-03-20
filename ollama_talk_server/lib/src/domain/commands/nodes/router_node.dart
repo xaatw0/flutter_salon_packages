@@ -8,7 +8,7 @@ class RouterNode implements ICommand<String, ICommand> {
 
   const RouterNode(this.model, this.command, this.routers, this.otherCase);
 
-  final ILlmModel model;
+  final ILlmCommand model;
   final String command;
   final Map<String, ICommand> routers;
   final ICommand otherCase;

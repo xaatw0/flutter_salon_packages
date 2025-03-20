@@ -9,7 +9,7 @@ class AdditionalInformationNode implements ICommand<String, String> {
     this.commandForInformation,
   );
 
-  final ILlmModel model;
+  final ILlmCommand model;
   final LlmCommand commandForInformation;
 
   @override

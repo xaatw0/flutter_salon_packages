@@ -2,7 +2,7 @@ import 'package:mockito/annotations.dart';
 import 'package:ollama_talk_common/ollama_talk_common.dart';
 import 'package:ollama_talk_server/ollama_talk_server.dart';
 import 'package:ollama_talk_server/src/domain/commands/insert_messages_into_rag_command.dart';
-import 'package:ollama_talk_server/src/domain/commands/llm_models/ollama_embedding_model.dart';
+import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_embedding_model.dart';
 import 'package:ollama_talk_server/src/domain/commands/select_messages_from_rag_command.dart';
 import 'package:ollama_talk_server/src/domain/service_locator.dart';
 import 'package:ollama_talk_server/src/infrastructures/ollama/ollama_server.dart';
@@ -68,6 +68,20 @@ void main() {
       print((await androidText).join('\n'));
       expect((await androidText).first.startsWith('最新テクノロジーと人工知能'), true);
       expect((await androidText).first.startsWith('宇宙探査の未来'), false);
+    });
+
+    test('データのサイズ', () async {
+      final resultMxbai =
+          await OllamaEmbeddingModel(EmbeddingModel.kMxbaiEmbedLarge)
+              .execute(messages);
+      expect(resultMxbai.length, 5);
+      expect(resultMxbai.every((e) => e.length == 1024), true);
+
+      final resultRuri =
+          await OllamaEmbeddingModel(EmbeddingModel.kclNagoyaRuriLarge)
+              .execute(messages);
+      expect(resultRuri.length, 5);
+      expect(resultRuri.every((e) => e.length == 1024), true);
     });
   });
 }

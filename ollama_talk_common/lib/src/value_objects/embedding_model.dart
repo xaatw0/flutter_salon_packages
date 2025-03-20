@@ -12,10 +12,14 @@ class EmbeddingModel extends AbstractValueObject<String> {
 
   ///
   static const kclNagoyaRuriLarge =
-      EmbeddingModel('kun432/cl-nagoya-ruri-large:latest');
+      EmbeddingModel('kun432/cl-nagoya-ruri-large:latest', 'ruri-large');
 
   /// default embedding model
   static const kDefaultModel = kMxbaiEmbedLarge;
 
-  const EmbeddingModel(super._value);
+  const EmbeddingModel(super._value, [this._alias = null]);
+
+  final String? _alias;
+
+  String get alias => _alias ?? this();
 }

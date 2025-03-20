@@ -22,7 +22,7 @@ class ParallelLlmNode implements ICommand<String, String> {
     this.command9,
   ]);
 
-  final ILlmModel model;
+  final ILlmCommand model;
   final String basePrompt;
   final LlmCommand command1;
   final LlmCommand command2;
